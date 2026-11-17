@@ -30,8 +30,22 @@ body:not(.live) #dock,body:not(.live) #picker,body:not(.live) .coach{opacity:0;p
 #hgt.warn{background:rgba(192,80,58,.18)}
 html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
 @media (orientation:landscape) and (max-height:520px){#intro{padding:70px 24px 20px;justify-content:center}#intro h2{font-size:44px;margin:8px 0}#intro p{display:none}html body #chatfab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:auto;left:calc(16px + env(safe-area-inset-left,0px))}}
+.up2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.upt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:118px;padding:14px 10px;border-radius:20px;border:1.5px dashed rgba(242,237,228,.3);background:rgba(255,255,255,.05);cursor:pointer;text-align:center;overflow:hidden;transition:.2s}
+.upt:hover{background:rgba(255,255,255,.1);border-color:rgba(242,237,228,.6)}
+.upt .ic svg{width:28px;height:28px}.upt b{font:500 13px/1.2 Jost,var(--arab)}.upt small{font-size:10.5px;color:#f2ede499;line-height:1.3}
+.upt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32}
+.upt.has{border-style:solid;border-color:#9C7A4E}
+.upt>*:not(img):not(input){position:relative}
+.pk-note{font-size:10.5px;color:#f2ede470;margin:10px 4px 0}
+#busy{position:fixed;z-index:80;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);display:flex;align-items:center;gap:12px;padding:16px 22px;border-radius:999px;color:#F2EDE4;font:500 13px/1 Jost,var(--arab);opacity:0;visibility:hidden;transition:.3s}
+#busy.on{opacity:1;visibility:visible;transform:translate(-50%,-50%)}
+#busy i{width:18px;height:18px;border-radius:50%;border:2px solid rgba(242,237,228,.25);border-top-color:#C8A574;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+body.ar .vignette{opacity:.35}
+@media (max-width:520px){#dock #bView{display:none}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=4">
+<link rel="stylesheet" href="/shell.css?v=5">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -46,7 +60,14 @@ h_low:['Too low for kids','منخفض للأطفال'],h_ok:['Out of kids\' reac
 l_day:['Day','نهار'],l_night:['Night','ليل'],p_light:['Light','الإضاءة'],
 v_cyc:['View','العرض'],v_front:['Front','أمامي'],v_close:['Close','قريب'],v_room:['Room','الغرفة'],
 t_open:['Unlocked · 0.2 s','فُتح · 0.2 ث'],t_lock:['Locked','مقفل'],t_auto:['Auto locked','قُفل تلقائياً'],t_deny:['Not your print · Owner alerted','ليست بصمتك · تم تنبيه المالك'],t_drag:['Drag it on the wall','اسحبه على الجدار'],
-b_lock:['Lock','اقفل']
+b_lock:['Lock','اقفل'],
+u_gun:['Your weapon','سلاحك'],u_gun_s:['Side photo, plain background','صورة جانبية، خلفية سادة'],u_wall:['Your wall','جدارك'],u_wall_s:['Straight on, good light','من الأمام، إضاءة جيدة'],
+u_read:['Reading your photo','قراءة الصورة'],u_edges:['Finding the edges','تحديد الحواف'],u_build:['Building your scene','بناء المشهد'],
+u_done:['Done','تم'],u_fail:['Could not read the photo','تعذر قراءة الصورة'],u_nogun:['No long gun found in this photo','لا يوجد سلاح طويل في الصورة'],u_nowall:['Used the colors of your photo','استخدمنا ألوان صورتك'],
+u_3d:['Background too busy. Showing the 3D match','الخلفية مزدحمة. عرضنا الشكل ثلاثي الأبعاد'],u_mine:['My photo','صورتي'],u_model:['3D model','ثلاثي الأبعاد'],u_flip:['Flip','قلب'],
+u_onwall:['On my wall','على جداري'],u_room:['Room','الغرفة'],u_save:['Save image','حفظ الصورة'],u_saved:['Saved','تم الحفظ'],u_drag:['Drag to move · Pinch to resize','اسحب للتحريك · قرّب للتكبير'],
+u_note:['Photos are read by AI to rebuild your scene. Not shared.','تقرأ الصور بالذكاء الاصطناعي لبناء المشهد. لا تتم مشاركتها.'],
+d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 };</script>
 </head>
 <body>
@@ -65,12 +86,17 @@ b_lock:['Lock','اقفل']
    <div id="wallOpts"><div class="pk-sub" data-i18n="p_wallc">Wall color</div><div class="dots" id="pWall"></div>
    <div id="hgt"><span data-i18n="p_height">Height</span><span id="hnote"></span><b id="hcm"></b></div>
    <div class="tog" style="margin-top:10px"><button id="bMove"><i data-ic="move"></i><span></span></button></div></div></div>
+ <div class="pk-panel" data-p="photo"><div class="up2">
+   <label class="upt" id="upGun"><input type="file" accept="image/*" hidden><img hidden alt=""><span class="ic"></span><b></b><small></small></label>
+   <label class="upt" id="upWall"><input type="file" accept="image/*" hidden><img hidden alt=""><span class="ic"></span><b></b><small></small></label></div>
+   <div class="tog" id="pModes" style="margin-top:10px"></div><p class="pk-note" data-i18n="u_note">Photos are read by AI to rebuild your scene.</p></div>
  <div class="pk-panel" data-p="color"><div class="dots" id="pFin"></div><div class="pk-sub" data-i18n="p_light">Light</div><div class="tog" id="pLight"></div></div>
 </div>
 <div id="dock" class="glass">
  <button class="dk" data-pk="gun"><i data-ic="gun"></i><span data-i18n="d_gun">Gun</span></button>
  <button class="dk" data-pk="place"><i data-ic="place"></i><span data-i18n="d_place">Place</span></button>
  <button class="dk" data-pk="color"><i data-ic="color"></i><span data-i18n="d_color">Color</span></button>
+ <button class="dk" data-pk="photo"><i data-ic="camera"></i><span data-i18n="d_photo">Photos</span></button>
  <button class="dk-main" id="bTest" aria-label="test"><i data-ic="print"></i><span></span></button>
  <button class="dk" id="bChild"><i data-ic="child"></i><span data-i18n="d_child">Child</span></button>
  <button class="dk" id="bView"><i data-ic="eye"></i><span id="vLabel"></span></button>
@@ -78,12 +104,17 @@ b_lock:['Lock','اقفل']
 </div>
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
-<script src="/shell.js?v=4"></script>
+<div id="busy" class="glass"><i></i><span></span></div>
+<script src="/shell.js?v=5"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const canvas=document.getElementById('c');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight,false);
@@ -250,6 +281,12 @@ const lampL=new THREE.PointLight(0xffcf8f,2.2,4,1.8);lamp.add(at(lampL,0,1.5,0))
 // gallery picture light above the rack
 const picBar=new THREE.Group();picBar.add(at(rbox(.36,.03,.05,.012,M.brass),0,0,.11),at(box(.02,.02,.1,M.brass),0,0,.05));
 const picGlow=at(box(.3,.004,.02,new THREE.MeshBasicMaterial({color:0xffe2b0,toneMapped:false})),0,-.017,.12);picBar.add(picGlow);room.add(picBar);
+// ceiling, crown moulding, cove light, wainscot panels
+const ceilM=new THREE.MeshStandardMaterial({color:0x1a1714,roughness:.95});const ceil=mesh(new THREE.PlaneGeometry(8,7),ceilM);ceil.rotation.x=Math.PI/2;at(ceil,0,3.4,3.5);room.add(ceil);
+const trimM=new THREE.MeshStandardMaterial({color:0xd9d1c4,roughness:.6});room.add(at(rbox(8,.12,.08,.02,trimM),0,3.32,.04));
+const cove=at(box(7.8,.012,.01,new THREE.MeshBasicMaterial({color:0xffd9a8,toneMapped:false})),0,3.255,.09);room.add(cove);
+for(let i=-3;i<=3;i++){if(Math.abs(i)<1)continue;const px=i*1.05;room.add(at(rbox(.9,.62,.012,.004,trimM),px,.42,.006));}
+room.add(at(rbox(8,.035,.03,.008,trimM),0,.82,.015));
 room.traverse(o=>{if(o.isMesh&&o!==wall&&o!==side&&o!==floor&&o!==rug&&o!==win){o.castShadow=true;o.receiveShadow=true;}});
 /* ---------- car ---------- */
 const car=new THREE.Group();car.visible=false;scene.add(car);
@@ -277,8 +314,9 @@ const WALLS=['#6b625a','#e2d9ca','#3d3129','#4a4a3b'];
 const FIN=[{c:'#1b1b1c',m:[0x161617,.55,.62]},{c:'#8a6a43',m:[0x8a6a43,.95,.3]},{c:'#bdb9b1',m:[0xb8b4ac,1,.24]},{c:'#cbbfa9',m:[0xc8bba3,.1,.55]}];
 function setFinish(i){const f=FIN[i].m;shellM.color.setHex(f[0]);shellM.metalness=f[1];shellM.roughness=f[2];}
 function setWall(i){wallMat.color.set(WALLS[i]).multiplyScalar(i===1?.72:1);baseM.color.set(WALLS[i]).multiplyScalar(.5);}
-function setLight(night){S.night=night;hemi.intensity=night?.18:.9;sun.intensity=night?.15:1.6;spot.intensity=night?34:16;picSpot.intensity=night?12:5;lampL.intensity=night?2.4:.6;shade.material.emissiveIntensity=night?.5:.15;winM.color.set(night?0x2a3445:0xfff1d8);renderer.toneMappingExposure=night?1.0:1.08;const bg=night?0x0b0a09:0x1c1a17;scene.background.setHex(bg);scene.fog.color.setHex(bg);}
+function setLight(night){S.night=night;hemi.intensity=night?.18:.9;sun.intensity=night?.15:1.6;spot.intensity=night?34:16;picSpot.intensity=night?12:5;lampL.intensity=night?2.4:.6;shade.material.emissiveIntensity=night?.5:.15;winM.color.set(night?0x2a3445:0xfff1d8);renderer.toneMappingExposure=night?1.0:1.08;const bg=night?0x0b0a09:0x1c1a17;if(scene.background&&scene.background.isColor)scene.background.setHex(bg);if(scene.fog)scene.fog.color.setHex(bg);}
 function place(){
+ if(S.ar&&S.mount!=='wall'){exitAR();}
  if(S.mount==='wall'){product.rotation.set(0,0,Math.PI/2);product.position.set(fx,fy,-WZ);room.visible=true;car.visible=false;
   controls.minAzimuthAngle=-1.35;controls.maxAzimuthAngle=1.35;controls.maxPolarAngle=Math.PI*.56;
   const top=fy+(1.14-GUNS[S.gun].t)+.08;picBar.position.set(fx,Math.min(top,2.9),0);picSpot.position.set(fx,picBar.position.y-.03,.13);picSpot.target.position.set(fx,fy,0);picSpot.visible=true;
@@ -319,7 +357,7 @@ document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>openPk(b.dataset
 document.getElementById('pkClose').onclick=()=>openPk(pk);
 const GKEYS={ar:'g_ar',pump:'g_pump',bolt:'g_bolt',lever:'g_lever'};
 function renderUI(){
- const pg=document.getElementById('pGun');pg.innerHTML='';Object.keys(GKEYS).forEach(id=>{const b=document.createElement('button');b.className='tile'+(S.gun===id?' on':'');b.innerHTML=Shell.GUNIC[id]+`<span>${Shell.t(GKEYS[id])}</span>`;b.onclick=()=>{S.gun=id;build(id);place();renderUI();};pg.appendChild(b);});
+ const pg=document.getElementById('pGun');pg.innerHTML='';Object.keys(GKEYS).forEach(id=>{const b=document.createElement('button');b.className='tile'+(S.gun===id?' on':'');b.innerHTML=Shell.GUNIC[id]+`<span>${Shell.t(GKEYS[id])}</span>`;b.onclick=()=>{S.gun=id;useMyPhoto=false;build(id);place();placePhotoGun();renderUI();renderPhotoUI();};pg.appendChild(b);});
  const pp=document.getElementById('pPlace');pp.innerHTML='';[['wall','place','p_wall'],['car','car','p_car']].forEach(([id,ic,k])=>{const b=document.createElement('button');b.className='tile'+(S.mount===id?' on':'');b.innerHTML=`<span class="ic">${Shell.UIIC[ic]}</span><span>${Shell.t(k)}</span>`;b.onclick=()=>{if(S.place)togglePlace(false);S.mount=id;place();view(0);renderUI();};pp.appendChild(b);});
  document.getElementById('wallOpts').style.display=S.mount==='wall'?'':'none';
  const dots=(el,arr,key,lab,fn)=>{el.innerHTML='';arr.forEach((c,i)=>{const b=document.createElement('button');if(S[key]===i)b.classList.add('on');b.innerHTML=`<i style="background:${c}"></i><span>${Shell.t(lab+i)}</span>`;b.onclick=()=>{S[key]=i;fn(i);renderUI();};el.appendChild(b);});};
@@ -338,6 +376,149 @@ canvas.addEventListener('pointerdown',e=>{if(!S.place||S.mount!=='wall')return;r
 canvas.addEventListener('pointermove',e=>{if(dragging)moveRack(e);});
 canvas.addEventListener('pointerup',()=>{dragging=false;});
 function moveRack(e){rayFrom(e);const h=ray.intersectObject(wall)[0];if(!h)return;fx=THREE.MathUtils.clamp(h.point.x,-3,3);fy=THREE.MathUtils.clamp(h.point.y,.75-BUTT+.05,2.85-COL.x-.2);place();}
+/* ================= PHOTOS: weapon + wall ================= */
+const API='https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api';
+const busyEl=document.getElementById('busy');
+function busy(on,msg){busyEl.classList.toggle('on',!!on);if(msg)busyEl.querySelector('span').textContent=msg;}
+const loadImg=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f);const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=u;});
+function scaleTo(im,max){const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c;}
+async function vision(kind,cv){try{const b64=scaleTo(cv,768).toDataURL('image/jpeg',.8).split(',')[1];const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'vision',kind,image:b64})});const j=await r.json();return j.result&&j.result.ok?j.result:null;}catch(e){return null;}}
+const hex=(h,d)=>/^#?[0-9a-f]{6}$/i.test(h||'')?(h[0]==='#'?h:'#'+h):d;
+
+/* --- weapon: cut the gun out of its background, straighten it --- */
+function cutout(src){
+ const c=scaleTo(src,1000),w=c.width,h=c.height,x=c.getContext('2d'),id=x.getImageData(0,0,w,h),d=id.data;
+ // background colour = median of the border
+ const bs=[];for(let i=0;i<w;i+=3){bs.push(i*4,((h-1)*w+i)*4);}for(let j=0;j<h;j+=3){bs.push(j*w*4,(j*w+w-1)*4);}
+ const med=k=>{const a=bs.map(p=>d[p+k]).sort((m,n)=>m-n);return a[a.length>>1];};const br=med(0),bg=med(1),bb=med(2);
+ let sd=0;bs.forEach(p=>{sd+=Math.abs(d[p]-br)+Math.abs(d[p+1]-bg)+Math.abs(d[p+2]-bb);});sd/=bs.length;
+ const tol=Math.max(46,Math.min(110,sd*2.6));
+ const bgm=new Uint8Array(w*h),st=[];
+ const near=p=>{const q=p*4;return Math.abs(d[q]-br)+Math.abs(d[q+1]-bg)+Math.abs(d[q+2]-bb)<tol;};
+ for(let i=0;i<w;i++){st.push(i,(h-1)*w+i);}for(let j=0;j<h;j++){st.push(j*w,j*w+w-1);}
+ while(st.length){const p=st.pop();if(bgm[p]||!near(p))continue;bgm[p]=1;const px=p%w,py=(p/w)|0;if(px>0)st.push(p-1);if(px<w-1)st.push(p+1);if(py>0)st.push(p-w);if(py<h-1)st.push(p+w);}
+ // keep the largest object only, feather the edge
+ let n=0,sx=0,sy=0;for(let p=0;p<w*h;p++)if(!bgm[p]){n++;sx+=p%w;sy+=(p/w)|0;}
+ const ratio=n/(w*h);if(ratio<.02||ratio>.75)return null;
+ const mx=sx/n,my=sy/n;let cxx=0,cyy=0,cxy=0;for(let p=0;p<w*h;p++)if(!bgm[p]){const X=p%w-mx,Y=((p/w)|0)-my;cxx+=X*X;cyy+=Y*Y;cxy+=X*Y;}
+ const ang=.5*Math.atan2(2*cxy,cxx-cyy);
+ for(let p=0;p<w*h;p++){d[p*4+3]=bgm[p]?0:255;}
+ for(let y=1;y<h-1;y++)for(let X=1;X<w-1;X++){const p=y*w+X;if(!bgm[p]&&(bgm[p-1]||bgm[p+1]||bgm[p-w]||bgm[p+w]))d[p*4+3]=140;}
+ x.putImageData(id,0,0);
+ // rotate so the long axis is horizontal, then trim
+ const D=Math.ceil(Math.hypot(w,h)),r=document.createElement('canvas');r.width=D;r.height=D;const rx=r.getContext('2d');
+ rx.translate(D/2,D/2);rx.rotate(-ang);rx.drawImage(c,-mx,-my);
+ const rd=rx.getImageData(0,0,D,D).data;let x0=D,y0=D,x1=0,y1=0;
+ for(let y=0;y<D;y++)for(let X=0;X<D;X++)if(rd[(y*D+X)*4+3]>60){if(X<x0)x0=X;if(X>x1)x1=X;if(y<y0)y0=y;if(y>y1)y1=y;}
+ if(x1<=x0||y1<=y0)return null;
+ const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').drawImage(r,-x0,-y0);
+ // which end is the stock (thicker)? return muzzle side guess
+ const od=o.getContext('2d').getImageData(0,0,o.width,o.height).data,ow=o.width,oh=o.height;
+ const thick=(a,b)=>{let t=0;for(let X=a;X<b;X++)for(let y=0;y<oh;y++)if(od[(y*ow+X)*4+3]>60)t++;return t;};
+ const band=Math.max(1,(ow*.18)|0),left=thick(0,band),right=thick(ow-band,ow);
+ return {canvas:o,muzzle:left>right?'right':'left',aspect:oh/ow};
+}
+let photoGun=null,photoTex=null,gunInfo=null,flipX=false,flipY=false,useMyPhoto=false;
+function placePhotoGun(){
+ if(photoGun){gunHolder.remove(photoGun);photoGun=null;}
+ if(!photoTex||!useMyPhoto){if(gun)gun.visible=true;return;}
+ const G=GUNS[S.gun],L=1.12,H=L*photoTex.image.height/photoTex.image.width;
+ const mat=new THREE.MeshStandardMaterial({map:photoTex,transparent:true,alphaTest:.35,roughness:.55,metalness:.15,side:THREE.DoubleSide});
+ photoGun=new THREE.Group();const front=new THREE.Mesh(new THREE.PlaneGeometry(L,H),mat);front.castShadow=true;photoGun.add(front);
+ const back=new THREE.Mesh(new THREE.PlaneGeometry(L,H),new THREE.MeshStandardMaterial({map:photoTex,transparent:true,alphaTest:.35,color:0x111111,side:THREE.DoubleSide}));back.position.z=-.012;photoGun.add(back);
+ photoGun.scale.set(flipX?-1:1,flipY?-1:1,1);photoGun.position.set(L/2-G.t-.02,.075+GY,.006);
+ gunHolder.add(photoGun);if(gun)gun.visible=false;}
+function tintGun(info){
+ const st=new THREE.Color(hex(info.stock,'#1a1a1a')),mt=new THREE.Color(hex(info.metal,'#26272a'));
+ if(info.wood){M.walnut.color.copy(st);}else{M.poly.color.copy(st);}
+ M.steel.color.copy(mt);M.blued.color.copy(mt).multiplyScalar(.85);}
+async function onGunPhoto(f){
+ if(!f)return;busy(true,Shell.t('u_read'));
+ try{const im=await loadImg(f);const full=scaleTo(im,1400);setThumb('upGun',full);
+  const [info,cut]=await Promise.all([vision('weapon',full),Promise.resolve().then(()=>{busy(true,Shell.t('u_edges'));return cutout(full);})]);
+  busy(true,Shell.t('u_build'));
+  if(info&&!info.ok){busy(false);toast(Shell.t('u_nogun'),true,3200);return;}
+  gunInfo=info;
+  if(info&&GKEYS[info.type]){S.gun=info.type;build(info.type);place();}
+  if(info)tintGun(info);
+  if(cut){photoTex=new THREE.CanvasTexture(cut.canvas);photoTex.colorSpace=THREE.SRGBColorSpace;photoTex.anisotropy=8;
+   const muzzle=(info&&info.facing)||cut.muzzle;flipX=muzzle==='left';flipY=false;useMyPhoto=true;}
+  else{photoTex=null;useMyPhoto=false;toast(Shell.t('u_3d'),false,3200);}
+  placePhotoGun();renderUI();renderPhotoUI();
+  busy(false);toast(info&&info.name?info.name:Shell.t('u_done'),false,2600);view(1);
+ }catch(e){busy(false);toast(Shell.t('u_fail'),true);}
+}
+/* --- wall: read colour, material and light; build it --- */
+const WTEX={};
+function wallTex(kind){if(WTEX[kind])return WTEX[kind];let t;
+ const N=(x,w,h,a)=>{const d=x.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){const n=rnd(-a,a);d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}x.putImageData(d,0,0);};
+ if(kind==='wood')t=ctex(512,512,(x,w,h)=>{for(let i=0;i<8;i++){const v=200+rnd(-25,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(i*w/8,0,w/8,h);x.fillStyle='rgba(0,0,0,.35)';x.fillRect(i*w/8,0,2,h);for(let k=0;k<26;k++){x.strokeStyle=`rgba(0,0,0,${rnd(.04,.12)})`;x.beginPath();let gx=i*w/8+rnd(0,w/8);x.moveTo(gx,0);for(let y=0;y<h;y+=24){gx+=rnd(-1.5,1.5);x.lineTo(gx,y);}x.stroke();}}},[4,1.6]);
+ else if(kind==='tile'||kind==='marble'){t=ctex(512,512,(x,w,h)=>{x.fillStyle='#e6e6e6';x.fillRect(0,0,w,h);if(kind==='marble'){for(let k=0;k<14;k++){x.strokeStyle=`rgba(90,90,90,${rnd(.08,.25)})`;x.lineWidth=rnd(.6,2.2);x.beginPath();let px=rnd(0,w),py=0;x.moveTo(px,py);while(py<h){px+=rnd(-30,30);py+=rnd(20,50);x.lineTo(px,py);}x.stroke();}}N(x,w,h,6);x.fillStyle='rgba(0,0,0,.25)';for(let i=0;i<=4;i++){x.fillRect(i*w/4-1,0,2,h);x.fillRect(0,i*h/4-1,w,2);}},[4,1.7]);}
+ else if(kind==='brick')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);const bh=h/16,bw=w/4;for(let r=0;r<16;r++)for(let c=-1;c<5;c++){const v=210+rnd(-30,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(c*bw+(r%2)*bw/2+2,r*bh+2,bw-4,bh-4);}N(x,w,h,10);},[3,1.4]);
+ else if(kind==='concrete'||kind==='stone')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#d0d0d0';x.fillRect(0,0,w,h);for(let i=0;i<300;i++){const r=rnd(10,60),px=rnd(0,w),py=rnd(0,h),g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,`rgba(${Math.random()>.5?255:120},${Math.random()>.5?255:120},${Math.random()>.5?255:120},.07)`);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2);}N(x,w,h,16);if(kind==='concrete'){x.fillStyle='rgba(0,0,0,.18)';for(let i=1;i<3;i++)x.fillRect(0,i*h/3,w,1);for(let i=1;i<2;i++)x.fillRect(i*w/2,0,1,h);[[.2,.2],[.8,.2],[.2,.53],[.8,.53],[.2,.86],[.8,.86]].forEach(([a,b])=>{x.beginPath();x.arc(a*w,b*h,4,0,7);x.fill();});}},[2,1]);
+ else if(kind==='wallpaper')t=ctex(256,256,(x,w,h)=>{x.fillStyle='#e8e8e8';x.fillRect(0,0,w,h);x.strokeStyle='rgba(0,0,0,.09)';x.lineWidth=2;for(let i=0;i<8;i++){x.beginPath();x.moveTo(i*w/8+w/16,0);x.lineTo(i*w/8+w/16,h);x.stroke();}N(x,w,h,5);},[10,4]);
+ else t=plaster;
+ return WTEX[kind]=t;}
+let wallInfo=null,wallPhoto=null,wallCanvas=null;
+function applyWall(info){
+ const col=new THREE.Color(hex(info.color,'#8a7f74'));wallMat.map=wallTex(info.material);wallMat.needsUpdate=true;
+ wallMat.color.copy(col).multiplyScalar(info.material==='paint'||info.material==='plaster'?1:1.08);baseM.color.copy(col).multiplyScalar(.55);
+ const warm=info.light==='warm'?0xffd9a8:info.light==='cool'?0xdfe8ff:0xfff0e0;spot.color.setHex(warm);hemi.color.setHex(warm);
+ const b=Math.max(0,Math.min(1,+info.brightness||.6));setLight(b<.45);}
+async function onWallPhoto(f){
+ if(!f)return;busy(true,Shell.t('u_read'));
+ try{const im=await loadImg(f);wallCanvas=scaleTo(im,1800);setThumb('upWall',wallCanvas);
+  const info=await vision('wall',wallCanvas);busy(true,Shell.t('u_build'));
+  wallInfo=info&&info.ok?info:{ok:true,color:avgColor(wallCanvas),material:'paint',light:'neutral',brightness:.6,light_from:'top',width_m:2.6};
+  if(info&&!info.ok)toast(Shell.t('u_nowall'),false,2800);
+  wallPhoto=new THREE.CanvasTexture(wallCanvas);wallPhoto.colorSpace=THREE.SRGBColorSpace;
+  S.mount='wall';place();applyWall(wallInfo);busy(false);enterAR();renderUI();renderPhotoUI();
+ }catch(e){busy(false);toast(Shell.t('u_fail'),true);}
+}
+function avgColor(c){const s=scaleTo(c,32),d=s.getContext('2d').getImageData(0,0,s.width,s.height).data;let r=0,g=0,b=0,n=d.length/4;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}return '#'+[r,g,b].map(v=>Math.round(v/n).toString(16).padStart(2,'0')).join('');}
+function setThumb(id,cv){const el=document.querySelector('#'+id+' img');el.src=scaleTo(cv,240).toDataURL('image/jpeg',.8);el.hidden=false;document.getElementById(id).classList.add('has');}
+/* --- On my wall: your photo is the background, the rack sits on it --- */
+let ar={on:false,x:0,y:1.35,s:1,d:3},catcher=null;
+function arFit(){if(!wallPhoto)return;const ia=wallPhoto.image.width/wallPhoto.image.height,va=innerWidth/innerHeight;wallPhoto.matrixAutoUpdate=true;
+ if(ia>va){wallPhoto.repeat.set(va/ia,1);wallPhoto.offset.set((1-va/ia)/2,0);}else{wallPhoto.repeat.set(1,ia/va);wallPhoto.offset.set(0,(1-ia/va)/2);}}
+function enterAR(){if(!wallPhoto)return;S.ar=true;ar.on=true;togglePlace(false);
+ const W=Math.max(1,Math.min(6,+wallInfo.width_m||2.6)),fov=THREE.MathUtils.degToRad(camera.fov);ar.d=W/(2*Math.tan(fov/2)*camera.aspect);
+ ar.x=0;ar.s=1;product.scale.setScalar(1);product.position.set(0,0,-WZ);product.updateMatrixWorld(true);{const bb=new THREE.Box3().setFromObject(product);const hgt=bb.max.y-bb.min.y;ar.y=1.35-(bb.min.y+bb.max.y)/2;ar.d=Math.max(ar.d,hgt*1.7/(2*Math.tan(fov/2)));}
+ scene.background=wallPhoto;arFit();scene.fog=null;room.visible=false;car.visible=false;
+ if(!catcher){catcher=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.ShadowMaterial({opacity:.38}));catcher.receiveShadow=true;scene.add(catcher);}catcher.visible=true;catcher.position.set(0,1.35,0);
+ const lf=wallInfo.light_from;spot.position.set(lf==='left'?-1.4:lf==='right'?1.4:.4,1.35+1.8,1.6);spot.angle=.6;picSpot.visible=false;
+ controls.enabled=false;tw=null;camera.position.set(0,1.2,ar.d);controls.target.set(0,1.2,0);camera.lookAt(0,1.2,0);
+ document.body.classList.add('ar');renderPhotoUI();openPk(null);toast(Shell.t('u_drag'),false,3200);}
+function exitAR(){S.ar=false;ar.on=false;document.body.classList.remove('ar');if(catcher)catcher.visible=false;product.scale.setScalar(1);
+ const bg=S.night?0x0b0a09:0x1c1a17;scene.background=new THREE.Color(bg);scene.fog=new THREE.Fog(bg,8,16);
+ setLight(S.night);controls.enabled=true;place();view(0);renderPhotoUI();}
+const pts=new Map();let pinch0=0,s0=1;
+function arPoint(e){const r=canvas.getBoundingClientRect();ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(ndc,camera);const t=-ray.ray.origin.z/ray.ray.direction.z;return ray.ray.origin.clone().add(ray.ray.direction.clone().multiplyScalar(t));}
+let grab=null;
+canvas.addEventListener('pointerdown',e=>{if(!ar.on)return;canvas.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===1){const p=arPoint(e);grab={dx:ar.x-p.x,dy:ar.y-p.y};}if(pts.size===2){const [a,b]=[...pts.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y);s0=ar.s;grab=null;}});
+canvas.addEventListener('pointermove',e=>{if(!ar.on||!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===2){const [a,b]=[...pts.values()];ar.s=THREE.MathUtils.clamp(s0*Math.hypot(a.x-b.x,a.y-b.y)/pinch0,.3,3);}
+ else if(grab){const p=arPoint(e);ar.x=p.x+grab.dx;ar.y=p.y+grab.dy;}});
+const endPt=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch0=0;if(!pts.size)grab=null;};
+canvas.addEventListener('pointerup',endPt);canvas.addEventListener('pointercancel',endPt);
+canvas.addEventListener('wheel',e=>{if(!ar.on)return;e.preventDefault();ar.s=THREE.MathUtils.clamp(ar.s*(e.deltaY>0?.94:1.06),.3,3);},{passive:false});
+function saveShot(){renderer.render(scene,camera);const a=document.createElement('a');a.href=canvas.toDataURL('image/jpeg',.92);a.download='LOCKG-on-my-wall.jpg';document.body.appendChild(a);a.click();a.remove();toast(Shell.t('u_saved'));}
+/* --- photo panel UI --- */
+function renderPhotoUI(){
+ document.querySelector('#upGun b').textContent=Shell.t('u_gun');document.querySelector('#upGun small').textContent=Shell.t('u_gun_s');
+ document.querySelector('#upWall b').textContent=Shell.t('u_wall');document.querySelector('#upWall small').textContent=Shell.t('u_wall_s');
+ const m=document.getElementById('pModes');m.innerHTML='';
+ const add=(on,ic,k,fn)=>{const b=document.createElement('button');if(on)b.classList.add('on');b.innerHTML=(ic?Shell.UIIC[ic]:'')+`<span>${Shell.t(k)}</span>`;b.onclick=fn;m.appendChild(b);};
+ if(photoTex){add(useMyPhoto,'camera','u_mine',()=>{useMyPhoto=true;placePhotoGun();renderPhotoUI();});add(!useMyPhoto,'gun','u_model',()=>{useMyPhoto=false;placePhotoGun();renderPhotoUI();});
+  if(useMyPhoto)add(false,'spin','u_flip',()=>{flipY=!flipY;placePhotoGun();});}
+ if(wallPhoto){add(ar.on,'place','u_onwall',()=>{if(!ar.on)enterAR();});add(!ar.on,'eye','u_room',()=>{if(ar.on)exitAR();});}
+ if(ar.on)add(false,'bag','u_save',saveShot);}
+document.querySelector('#upGun .ic').innerHTML=Shell.UIIC.gun;document.querySelector('#upWall .ic').innerHTML=Shell.UIIC.place;
+document.querySelector('#upGun input').onchange=e=>{onGunPhoto(e.target.files[0]);e.target.value='';};
+document.querySelector('#upWall input').onchange=e=>{onWallPhoto(e.target.files[0]);e.target.value='';};
+Shell.onLang(renderPhotoUI);renderPhotoUI();
+
 /* coach */
 const coach=document.getElementById('coach');let coached=false;function coachOff(){coached=true;coach.classList.add('hide');}
 /* intro */
@@ -349,8 +530,11 @@ window.LOCKG_SUMMARY=()=>`LOCKG ONE · ${Shell.t('f'+S.fin)} · ${Shell.t(GKEYS[
 Shell.onLang(()=>renderUI());
 /* layout */
 let offK=0,offT=0;
-function layout(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+function layout(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();if(composer)composer.setSize(innerWidth,innerHeight);if(ar.on)arFit();}
 addEventListener('resize',()=>{layout();if(!intro)view(S.view);});
+/* bloom (desktop) */
+let composer=null;
+if(innerWidth>820&&devicePixelRatio<=2){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.55,.86));composer.addPass(new OutputPass());}
 /* init */
 build('ar');setFinish(0);setWall(0);setLight(true);place();renderUI();layout();
 /* loop */
@@ -364,8 +548,10 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
  gateA+=(gateT-gateA)*Math.min(1,dt*11);gatePivot.rotation.x=-gateA*1.9;
  const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.9+.5*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?3:(Math.sin(rt*22)>0?3.2:.3);
- const st=(now-shakeT)/1000;const sh=st<.45?Math.sin(st*70)*.004*(1-st/.45):0;product.position.x=(S.mount==='wall'?fx:-.18)+sh;
- controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+ const st=(now-shakeT)/1000;const sh=st<.45?Math.sin(st*70)*.004*(1-st/.45):0;
+ if(ar.on){product.position.set(ar.x+sh,ar.y,-WZ*ar.s);product.scale.setScalar(ar.s);spot.target.position.set(ar.x,ar.y,0);camera.clearViewOffset();camera.updateProjectionMatrix();renderer.render(scene,camera);}
+ else{product.position.x=(S.mount==='wall'?fx:-.18)+sh;controls.update();if(composer)composer.render();else renderer.render(scene,camera);}
+ requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 window.__room={unlock,view,S,place};
 </script>
