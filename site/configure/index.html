@@ -31,7 +31,7 @@ body:not(.live) #dock,body:not(.live) #picker,body:not(.live) .coach{opacity:0;p
 html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
 @media (orientation:landscape) and (max-height:520px){#intro{padding:70px 24px 20px;justify-content:center}#intro h2{font-size:44px;margin:8px 0}#intro p{display:none}html body #chatfab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:auto;left:calc(16px + env(safe-area-inset-left,0px))}}
 </style>
-<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/shell.css?v=4">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -78,7 +78,7 @@ b_lock:['Lock','اقفل']
 </div>
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
-<script src="/shell.js"></script>
+<script src="/shell.js?v=4"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
