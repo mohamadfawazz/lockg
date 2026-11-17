@@ -95,7 +95,7 @@ html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
  html body #appbar{height:44px;top:calc(6px + env(safe-area-inset-top,0px))}
 }
 </style>
-<link rel="stylesheet" href="/shell.css?v=5">
+<link rel="stylesheet" href="/shell.css?v=6">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -109,7 +109,7 @@ html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
   <div class="kick" data-i18n="p_kick">LOCKG ONE · Wall rack</div>
   <h1 data-i18n="p_h1">On the wall.<br><em>Locked to it.</em></h1>
   <p data-i18n="p_sub">Your print frees it in 0.2 s.</p>
-  <div class="cta"><a class="gpill light" href="/configure/" data-i18n="p_room">Place it in a room</a><button class="gpill" id="bOrder" data-i18n="p_order">Order</button></div>
+  <div class="cta"><a class="gpill light" href="/configure/" data-i18n="p_room">Place it in a room</a><a class="gpill light" href="/configure/?photos=1" data-i18n="p_photos">Try with my photos</a><button class="gpill" id="bOrder" data-i18n="p_order">Order</button></div>
 </div>
 
 <div id="spec" class="glass">
@@ -137,6 +137,7 @@ html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
  <button class="dk-main" id="bOpen" aria-label="test"><i data-ic="print"></i><span></span></button>
  <button class="dk" id="bExplode"><i data-ic="parts"></i><span data-i18n="d_parts">Parts</span></button>
  <button class="dk" id="bChild"><i data-ic="child"></i><span data-i18n="d_child">Child</span></button>
+ <a class="dk" href="/configure/?photos=1" style="text-decoration:none;color:inherit"><i data-ic="camera"></i><span data-i18n="d_photo">Photos</span></a>
  <button class="dk" data-go="order"><i data-ic="bag"></i><span data-i18n="d_order">Order</span></button>
 </div>
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
@@ -162,7 +163,7 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=5"></script>
+<script src="/shell.js?v=6"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
