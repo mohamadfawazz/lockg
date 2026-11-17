@@ -45,7 +45,7 @@ html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
 body.ar .vignette{opacity:.35}
 @media (max-width:520px){#dock #bView{display:none}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=8">
+<link rel="stylesheet" href="/shell.css?v=9">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -106,7 +106,7 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=8"></script>
+<script src="/shell.js?v=9"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -590,6 +590,7 @@ function enter(){if(!intro)return;intro=false;document.getElementById('intro').c
 document.getElementById('enter').onclick=enter;
 if(/photos/.test(location.search)){setTimeout(()=>{enter();setTimeout(()=>openPk('photo'),900);},300);}
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>Shell.go(b.dataset.go)));
+window.LOCKG_SHOPQ=()=>`?fin=${['black','bronze','nickel','sand'][S.fin]||'black'}&gun=${S.gun}&p=${S.mount==='car'?'car':'wall'}`;
 window.LOCKG_SUMMARY=()=>`LOCKG ONE · ${Shell.t('f'+S.fin)} · ${Shell.t(GKEYS[S.gun])} · ${Shell.t(S.mount==='wall'?'p_wall':'p_car')}`;
 Shell.onLang(()=>renderUI());
 /* layout */

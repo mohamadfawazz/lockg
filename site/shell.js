@@ -3,7 +3,7 @@
 const CFG={api:'https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api',phone:'+961 3 680 853',phoneLabel:''};
 const I={
  back:['Back','رجوع'],menu:['Menu','القائمة'],close:['Close','إغلاق'],lang:['العربية','English'],
- m_product:['LOCKG ONE','LOCKG ONE'],m_room:['Place it in a room','ضعه في غرفة'],m_how:['How it works','كيف يعمل'],m_quiz:['Find yours','اختر قطعتك'],m_specs:['Specs','المواصفات'],m_story:['Story','القصة'],m_order:['Order','اطلب'],m_chat:['Ask us','اسألنا'],
+ m_shop:['Shop','المتجر'],c_call:['Call us','اتصل بنا'],c_chat:['Chat with LOCKG','تحدث مع LOCKG'],m_home:['Home','الرئيسية'],m_about:['About us','من نحن'],m_contact:['Contact us','تواصل معنا'],m_test:['Test your room','جرّبه في غرفتك'],m_product:['LOCKG ONE','LOCKG ONE'],m_room:['Place it in a room','ضعه في غرفة'],m_how:['How it works','كيف يعمل'],m_quiz:['Find yours','اختر قطعتك'],m_specs:['Specs','المواصفات'],m_story:['Story','القصة'],m_order:['Order','اطلب'],m_chat:['Ask us','اسألنا'],
  how_t:['Touch. Open. Lift.','المس. افتح. ارفع.'],
  how1:['Touch','المس'],how1p:['Your print on the sensor.','بصمتك على الحساس.'],
  how2:['Open','افتح'],how2p:['Unlocks in 0.2 s.','يفتح خلال 0.2 ثانية.'],
@@ -125,14 +125,14 @@ function syncBar(){bBack.hidden=!open&&isHome;}
 
 /* menu */
 function openMenu(){show('menu',{title:'menu',html:()=>{const it=(ic,k,attr)=>`<${attr.startsWith('href')?'a':'button'} ${attr}><i>${ICON[ic]}</i><span>${t(k)}</span><em>›</em></${attr.startsWith('href')?'a':'button'}>`;
- return `<div class="mlist">${it('cube','m_product','href="/"')}${it('room','m_room','href="/configure/"')}${it('quiz','m_quiz',isHome?'href="/configure/#quiz"':'data-go="quiz"')}${it('how','m_how','data-go="how"')}${it('specs','m_specs','data-go="specs"')}${it('story','m_story','data-go="story"')}${it('bag','m_order','data-go="order"')}${it('chat','m_chat','data-go="chat"')}${it('globe','lang','data-go="lang"')}</div>`;},
+ return `<div class="mlist">${it('cube','m_home','href="/"')}${it('bag','m_shop','href="/shop/"')}${it('story','m_about','data-go="story"')}${it('chat','m_contact','data-go="contact"')}${it('room','m_test','href="/configure/"')}${it('globe','lang','data-go="lang"')}</div>`;},
  after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{const g=x.dataset.go;if(g==='lang'){setLang(lang==='ar'?'en':'ar');render(open);return;}Shell.go(g);})});}
 
 /* built-in pages */
 const PAGES={
  how:{title:'m_how',html:()=>`<h3>${t('how_t')}</h3><div class="steps">${[1,2,3].map(n=>`<div><span class="n">0${n}</span><b>${t('how'+n)}</b><p>${t('how'+n+'p')}</p></div>`).join('')}</div><div class="kick" style="margin:6px 0 10px">${t('safe')}</div><div class="safe">${[1,2,3,4,5,6].map(n=>`<div><b>${t('s'+n)}</b><span>${t('s'+n+'p')}</span></div>`).join('')}</div>`},
  specs:{title:'m_specs',html:()=>`<h3>${t('specs_t')}</h3><div class="kvs">${['unlock','code','prints','build','key','bat','mount','fits'].map(k=>`<div><span>${t('sp_'+k)}</span><b>${t('sp_'+k+'_v')}</b></div>`).join('')}</div><p style="margin-top:14px;font-size:11.5px;opacity:.7">${t('sp_note')}</p>`},
- story:{title:'m_story',html:()=>`<h3>${t('story_t')}</h3><p>${t('story1')}</p><p>${t('story2')}</p><div class="mark">${LOGO}<p>${t('mark')}</p></div>`},
+ story:{title:'m_about',html:()=>`<h3>${t('story_t')}</h3><p>${t('story1')}</p><p>${t('story2')}</p><div class="mark">${LOGO}<p>${t('mark')}</p></div>`},
  order:{title:'m_order',html:()=>{const s=window.LOCKG_SUMMARY?window.LOCKG_SUMMARY():'';return `<h3>${t('ord_t')}</h3>${s?`<div class="sumcard">${s}</div>`:''}<form class="f-grid" id="ordF" novalidate>
   <input class="f-in" name="name" required autocomplete="name" placeholder="${t('ord_name')}">
   <input class="f-in" name="phone" required inputmode="tel" autocomplete="tel" placeholder="${t('ord_phone')}">
@@ -148,6 +148,7 @@ const PAGES={
     try{const r=await fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'lead',name:d.name,phone:d.phone,email:d.email||'',area:d.area||'',intent,summary:window.LOCKG_SUMMARY?window.LOCKG_SUMMARY():'',page:location.pathname,lang})});
      if(!r.ok)throw 0;body.innerHTML=`<div class="okmark">${ICON.check}</div><h3>${t('ord_ok')}</h3><p>${t('ord_okp')}</p><button class="pill ghost wide" onclick="Shell.close()">${t('close')}</button>`;}
     catch(_){err.textContent=t('ord_err')+(CFG.phone?' · '+CFG.phone:'');err.style.display='block';btn.disabled=false;btn.style.opacity=1;}};}},
+ contact:{title:'m_contact',html:()=>{const ph=CFG.phone,num=ph.replace(/\D/g,'');return `<div class="mlist"><a href="tel:${num.replace(/^/,'+')}"><i>${ICON.chat}</i><span>${t('c_call')}<br><small style="opacity:.6">${ph}</small></span><em>›</em></a><a href="https://wa.me/${num}" target="_blank" rel="noopener"><i>${ICON.chat}</i><span>WhatsApp</span><em>›</em></a><button data-go="chat"><i>${ICON.chat}</i><span>${t('c_chat')}</span><em>›</em></button></div>`;},after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
  chat:{title:'chat_t',html:()=>`<div class="chat"><div class="chat-log"></div><div class="chips-q">${['chat_q1','chat_q2','chat_q3'].map(k=>`<button data-q="${k}">${t(k)}</button>`).join('')}</div><form class="chat-in"><input class="f-in" maxlength="500" placeholder="${t('chat_ph')}"><button class="send" aria-label="send">${ICON.send}</button></form></div>`,after:b=>bindChat(b)}};
 let chatLog=[];
 function bindChat(b){const log=b.querySelector('.chat-log'),f=b.querySelector('form'),inp=f.querySelector('input');
@@ -172,7 +173,7 @@ function setLang(l){lang=l;try{localStorage.setItem('lockg-lang',l);}catch(e){}a
 
 const extra={};
 window.Shell={t:k=>{const p=window.LOCKG_I18N&&window.LOCKG_I18N[k];return p?p[lang==='ar'?1:0]:t(k);},get lang(){return lang},onLang:f=>langFns.push(f),
- UIIC,GUNIC,go(id){const p=extra[id]||PAGES[id];if(p)show(id,p);},register(id,p){extra[id]=p;},show,close:closeAll,get body(){return body},setBack(fn){backHook=fn;},render:()=>open&&render(open),CFG};
+ UIIC,GUNIC,go(id){if(id==='order'&&!/^\/shop/.test(location.pathname)){location.href='/shop/'+(window.LOCKG_SHOPQ?window.LOCKG_SHOPQ():'');return;}const p=extra[id]||PAGES[id];if(p)show(id,p);},register(id,p){extra[id]=p;},show,close:closeAll,get body(){return body},setBack(fn){backHook=fn;},render:()=>open&&render(open),CFG};
 applyI18n();syncBar();
 addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAGES[h])){history.replaceState(null,'',location.pathname+location.search);setTimeout(()=>Shell.go(h),400);}});
 })();

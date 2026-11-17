@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LOCKG · Shop</title>
+<meta name="theme-color" content="#0e0d0b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500;600&family=Noto+Kufi+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ivory:#F2EDE4;--bronze:#9C7A4E;--gold:#C8A574;--ink:#0e0d0b;--serif:'Cormorant Garamond',serif;--sans:'Jost',system-ui,sans-serif;--arab:'Noto Kufi Arabic',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+html[lang=ar] body{font-family:var(--arab)}
+button,input,textarea{font:inherit;color:inherit}button{background:none;border:0;cursor:pointer}
+.kick{font:500 9.5px/1 var(--sans);letter-spacing:.38em;text-transform:uppercase;color:var(--bronze)}
+html[lang=ar] .kick{letter-spacing:0;font-family:var(--arab);font-size:12px}
+#app{display:grid;grid-template-columns:1.05fr 1fr;min-height:100vh;padding-top:calc(78px + env(safe-area-inset-top,0px))}
+/* preview */
+#stage{position:sticky;top:calc(78px + env(safe-area-inset-top,0px));height:calc(100vh - 78px - 80px - env(safe-area-inset-top,0px));display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 42%,#2a241c 0%,#14110e 55%,#0b0a09 100%);overflow:hidden}
+#stage::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(200,165,116,.12),transparent 60%);pointer-events:none}
+#art{position:relative;width:100%;height:86%;display:flex;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+#art img{position:absolute;height:100%;max-width:90%;object-fit:contain;filter:drop-shadow(0 34px 30px rgba(0,0,0,.6)) drop-shadow(0 0 40px rgba(200,165,116,.08));transition:opacity .45s,transform .7s cubic-bezier(.2,.8,.2,1)}
+#art .trunk{position:absolute;left:8%;right:8%;top:28%;bottom:20%;border-radius:34px;background:linear-gradient(180deg,#1f1b17,#120f0d);box-shadow:inset 0 2px 0 rgba(255,255,255,.05),inset 0 -30px 60px rgba(0,0,0,.6);opacity:0;transition:.5s}
+#art.car .trunk{opacity:1}#art.car #im1{transform:rotate(-90deg) scale(.62)}
+#art.duo #im1{transform:translateX(-24%) scale(.92)}#art.duo #im2{opacity:1;transform:translateX(26%) translateY(14%) rotate(-90deg) scale(.42)}
+#art.duo .trunk{opacity:1;left:44%;right:2%;top:40%;bottom:16%}
+#im2{opacity:0}
+.floor{position:absolute;left:20%;right:20%;bottom:8%;height:40px;background:radial-gradient(ellipse,rgba(0,0,0,.6),transparent 70%);filter:blur(6px)}
+#stage .tag{position:absolute;left:28px;bottom:28px}
+#stage .tag b{display:block;font:300 34px/1 var(--serif);margin-top:10px}
+#stage .tag span{font-size:12px;color:#f2ede499}
+.pulse{animation:pop .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+/* flow */
+#flow{padding:24px clamp(18px,4vw,56px) 150px;max-width:640px;width:100%}
+#steps{display:flex;gap:6px;margin:6px 0 30px}
+#steps button{flex:1;background:none;border:0;cursor:pointer;text-align:start;padding:0}
+#steps i{display:block;height:3px;border-radius:3px;background:rgba(242,237,228,.14);overflow:hidden;position:relative}
+#steps i::after{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .5s}
+html[dir=rtl] #steps i::after{transform-origin:right}
+#steps .done i::after,#steps .cur i::after{transform:scaleX(1)}
+#steps span{display:block;font-size:10.5px;margin-top:8px;color:#f2ede466;letter-spacing:.04em}
+#steps .cur span{color:var(--ivory)}
+h1{font:300 clamp(34px,4.4vw,52px)/1.02 var(--serif);margin:12px 0 8px}
+html[lang=ar] h1{font:400 clamp(28px,3.6vw,40px)/1.35 var(--arab)}
+.sub{font-size:14px;color:#f2ede499;margin-bottom:26px}
+.panel{display:none;animation:in .45s cubic-bezier(.2,.8,.2,1)}
+.panel.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* cards */
+.cards{display:grid;gap:12px}
+.card{display:flex;align-items:center;gap:16px;padding:16px;border-radius:22px;background:rgba(255,255,255,.045);border:1.5px solid rgba(255,255,255,.08);cursor:pointer;text-align:start;transition:.25s;width:100%}
+.card:hover{background:rgba(255,255,255,.07)}
+.card.on{border-color:var(--gold);background:rgba(200,165,116,.09)}
+.card .pic{width:74px;height:74px;border-radius:16px;background:#1d1915;display:grid;place-items:center;flex:none}
+.card .pic img{width:62px;height:62px;object-fit:contain}.card .pic{overflow:hidden}
+.card b{display:block;font:400 22px/1.1 var(--serif)}
+html[lang=ar] .card b{font:500 16px/1.4 var(--arab)}
+.card small{display:block;font-size:12px;color:#f2ede488;margin-top:5px;line-height:1.4}
+.card .pr{margin-inline-start:auto;font:400 18px/1 var(--serif);white-space:nowrap;padding-inline-start:10px}
+.card .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(242,237,228,.3);flex:none;display:grid;place-items:center;transition:.2s}
+.card.on .chk{background:var(--gold);border-color:var(--gold)}
+.card.on .chk::after{content:"";width:9px;height:5px;border:2px solid #15130f;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.badge{display:inline-block;font:500 9px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#15130f;background:var(--gold);padding:5px 7px;border-radius:6px;margin-inline-start:8px;vertical-align:middle}
+/* swatches + guns */
+.lbl{margin:26px 0 12px;display:flex;justify-content:space-between;align-items:baseline}
+.lbl span{font-size:13px;color:#f2ede4cc}
+.sw{display:flex;gap:14px;flex-wrap:wrap}
+.sw button{width:64px;border:0;background:none;cursor:pointer;text-align:center}
+.sw i{display:block;width:56px;height:56px;margin:0 auto;border-radius:50%;box-shadow:inset 0 -6px 12px rgba(0,0,0,.35),inset 0 4px 8px rgba(255,255,255,.18);outline:2px solid transparent;outline-offset:4px;transition:.2s}
+.sw .on i{outline-color:var(--gold)}
+.sw em{display:block;font-style:normal;font-size:11px;margin-top:9px;color:#f2ede499}
+.sw .on em{color:var(--ivory)}
+.guns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.guns button{padding:14px 6px 12px;border-radius:18px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:.2s}
+.guns button.on{border-color:var(--gold);background:rgba(200,165,116,.09)}
+.guns svg{width:44px;height:22px;display:block;margin:0 auto 8px}
+.guns span{font-size:11px;color:#f2ede4bb}
+/* extras */
+.qty{display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.045);margin-top:12px}
+.qty b{flex:1;font-weight:400;font-size:14px}
+.qty button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(242,237,228,.25);background:none;cursor:pointer;font-size:18px}
+.qty output{min-width:22px;text-align:center;font:400 22px/1 var(--serif)}
+/* form */
+.fld{display:block;margin-bottom:12px}
+.fld span{display:block;font-size:11.5px;color:#f2ede499;margin:0 4px 7px}
+.fld input,.fld textarea{width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);outline:none;font-size:15px;transition:.2s}
+.fld input:focus,.fld textarea:focus{border-color:var(--gold);background:rgba(255,255,255,.08)}
+.fld.bad input{border-color:#c46a5a}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lic{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:rgba(200,165,116,.08);font-size:12.5px;line-height:1.5;cursor:pointer;margin-top:6px}
+.lic input{width:20px;height:20px;accent-color:var(--gold);flex:none;margin-top:1px}
+.lic.bad{outline:1.5px solid #c46a5a}
+/* review */
+.rev{border-radius:22px;background:rgba(255,255,255,.045);padding:6px 18px;margin-top:20px}
+.rev div{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px}
+.rev div:last-child{border:0}
+.rev span{color:#f2ede499}
+.rev .tot{font:400 24px/1 var(--serif);padding:16px 0}
+.safe{display:flex;gap:10px;align-items:center;font-size:11.5px;color:#f2ede488;margin-top:14px}
+.safe svg{width:16px;height:16px;flex:none}
+/* bottom bar */
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px clamp(14px,3vw,28px) calc(12px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:14px;background:rgba(14,13,11,.72);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-top:1px solid rgba(255,255,255,.08)}
+#bar .t small{display:block;font-size:10.5px;color:#f2ede488}
+#bar .t b{font:400 26px/1 var(--serif);font-weight:400}
+#bar .sp{flex:1}
+#prev{width:52px;height:52px;border-radius:50%;border:1px solid rgba(242,237,228,.22);background:none;cursor:pointer;display:grid;place-items:center}
+#prev svg{width:20px}
+html[dir=rtl] #prev svg{transform:scaleX(-1)}
+#next{height:52px;padding:0 30px;border-radius:999px;border:0;background:linear-gradient(180deg,#d8b886,#a9834f);color:#17130e;font:500 15px/1 var(--sans);cursor:pointer;box-shadow:0 10px 30px rgba(200,165,116,.25);display:flex;align-items:center;gap:10px;transition:.2s}
+html[lang=ar] #next{font-family:var(--arab)}
+#next:active{transform:scale(.97)}
+#next[disabled]{opacity:.5}
+#next svg{width:18px}
+html[dir=rtl] #next svg{transform:scaleX(-1)}
+/* done */
+#done{display:none;text-align:center;padding:40px 0}
+#done.on{display:block;animation:in .6s}
+.tick{width:96px;height:96px;margin:0 auto 26px;border-radius:50%;background:radial-gradient(circle,#d8b886,#9c7a4e);display:grid;place-items:center;box-shadow:0 0 0 14px rgba(200,165,116,.1),0 0 60px rgba(200,165,116,.35)}
+.tick svg{width:44px;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .6s .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ono{display:inline-block;margin:16px 0 22px;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.06);font:500 13px/1 var(--sans);letter-spacing:.12em}
+.next3{display:grid;gap:10px;text-align:start;margin-top:10px}
+.next3 div{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.045);font-size:13.5px}
+.next3 i{width:30px;height:30px;border-radius:50%;background:rgba(200,165,116,.15);color:var(--gold);display:grid;place-items:center;font-style:normal;font:500 13px/1 var(--sans);flex:none}
+@media (max-width:860px){
+ #app{grid-template-columns:1fr;padding-top:calc(70px + env(safe-area-inset-top,0px))}
+ #stage{position:relative;top:0;height:40vh;min-height:260px}
+ #art{height:92%}
+ #stage .tag{left:18px;bottom:16px}#stage .tag b{font-size:24px}
+ #flow{padding-top:18px;margin:0 auto}
+ .guns span{font-size:10px}
+}
+@media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
+</style>
+<link rel="stylesheet" href="/shell.css?v=9">
+</head>
+<body>
+<div id="app">
+ <section id="stage">
+  <div id="art"><div class="trunk"></div><img id="im1" alt=""><img id="im2" alt=""></div><div class="floor"></div>
+  <div class="tag"><div class="kick" data-i18n="s_kick">LOCKG ONE</div><b id="tagName"></b><span id="tagSub"></span></div>
+ </section>
+ <section id="flow">
+  <nav id="steps"></nav>
+  <!-- 1 -->
+  <div class="panel" data-s="0">
+   <div class="kick" data-i18n="s_k1">Step 1</div><h1 data-i18n="s_h1">Pick your LOCKG</h1><p class="sub" data-i18n="s_p1">One rail. Your print opens it in 0.2 s.</p>
+   <div class="cards" id="prods"></div>
+  </div>
+  <!-- 2 -->
+  <div class="panel" data-s="1">
+   <div class="kick" data-i18n="s_k2">Step 2</div><h1 data-i18n="s_h2">Make it yours</h1><p class="sub" data-i18n="s_p2">Choose a finish and the gun it will hold.</p>
+   <div class="lbl"><b class="kick" data-i18n="s_finish">Finish</b><span id="finName"></span></div><div class="sw" id="fins"></div>
+   <div class="lbl"><b class="kick" data-i18n="s_gun">Your gun</b><span id="gunName"></span></div><div class="guns" id="guns"></div>
+  </div>
+  <!-- 3 -->
+  <div class="panel" data-s="2">
+   <div class="kick" data-i18n="s_k3">Step 3</div><h1 data-i18n="s_h3">Add the extras</h1><p class="sub" data-i18n="s_p3">All optional. Tap to add.</p>
+   <div class="cards" id="extras"></div>
+   <div class="qty"><b data-i18n="s_qty">How many?</b><button id="qm" aria-label="-">−</button><output id="qv">1</output><button id="qp" aria-label="+">+</button></div>
+  </div>
+  <!-- 4 -->
+  <div class="panel" data-s="3">
+   <div class="kick" data-i18n="s_k4">Step 4</div><h1 data-i18n="s_h4">Where do we deliver?</h1><p class="sub" data-i18n="s_p4">We call you before we come.</p>
+   <label class="fld" id="fName"><span data-i18n="s_name">Full name</span><input id="iName" autocomplete="name"></label>
+   <label class="fld" id="fPhone"><span data-i18n="s_phone">Phone / WhatsApp</span><input id="iPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
+   <div class="two"><label class="fld" id="fCity"><span data-i18n="s_city">City</span><input id="iCity" autocomplete="address-level2"></label><label class="fld"><span data-i18n="s_email">Email (optional)</span><input id="iEmail" type="email" autocomplete="email"></label></div>
+   <label class="fld" id="fAddr"><span data-i18n="s_addr">Address</span><input id="iAddr" autocomplete="street-address"></label>
+   <label class="lic" id="fLic"><input type="checkbox" id="iLic"><span data-i18n="s_lic">I own my firearm legally and hold a valid licence.</span></label>
+  </div>
+  <!-- 5 -->
+  <div class="panel" data-s="4">
+   <div class="kick" data-i18n="s_k5">Step 5</div><h1 data-i18n="s_h5">Pay your way</h1><p class="sub" data-i18n="s_p5">Choose how you want to pay.</p>
+   <div class="cards" id="pays"></div>
+   <div class="rev" id="rev"></div>
+   <div class="safe"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A574" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-i18n="s_safe">Secure. 30-day return. 2-year warranty.</span></div>
+  </div>
+  <div id="done">
+   <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#17130e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+   <h1 data-i18n="s_thx">It's yours.</h1><p class="sub" data-i18n="s_thx2">Your order is in. Here is what happens next.</p>
+   <div class="ono" id="ono"></div>
+   <div class="next3" id="next3"></div>
+  </div>
+ </section>
+</div>
+<div id="bar">
+ <button id="prev" aria-label="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+ <div class="t"><small data-i18n="s_total">Total</small><b id="total"></b></div><div class="sp"></div>
+ <button id="next"><span id="nextL"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+<script>
+/* ===== edit prices here ===== */
+const CUR={code:'USD',sym:'$'};
+const PRODUCTS=[
+ {id:'wall',price:390,en:['LOCKG ONE · Wall','For your home. Rail, print lock, trigger cover, cradle.'],ar:['LOCKG ONE · جدار','للمنزل. سكة، قفل بالبصمة، غطاء الزناد، حامل.']},
+ {id:'car', price:420,en:['LOCKG ONE · Car','Same lock, made for your trunk. Bolts to the floor.'],ar:['LOCKG ONE · سيارة','نفس القفل، لصندوق السيارة. يثبت بالأرضية.']},
+ {id:'duo', price:740,best:1,en:['Home + Car set','One for the wall, one for the car. Same fingerprints.'],ar:['مجموعة المنزل + السيارة','واحد للجدار وواحد للسيارة. نفس البصمات.']}];
+const EXTRAS=[
+ {id:'install',price:45,en:['Pro installation','We drill, level and set your prints.'],ar:['تركيب احترافي','نثقب ونضبط ونسجل بصماتك.']},
+ {id:'key',price:25,en:['Spare backup key','A second key, for the safe deposit box.'],ar:['مفتاح احتياطي إضافي','مفتاح ثانٍ للحفظ.']},
+ {id:'care',price:39,en:['2 extra years of care','4 years total. Any fault, we replace it.'],ar:['سنتان إضافيتان من الرعاية','4 سنوات. أي عطل نستبدله.']}];
+const FINS=[{id:'black',c:'#1d1d1f',hi:'#3a3a3d',en:'Matte black',ar:'أسود مطفي'},{id:'bronze',c:'#8a6a43',hi:'#c8a574',en:'Bronze',ar:'برونزي'},{id:'nickel',c:'#8d8e90',hi:'#d7d8da',en:'Nickel',ar:'نيكل'},{id:'sand',c:'#b9a586',hi:'#e3d6bf',en:'Sand',ar:'رملي'}];
+const GUNS=[{id:'ar',en:'AR rifle',ar:'بندقية AR'},{id:'pump',en:'Shotgun',ar:'شوزن'},{id:'bolt',en:'Bolt rifle',ar:'بندقية ترباس'},{id:'lever',en:'Lever',ar:'رافعة'}];
+const PAYS=[
+ {id:'card',en:['Card or Apple Pay','We send a secure pay link to your WhatsApp. Pay in 1 tap.'],ar:['بطاقة أو Apple Pay','نرسل رابط دفع آمن إلى واتساب. ادفع بلمسة.']},
+ {id:'cod',en:['Cash on delivery','Pay when it arrives at your door.'],ar:['الدفع عند الاستلام','ادفع عند وصوله إلى بابك.']}];
+window.LOCKG_I18N={
+ s_kick:['LOCKG ONE','LOCKG ONE'],s_k1:['Step 1','الخطوة 1'],s_k2:['Step 2','الخطوة 2'],s_k3:['Step 3','الخطوة 3'],s_k4:['Step 4','الخطوة 4'],s_k5:['Step 5','الخطوة 5'],
+ s_h1:['Pick your LOCKG','اختر LOCKG الخاص بك'],s_p1:['One rail. Your print opens it in 0.2 s.','سكة واحدة. بصمتك تفتحها في 0.2 ثانية.'],
+ s_h2:['Make it yours','اجعله لك'],s_p2:['Choose a finish and the gun it will hold.','اختر اللون والسلاح الذي سيحمله.'],s_finish:['Finish','اللون'],s_gun:['Your gun','سلاحك'],
+ s_h3:['Add the extras','أضف الإضافات'],s_p3:['All optional. Tap to add.','كلها اختيارية. اضغط للإضافة.'],s_qty:['How many?','الكمية؟'],
+ s_h4:['Where do we deliver?','أين نوصل؟'],s_p4:['We call you before we come.','نتصل بك قبل أن نأتي.'],s_name:['Full name','الاسم الكامل'],s_phone:['Phone / WhatsApp','الهاتف / واتساب'],s_city:['City','المدينة'],s_email:['Email (optional)','البريد (اختياري)'],s_addr:['Address','العنوان'],
+ s_lic:['I own my firearm legally and hold a valid licence.','أملك سلاحي بشكل قانوني ولدي رخصة سارية.'],
+ s_h5:['Pay your way','ادفع بطريقتك'],s_p5:['Choose how you want to pay.','اختر طريقة الدفع.'],s_safe:['Secure. 30-day return. 2-year warranty.','آمن. إرجاع خلال 30 يومًا. ضمان سنتين.'],
+ s_total:['Total','المجموع'],s_next:['Next','التالي'],s_place:['Place order','أكد الطلب'],s_sending:['Sending…','جارٍ الإرسال…'],
+ s_t1:['Pick','اختر'],s_t2:['Style','الشكل'],s_t3:['Extras','إضافات'],s_t4:['Delivery','التوصيل'],s_t5:['Pay','الدفع'],
+ s_r_item:['Item','المنتج'],s_r_style:['Style','الشكل'],s_r_extras:['Extras','الإضافات'],s_r_ship:['Delivery','التوصيل'],s_free:['Free','مجاني'],s_none:['None','لا شيء'],
+ s_thx:["It's yours.",'أصبح لك.'],s_thx2:['Your order is in. Here is what happens next.','وصل طلبك. هذا ما سيحدث الآن.'],
+ s_n1:['We WhatsApp you within 1 hour to confirm.','نراسلك على واتساب خلال ساعة للتأكيد.'],s_n1c:['We WhatsApp you a secure pay link within 1 hour.','نرسل لك رابط دفع آمن على واتساب خلال ساعة.'],
+ s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],
+ s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
+</script>
+<script src="/shell.js?v=9"></script>
+<script>
+const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
+const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};
+let step=0,sent=false;const NS=5;
+const money=n=>CUR.sym+n.toLocaleString('en-US');
+function total(){const p=PRODUCTS.find(x=>x.id===O.prod);let t=p.price;O.extras.forEach(id=>{const e=EXTRAS.find(x=>x.id===id);t+=e.price*(id==='install'&&O.prod==='duo'?2:1);});return t*O.qty;}
+/* ---------- the picture ---------- */
+const GUNPATH={
+ ar:'M0 34 L4 22 L46 26 L50 20 L96 20 L96 14 L104 14 L104 20 L150 21 L150 25 L104 26 L100 31 L80 31 L78 44 L70 44 L72 31 L60 31 L56 46 L48 46 L50 31 L10 36 Z',
+ pump:'M0 30 L6 18 L50 22 L58 18 L150 19 L150 24 L104 24 L104 29 L70 29 L66 26 L58 27 L52 38 L44 38 L46 28 L8 34 Z',
+ bolt:'M0 30 L6 16 L40 22 L52 18 L70 18 L72 13 L96 13 L98 18 L150 19 L150 23 L96 23 L90 26 L60 27 L52 36 L44 35 L46 27 L8 34 Z',
+ lever:'M0 30 L6 18 L46 22 L56 19 L150 19 L150 24 L80 24 L76 27 L60 27 L64 34 L52 38 L44 33 L48 27 L8 34 Z'};
+function art(target,prod,fin,gun,big){
+ const F=FINS.find(f=>f.id===fin),id='g'+Math.random().toString(36).slice(2,7);
+ const defs=`<defs><linearGradient id="${id}m" x1="0" x2="1"><stop offset="0" stop-color="${F.c}"/><stop offset=".45" stop-color="${F.hi}"/><stop offset="1" stop-color="${F.c}"/></linearGradient><linearGradient id="${id}d" x1="0" x2="1"><stop offset="0" stop-color="#0d0d0e"/><stop offset=".5" stop-color="#2a2a2c"/><stop offset="1" stop-color="#0d0d0e"/></linearGradient><radialGradient id="${id}r"><stop offset=".55" stop-color="#C8A574" stop-opacity="0"/><stop offset=".7" stop-color="#C8A574"/><stop offset="1" stop-color="#C8A574" stop-opacity="0"/></radialGradient></defs>`;
+ const rack=(x,y,s,rot)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">
+  <rect x="-14" y="0" width="28" height="440" rx="6" fill="url(#${id}d)"/>
+  ${[60,140,220,300,380].map(v=>`<rect x="-4" y="${v}" width="8" height="22" rx="2" fill="#000" opacity=".55"/>`).join('')}
+  <g transform="translate(-58 0) rotate(90 0 0)"><path d="${GUNPATH[gun]}" transform="translate(${big?18:18} -66) scale(2.75)" fill="#2b2622" stroke="#4a4038" stroke-width=".4"/></g>
+  <rect x="-48" y="58" width="78" height="70" rx="12" fill="url(#${id}m)"/>
+  <circle cx="-12" cy="92" r="15" fill="#0b0b0b"/><circle cx="-12" cy="92" r="17" fill="none" stroke="#C8A574" stroke-width="2.5" opacity=".9"/>
+  <rect x="-14" y="112" width="4" height="12" rx="2" fill="#f2ede4"/>
+  <rect x="-44" y="250" width="56" height="44" rx="9" fill="url(#${id}m)" opacity=".95"/>
+  <rect x="-50" y="388" width="70" height="46" rx="9" fill="url(#${id}m)"/>
+ </g>`;
+ let body='';
+ if(prod==='wall')body=rack(250,40,1,0);
+ else if(prod==='car')body=`<rect x="30" y="300" width="340" height="150" rx="26" fill="#1b1815" stroke="#2c2722"/><text x="200" y="478" text-anchor="middle" fill="#f2ede455" font-size="11" letter-spacing="4">TRUNK</text>`+rack(60,410,.72,-90);
+ else body=rack(150,40,.86,0)+`<g opacity=".95"><rect x="210" y="330" width="170" height="120" rx="20" fill="#1b1815" stroke="#2c2722"/></g>`+rack(232,430,.5,-90);
+ target.innerHTML=defs+body;}
+const IMG=(f,g)=>`/shop/img/${f}-${g}.webp`;
+function paint(){const a=$('art');a.className=O.prod==='wall'?'':O.prod;const src=IMG(O.fin,O.gun);[$('im1'),$('im2')].forEach(im=>{if(!im.src.endsWith(src)){im.style.opacity=0;const n=new Image();n.onload=()=>{im.src=src;im.style.opacity='';};n.src=src;}});const p=PRODUCTS.find(x=>x.id===O.prod);$('tagName').textContent=L(p)[0];$('tagSub').textContent=L(FINS.find(f=>f.id===O.fin))+' · '+L(GUNS.find(g=>g.id===O.gun));$('total').textContent=money(total());}
+/* ---------- UI ---------- */
+function card(o,on,price,extra){const b=document.createElement('button');b.className='card'+(on?' on':'');b.innerHTML=`${extra||''}<div><b>${L(o)[0]}${o.best?`<span class="badge">${AR()?'الأوفر':'Best value'}</span>`:''}</b><small>${L(o)[1]}</small></div>${price!==null?`<div class="pr">${price}</div>`:''}<span class="chk"></span>`;return b;}
+function render(){
+ // steps
+ const st=$('steps');st.innerHTML='';['s_t1','s_t2','s_t3','s_t4','s_t5'].forEach((k,i)=>{const b=document.createElement('button');b.className=i<step?'done':i===step?'cur':'';b.innerHTML=`<i></i><span>${T(k)}</span>`;b.onclick=()=>{if(i<step&&!sent)go(i);};st.appendChild(b);});
+ // products
+ const pr=$('prods');pr.innerHTML='';PRODUCTS.forEach(p=>{const pic=document.createElement('div');pic.className='pic';pic.innerHTML=`<img src="${IMG(O.fin,O.gun)}" alt="" style="${p.id==='car'?'transform:rotate(-90deg)':''}">`;
+  const b=card(p,O.prod===p.id,money(p.price));b.prepend(pic);b.onclick=()=>{O.prod=p.id;render();paint();};pr.appendChild(b);});
+ // finishes
+ const fs=$('fins');fs.innerHTML='';FINS.forEach(f=>{const b=document.createElement('button');if(O.fin===f.id)b.className='on';b.innerHTML=`<i style="background:radial-gradient(circle at 35% 30%,${f.hi},${f.c} 70%)"></i><em>${L(f)}</em>`;b.onclick=()=>{O.fin=f.id;render();paint();};fs.appendChild(b);});
+ $('finName').textContent=L(FINS.find(f=>f.id===O.fin));
+ const gs=$('guns');gs.innerHTML='';GUNS.forEach(g=>{const b=document.createElement('button');if(O.gun===g.id)b.className='on';b.innerHTML=`<svg viewBox="0 0 152 48"><path d="${GUNPATH[g.id]}" fill="currentColor"/></svg><span>${L(g)}</span>`;b.onclick=()=>{O.gun=g.id;render();paint();};gs.appendChild(b);});
+ $('gunName').textContent=L(GUNS.find(g=>g.id===O.gun));
+ // extras
+ const ex=$('extras');ex.innerHTML='';EXTRAS.forEach(e=>{const b=card(e,O.extras.has(e.id),'+'+money(e.price));b.onclick=()=>{O.extras.has(e.id)?O.extras.delete(e.id):O.extras.add(e.id);render();paint();};ex.appendChild(b);});
+ $('qv').textContent=O.qty;
+ // pays
+ const ps=$('pays');ps.innerHTML='';PAYS.forEach(p=>{const b=card(p,O.pay===p.id,null);b.onclick=()=>{O.pay=p.id;render();};ps.appendChild(b);});
+ // review
+ const p=PRODUCTS.find(x=>x.id===O.prod),exl=[...O.extras].map(id=>L(EXTRAS.find(e=>e.id===id))[0]).join(', ')||T('s_none');
+ $('rev').innerHTML=`<div><span>${T('s_r_item')}</span><b>${O.qty} × ${L(p)[0]}</b></div><div><span>${T('s_r_style')}</span><b>${L(FINS.find(f=>f.id===O.fin))} · ${L(GUNS.find(g=>g.id===O.gun))}</b></div><div><span>${T('s_r_extras')}</span><b>${exl}</b></div><div><span>${T('s_r_ship')}</span><b>${T('s_free')}</b></div><div class="tot"><span>${T('s_total')}</span><b>${money(total())}</b></div>`;
+ // panels
+ document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('on',!sent&&+x.dataset.s===step));
+ $('prev').style.visibility=step>0&&!sent?'visible':'hidden';
+ $('nextL').textContent=sent?T('s_home'):step===NS-1?T('s_place')+' · '+money(total()):T('s_next');
+ $('total').textContent=money(total());}
+function go(i){step=i;render();scrollTo({top:0,behavior:'smooth'});}
+function valid(){const req=[['fName','iName',v=>v.trim().length>1],['fPhone','iPhone',v=>v.replace(/\D/g,'').length>=7],['fCity','iCity',v=>v.trim().length>1],['fAddr','iAddr',v=>v.trim().length>3]];let ok=true;
+ req.forEach(([f,i,t])=>{const g=t($(i).value);$(f).classList.toggle('bad',!g);if(!g)ok=false;});const l=$('iLic').checked;$('fLic').classList.toggle('bad',!l);return ok&&l;}
+$('qm').onclick=()=>{O.qty=Math.max(1,O.qty-1);render();paint();};$('qp').onclick=()=>{O.qty=Math.min(10,O.qty+1);render();paint();};
+$('prev').onclick=()=>{if(step>0)go(step-1);};
+$('next').onclick=async()=>{
+ if(sent){location.href='/';return;}
+ if(step===3&&!valid()){toastMsg(T('s_fix'));return;}
+ if(step<NS-1){go(step+1);return;}
+ const nb=$('next');nb.disabled=true;$('nextL').textContent=T('s_sending');
+ const p=PRODUCTS.find(x=>x.id===O.prod),ono='LG-'+Date.now().toString(36).slice(-6).toUpperCase();
+ const summary=`SHOP ORDER ${ono} | ${O.qty} x ${p.en[0]} | ${FINS.find(f=>f.id===O.fin).en} | gun: ${GUNS.find(g=>g.id===O.gun).en} | extras: ${[...O.extras].join(', ')||'none'} | pay: ${PAYS.find(x=>x.id===O.pay).en[0]} | total ${CUR.code} ${total()} | address: ${$('iAddr').value}, ${$('iCity').value}`;
+ try{const r=await fetch(Shell.CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'lead',name:$('iName').value.trim(),phone:$('iPhone').value.trim(),email:$('iEmail').value.trim(),area:$('iCity').value.trim(),intent:'buy',summary,page:'/shop/',lang:Shell.lang})});
+  if(!r.ok)throw 0;sent=true;$('ono').textContent=T('s_order')+' '+ono;
+  $('next3').innerHTML=[O.pay==='card'?'s_n1c':'s_n1','s_n2','s_n3'].map((k,i)=>`<div><i>${i+1}</i>${T(k)}</div>`).join('');
+  $('done').classList.add('on');document.querySelector('#steps').style.display='none';render();scrollTo({top:0,behavior:'smooth'});
+ }catch(e){toastMsg(T('s_err')+Shell.CFG.phone);}
+ nb.disabled=false;if(!sent)render();};
+function toastMsg(m){let t=$('stoast');if(!t){t=document.createElement('div');t.id='stoast';t.style.cssText='position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;padding:13px 20px;border-radius:999px;background:rgba(21,19,15,.92);border:1px solid #9c7a4e88;font-size:13px;transition:.3s;max-width:90vw;text-align:center';document.body.appendChild(t);}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,3200);}
+// deep link from the room page: /shop/?fin=bronze&gun=pump&p=car
+{const q=new URLSearchParams(location.search);if(FINS.some(f=>f.id===q.get('fin')))O.fin=q.get('fin');if(GUNS.some(g=>g.id===q.get('gun')))O.gun=q.get('gun');if(PRODUCTS.some(p=>p.id===q.get('p')))O.prod=q.get('p');}
+Shell.onLang(()=>{render();paint();});render();paint();
+setTimeout(()=>FINS.forEach(f=>GUNS.forEach(g=>{new Image().src=IMG(f.id,g.id);})),1500);
+</script>
+</body>
+</html>
