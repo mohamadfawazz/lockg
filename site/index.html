@@ -94,8 +94,12 @@ html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
  html body #chatfab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:auto;left:calc(16px + env(safe-area-inset-left,0px))}
  html body #appbar{height:44px;top:calc(6px + env(safe-area-inset-top,0px))}
 }
+#dock #bChild{display:none!important}
+body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
+body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
+body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=9">
+<link rel="stylesheet" href="/shell.css?v=10">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -163,7 +167,7 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=9"></script>
+<script src="/shell.js?v=10"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
