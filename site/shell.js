@@ -37,7 +37,7 @@ const I={
  chat_t:['Ask LOCKG','اسأل LOCKG'],chat_hi:['Hi. Ask me anything about LOCKG.','أهلاً. اسألني أي شيء عن LOCKG.'],
  chat_ph:['Type a question','اكتب سؤالك'],chat_q1:['How fast does it open?','ما سرعة الفتح؟'],chat_q2:['Which guns fit?','ما الأسلحة المناسبة؟'],chat_q3:['How do I order?','كيف أطلب؟'],
  chat_off:['Chat opens soon. For help, contact our team','المحادثة تفتح قريباً. للمساعدة تواصل مع فريقنا'],
- d_gun:['Gun','السلاح'],d_color:['Color','اللون'],d_view:['View','العرض'],d_parts:['Parts','القطع'],d_child:['Child','طفل'],d_test:['Test','جرّب'],d_place:['Place','المكان'],d_order:['Order','اطلب'],
+ d_gun:['Gun','السلاح'],d_photo:['Photos','الصور'],p_photos:['Try with my photos','جرّب بصوري'],d_color:['Color','اللون'],d_view:['View','العرض'],d_parts:['Parts','القطع'],d_child:['Child','طفل'],d_test:['Test','جرّب'],d_place:['Place','المكان'],d_order:['Order','اطلب'],
  coach:['Tap to test the lock','اضغط لتجربة القفل'],pk_gun:['Pick your gun','اختر سلاحك'],pk_color:['Pick a color','اختر اللون'],pk_view:['Look around','تجوّل'],pk_place:['Where does it go?','أين تضعه؟'],
  chat_err:['Connection lost. Try again.','انقطع الاتصال. حاول مرة أخرى.'],
 };
