@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LOCKG ONE · Wall Rack · 3D Product</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ivory:#F2EDE4;--ink:#15130F;--bronze:#9C7A4E;--line:rgba(242,237,228,.14);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0d0c0a;color:var(--ivory);font-family:var(--sans);font-weight:300;overflow:hidden;-webkit-font-smoothing:antialiased}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button{font-family:var(--sans);cursor:pointer;border:0;background:none;color:inherit}
+.kick{font:500 9.5px/1 var(--sans);letter-spacing:.38em;text-transform:uppercase;color:var(--bronze)}
+#title{position:fixed;left:36px;top:30px;z-index:5;pointer-events:none}
+#title .logo{display:flex;align-items:center;gap:12px;font:400 19px/1 var(--serif);letter-spacing:.42em;margin-bottom:34px}
+#title .logo svg{width:30px;height:18px;color:var(--bronze)}
+#title h1,#title p,#spec{text-shadow:0 1px 14px #000a}
+#title h1{font:300 54px/.98 var(--serif);margin:14px 0 12px}
+#title h1 em{color:#d9c3a0}
+#title p{max-width:300px;font-size:12.5px;line-height:1.7;color:#f2ede4a0}
+#spec{position:fixed;right:36px;top:34px;z-index:5;width:230px}
+#spec .row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-top:1px solid var(--line);font-size:11px;color:#f2ede488}
+#spec .row b{font:400 17px/1 var(--serif);color:var(--ivory)}
+#spec .kick{margin-bottom:12px}
+#bar{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:6;display:flex;gap:22px;align-items:flex-end;padding:16px 22px;background:#15130fcc;border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100vw - 24px);overflow-x:auto}
+.grp{display:flex;flex-direction:column;gap:9px;flex:none}
+.grp .kick{font-size:8.5px}
+.chips{display:flex;gap:4px}
+.chips button{padding:9px 11px;border:1px solid var(--line);font:400 9.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#f2ede4b0;transition:.2s;white-space:nowrap}
+.chips button:hover{color:var(--ivory);border-color:#f2ede455}
+.chips button.on{background:var(--ivory);color:var(--ink);border-color:var(--ivory)}
+.chips button.main{background:var(--bronze);border-color:var(--bronze);color:#fff}
+.sws{display:flex;gap:9px;padding:2px 0}
+.sws button{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px #ffffff26;outline:1px solid transparent;outline-offset:3px}
+.sws button.on{outline-color:var(--ivory)}
+.sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+#labels{position:fixed;inset:0;pointer-events:none;z-index:4}
+.lab{position:absolute;transform:translate(-50%,-50%);transition:opacity .4s}
+.lab .dot{width:22px;height:22px;border-radius:50%;background:#15130fd0;border:1px solid var(--bronze);color:var(--ivory);font:500 10px/20px var(--sans);text-align:center;pointer-events:auto;cursor:pointer;transition:.2s}
+.lab .dot:hover,.lab.open .dot{background:var(--bronze)}
+.lab .card{position:absolute;left:30px;top:var(--ty,-6px);width:210px;padding:13px 15px;background:var(--ivory);color:var(--ink);opacity:0;transform:translateX(-6px);transition:.3s;pointer-events:none}
+.lab.open .card,body.explode .lab .card{opacity:1;transform:none}
+body.explode .lab .card p{display:none}
+body.explode .lab .card{padding:9px 12px;width:auto;white-space:nowrap}
+.lab .card b{display:block;font:400 18px/1.1 var(--serif);margin-bottom:4px}
+.lab .card p{font-size:11px;line-height:1.5;color:#15130fa8}
+body.nolabels .lab{opacity:0}
+#toast{position:fixed;top:30px;left:50%;transform:translate(-50%,-8px);z-index:8;padding:13px 20px;background:#15130fe0;border:1px solid #9c7a4e77;font:400 10px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;opacity:0;transition:.4s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.deny{border-color:#c0503a}
+#hint{position:fixed;left:36px;bottom:40px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#f2ede455;z-index:5}
+@media (max-width:980px){#spec{display:none}}
+@media (max-width:720px){#title{left:20px;top:20px}#title h1,#title p,#spec{text-shadow:0 1px 14px #000a}
+#title h1{font-size:36px}#title p{display:none}#title .logo{margin-bottom:18px}#hint{display:none}#bar{bottom:12px;gap:14px;padding:12px 14px}}
+
+/* app look */
+#title{top:calc(84px + env(safe-area-inset-top,0px));left:calc(28px + env(safe-area-inset-left,0px))}
+#title .cta{display:flex;gap:8px;margin-top:20px;pointer-events:auto}
+.gpill{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;font:500 11px/1 Jost,var(--arab);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:#F2EDE4;background:rgba(242,237,228,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:.2s}
+.gpill:hover{background:rgba(242,237,228,.2)}
+.gpill.light{background:#F2EDE4;color:#15130F;border-color:#F2EDE4}
+html[lang=ar] .gpill{letter-spacing:0;font-size:13px}
+#spec{top:calc(84px + env(safe-area-inset-top,0px));right:calc(20px + env(safe-area-inset-right,0px));width:250px;padding:18px 20px 14px;border-radius:24px}
+#spec .row{border-top:1px solid rgba(255,255,255,.1)}
+#spec .more{width:100%;margin-top:10px;height:38px;border-radius:999px;background:rgba(255,255,255,.08);font:500 10px/1 Jost,var(--arab);letter-spacing:.2em;text-transform:uppercase;color:#F2EDE4}
+html[lang=ar] #spec .more{letter-spacing:0;font-size:12px}
+#bar{border-radius:26px;padding:12px 14px 14px;gap:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));scrollbar-width:none;background:var(--g-dark)}
+#bar::-webkit-scrollbar{display:none}
+.chips{gap:6px}
+.chips button{border-radius:999px;padding:10px 14px;border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.chips button.main{background:#9C7A4E;border-color:#9C7A4E}
+.sws button{width:28px;height:28px}
+.lab .card{border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.lab .dot{width:26px;height:26px;line-height:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(21,19,15,.55)}
+html[dir=rtl] #title{left:auto;right:calc(28px + env(safe-area-inset-right,0px));text-align:right}
+html[dir=rtl] #spec{right:auto;left:calc(20px + env(safe-area-inset-left,0px))}
+html[dir=rtl] .lab .card{left:auto;right:34px}
+html[dir=rtl] #hint{left:auto;right:36px}
+html[lang=ar] #title h1{font:500 40px/1.3 var(--arab)}
+html[lang=ar] .chips button,html[lang=ar] .kick{letter-spacing:0!important;text-transform:none}
+html body #toast{top:calc(76px + env(safe-area-inset-top,0px))}
+html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+@media (max-width:720px){
+ #title{top:calc(76px + env(safe-area-inset-top,0px));left:18px;right:18px}#title h1{font-size:34px}html[lang=ar] #title h1{font-size:28px}
+ #title p{display:block;font-size:12px}#title .cta{margin-top:12px}.gpill{height:38px;padding:0 14px}
+ #bar{left:10px;right:10px;transform:none;max-width:none;bottom:calc(10px + env(safe-area-inset-bottom,0px));gap:14px;padding:10px 12px 12px}
+ .lab .card{width:170px}
+}
+@media (orientation:landscape) and (max-height:520px){
+ #title p,#title .kick,#spec,#hint{display:none}
+ #title{top:calc(70px + env(safe-area-inset-top,0px))}#title h1{font-size:24px;margin:0}html[lang=ar] #title h1{font-size:20px}#title .cta{margin-top:10px}
+ #bar{left:auto;right:calc(10px + env(safe-area-inset-right,0px));transform:none;max-width:46vw;bottom:calc(8px + env(safe-area-inset-bottom,0px));padding:8px 10px 10px}
+ html body #chatfab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:auto;left:calc(16px + env(safe-area-inset-left,0px))}
+ html body #appbar{height:44px;top:calc(6px + env(safe-area-inset-top,0px))}
+}
+</style>
+<link rel="stylesheet" href="/shell.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="toast"></div>
+
+<div id="title">
+  <div class="kick" data-i18n="p_kick">LOCKG ONE · Wall rack</div>
+  <h1 data-i18n="p_h1">On the wall.<br><em>Locked to it.</em></h1>
+  <p data-i18n="p_sub">Your print frees it in 0.2 s.</p>
+  <div class="cta"><a class="gpill light" href="/configure/" data-i18n="p_room">Place it in a room</a><button class="gpill" id="bOrder" data-i18n="p_order">Order</button></div>
+</div>
+
+<div id="spec" class="glass">
+  <div class="kick" data-i18n="p_spec">Target spec</div>
+  <div class="row"><span data-i18n="sp_unlock">Unlock</span><b data-i18n="sp_unlock_v">0.2 s</b></div>
+  <div class="row"><span data-i18n="sp_prints">Prints</span><b data-i18n="sp_prints_v">Up to 10</b></div>
+  <div class="row"><span data-i18n="sp_key">Backup</span><b data-i18n="sp_key_v">Mechanical key</b></div>
+  <div class="row"><span data-i18n="sp_mount">Mount</span><b data-i18n="sp_mount_v">4 hidden bolts</b></div>
+  <div class="row"><span data-i18n="sp_fits">Fits</span><b data-i18n="sp_fits_v">AR, rifles, shotguns</b></div>
+  <button class="more" data-go="specs" data-i18n="p_more">All specs</button>
+</div>
+
+<div class="vignette"></div>
+<div id="picker" class="glass">
+ <div class="pk-head"><b id="pkTitle"></b><button id="pkClose" aria-label="close"></button></div>
+ <div class="pk-panel" data-p="gun"><div class="pk-row" id="weapons"></div></div>
+ <div class="pk-panel" data-p="color"><div class="dots" id="finishes"></div><div class="pk-sub" data-i18n="k_wall">Wall</div><div class="dots" id="walls"></div></div>
+ <div class="pk-panel" data-p="view"><div class="tog" id="views"><button data-v="front" class="on" data-i18n="v_front">Front</button><button data-v="three">3/4</button><button data-v="detail" data-i18n="v_detail">Close</button><button data-v="top" data-i18n="v_top">Top</button></div>
+  <div class="pk-sub" data-i18n="k_show">Show</div><div class="tog"><button id="bLabels" class="on"><i data-ic="tag"></i><span data-i18n="b_labels">Labels</span></button><button id="bGun" class="on"><i data-ic="gun"></i><span data-i18n="b_gun">Gun</span></button><button id="bSpin"><i data-ic="spin"></i><span data-i18n="b_spin">Spin</span></button></div></div>
+</div>
+<div id="dock" class="glass">
+ <button class="dk" data-pk="gun"><i data-ic="gun"></i><span data-i18n="d_gun">Gun</span></button>
+ <button class="dk" data-pk="color"><i data-ic="color"></i><span data-i18n="d_color">Color</span></button>
+ <button class="dk" data-pk="view"><i data-ic="eye"></i><span data-i18n="d_view">View</span></button>
+ <button class="dk-main" id="bOpen" aria-label="test"><i data-ic="print"></i><span></span></button>
+ <button class="dk" id="bExplode"><i data-ic="parts"></i><span data-i18n="d_parts">Parts</span></button>
+ <button class="dk" id="bChild"><i data-ic="child"></i><span data-i18n="d_child">Child</span></button>
+ <button class="dk" data-go="order"><i data-ic="bag"></i><span data-i18n="d_order">Order</span></button>
+</div>
+<div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
+<div id="hint" data-i18n="p_hint">Drag to turn · Pinch to zoom</div>
+
+<script>window.LOCKG_I18N={
+p_kick:['LOCKG ONE · Wall rack','LOCKG ONE · حامل جداري'],
+p_h1:['On the wall.<br><em>Locked to it.</em>','على الجدار.<br><em>مقفل عليه.</em>'],
+p_sub:['Your print frees it in 0.2 s.','بصمتك تحرره خلال 0.2 ثانية.'],
+p_room:['Place it in a room','ضعه في غرفة'],p_order:['Order','اطلب'],p_spec:['Target spec','المواصفات'],p_more:['All specs','كل المواصفات'],
+p_hint:['Drag to turn · Pinch to zoom','اسحب للتدوير · قرّب بإصبعين'],
+sp_unlock:['Unlock','الفتح'],sp_unlock_v:['0.2 s','0.2 ث'],sp_prints:['Prints','البصمات'],sp_prints_v:['Up to 10','حتى 10'],sp_key:['Backup','الاحتياط'],sp_key_v:['Mechanical key','مفتاح ميكانيكي'],sp_mount:['Mount','التثبيت'],sp_mount_v:['4 hidden bolts','4 براغي مخفية'],sp_fits:['Fits','يناسب'],sp_fits_v:['AR, rifles, shotguns','AR، بنادق، شوزن'],
+k_lock:['Lock','القفل'],k_show:['Show','إظهار'],k_view:['View','العرض'],k_study:['Explore','استكشف'],k_weapon:['Weapon','السلاح'],k_finish:['Finish','اللون'],k_wall:['Wall','الجدار'],
+b_unlock:['Unlock','افتح'],b_lock:['Lock','اقفل'],b_child:['Child try','تجربة طفل'],v_front:['Front','أمامي'],v_detail:['Close','قريب'],v_top:['Top','أعلى'],
+b_explode:['Explode','تفكيك'],b_labels:['Labels','الأسماء'],b_gun:['Gun','السلاح'],b_spin:['Spin','تدوير'],
+t_open:['Unlocked · 0.2 s','فُتح · 0.2 ث'],t_lock:['Locked','مقفل'],t_auto:['Auto locked','قُفل تلقائياً'],t_deny:['Print not recognised · Owner alerted','بصمة غير معروفة · تم تنبيه المالك'],
+g_ar:['AR rifle','بندقية AR'],g_pump:['Pump shotgun','شوزن مضخة'],g_bolt:['Bolt rifle','بندقية ترباس'],g_lever:['Lever rifle','بندقية رافعة'],
+f0:['Matte black','أسود مطفي'],f1:['Bronze','برونزي'],f2:['Nickel','نيكل'],f3:['Sand','رملي'],w0:['Umber','بني'],w1:['Warm white','أبيض دافئ'],w2:['Charcoal','فحمي'],
+l_sensor:['Print sensor','حساس البصمة'],l_sensor_p:['Opens in 0.2 s.','يفتح خلال 0.2 ثانية.'],
+l_gate:['Barrel lock','قفل الماسورة'],l_gate_p:['Swings open. The gun comes off in your hand.','ينفتح، والسلاح في يدك.'],
+l_cover:['Trigger cover','غطاء الزناد'],l_cover_p:['Nobody reaches the trigger.','لا أحد يصل إلى الزناد.'],
+l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight. Felt lined.','يحمل الوزن. مبطّن.'],
+l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
+l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
+};</script>
+<script src="/shell.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight,false);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d0c0a);scene.fog=new THREE.Fog(0x0d0c0a,5,11);
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;
+const camera=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,.02,40);camera.position.set(.15,.06,1.75);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;
+controls.target.set(.2,0,0);controls.minDistance=.2;controls.maxDistance=5;controls.minAzimuthAngle=-1.45;controls.maxAzimuthAngle=1.45;controls.autoRotateSpeed=.8;
+
+/* textures */
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function ctex(w,h,draw,rep=[1,1]){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(...rep);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;}
+const plaster=ctex(512,512,(x,w,h)=>{x.fillStyle='#ececec';x.fillRect(0,0,w,h);for(let i=0;i<260;i++){const r=rnd(20,90),px=rnd(0,w),py=rnd(0,h),g=x.createRadialGradient(px,py,0,px,py,r);const v=Math.random()>.5?255:200;g.addColorStop(0,`rgba(${v},${v},${v},${rnd(.04,.1)})`);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2);}const d=x.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){const n=rnd(-9,9);d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}x.putImageData(d,0,0);},[2,1.2]);
+const grain=ctex(512,128,(x,w,h)=>{x.fillStyle='#d8d8d8';x.fillRect(0,0,w,h);for(let i=0;i<70;i++){x.strokeStyle=`rgba(${rnd(80,140)|0},${rnd(60,100)|0},40,${rnd(.12,.32)})`;x.lineWidth=rnd(.5,2.2);x.beginPath();let y=rnd(0,h);x.moveTo(0,y);for(let X=0;X<=w;X+=16){y+=rnd(-1.6,1.6);x.lineTo(X,y);}x.stroke();}});
+const engrave=ctex(256,128,(x,w,h)=>{x.fillStyle='#e8e8e8';x.fillRect(0,0,w,h);x.strokeStyle='rgba(60,60,60,.55)';for(let i=0;i<46;i++){x.lineWidth=rnd(.5,1.4);x.beginPath();x.arc(rnd(0,w),rnd(0,h),rnd(6,22),rnd(0,6),rnd(0,6));x.stroke();}});
+const brushed=ctex(512,64,(x,w,h)=>{x.fillStyle='#dcdcdc';x.fillRect(0,0,w,h);for(let i=0;i<500;i++){x.strokeStyle=`rgba(${Math.random()>.5?255:150},${Math.random()>.5?255:150},${Math.random()>.5?255:150},.06)`;x.beginPath();const y=rnd(0,h);x.moveTo(0,y);x.lineTo(w,y+rnd(-.5,.5));x.stroke();}});
+const wordTex=ctex(512,64,(x,w,h)=>{x.fillStyle='#efe6d6';x.font='400 36px "Cormorant Garamond", Georgia, serif';x.textAlign='center';x.textBaseline='middle';x.fillText('L  O  C  K  G',w/2,h/2+2);});
+
+/* materials */
+const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshStandardMaterial({color:0x26272a,metalness:.88,roughness:.36}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.72}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
+const shellM=new THREE.MeshPhysicalMaterial({color:0x8a6a43,metalness:.95,roughness:.3,map:brushed,clearcoat:.3,clearcoatRoughness:.3});
+const darkM=new THREE.MeshStandardMaterial({color:0x121110,metalness:.6,roughness:.45});
+const feltM=new THREE.MeshStandardMaterial({color:0x2a211a,roughness:1});
+const ringM=new THREE.MeshStandardMaterial({color:0x111111,emissive:0x9c7a4e,emissiveIntensity:1});
+const glassBlack=new THREE.MeshPhysicalMaterial({color:0x070707,roughness:.12,clearcoat:1});
+
+/* helpers */
+function mesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=true;return o;}
+function at(o,x,y,z=0){o.position.set(x,y,z);return o;}
+function rbox(w,h,d,r,m){return mesh(new RoundedBoxGeometry(w,h,d,4,r),m);}
+function box(w,h,d,m){return mesh(new THREE.BoxGeometry(w,h,d),m);}
+function cylX(a,b,len,m,seg=28){const g=new THREE.CylinderGeometry(a,b,len,seg);g.rotateZ(-Math.PI/2);return mesh(g,m);}
+function cylZ(r,len,m,seg=28){const g=new THREE.CylinderGeometry(r,r,len,seg);g.rotateX(Math.PI/2);return mesh(g,m);}
+function extrude(pts,depth,m,bev=.006){const s=new THREE.Shape();s.moveTo(...pts[0]);pts.slice(1).forEach(p=>s.lineTo(...p));const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelThickness:bev,bevelSize:bev,bevelSegments:4});g.translate(0,0,-depth/2);return mesh(g,m);}
+function guard(x,y,m){const t=mesh(new THREE.TorusGeometry(.021,.0028,8,24,Math.PI),m);t.rotation.z=Math.PI;return at(t,x,y);}
+function trig(x,y,m){const t=box(.004,.022,.006,m);t.rotation.z=.25;return at(t,x,y);}
+
+/* weapons: t = trigger x, cx/cy = barrel lock point, by = butt bottom y */
+const GUNS={
+ ar:{name:'g_ar',t:.335,cx:.78,cy:.115},
+ pump:{name:'g_pump',t:.415,cx:.98,cy:.104},
+ bolt:{name:'g_bolt',t:.455,cx:1.0,cy:.1},
+ lever:{name:'g_lever',t:.43,cx:.98,cy:.1}};
+function buildGun(id){const g=new THREE.Group();
+ if(id==='ar'){const P=M.poly,S=M.steel;
+  g.add(extrude([[0,.02],[0,.125],[.02,.13],[.1,.115],[.1,.085],[.03,.04],[.02,.02]],.034,P,.006));
+  g.add(at(cylX(.015,.015,.17,S),.17,.1));
+  g.add(at(box(.2,.06,.03,P),.36,.07));
+  g.add(at(box(.24,.035,.032,S),.38,.118));
+  g.add(at(box(.02,.05,.028,S),.27,.112));
+  const grip=box(.03,.085,.03,P);grip.rotation.z=.32;g.add(at(grip,.29,.005));
+  const mag=box(.05,.14,.026,P);mag.rotation.z=-.18;g.add(at(mag,.405,-.025));
+  g.add(guard(.335,.042,S));g.add(trig(.335,.035,S));
+  const hg=cylX(.02,.02,.34,S,8);g.add(at(hg,.67,.118));
+  for(let i=0;i<6;i++)g.add(at(box(.026,.006,.042,P),.55+i*.05,.118));
+  g.add(at(cylX(.008,.009,.2,M.blued),.93,.118));
+  g.add(at(cylX(.012,.012,.05,M.blued),1.04,.118));
+  g.add(at(box(.07,.035,.026,P),.42,.155));g.add(at(cylX(.012,.012,.06,M.glass||P),.42,.175));}
+ if(id==='bolt'){g.add(extrude([[0,.015],[0,.135],[.03,.142],[.30,.098],[.40,.086],[.80,.081],[.825,.068],[.825,.045],[.47,.038],[.43,0],[.395,-.006],[.37,.03],[.06,.012]],.036,M.walnut));g.add(at(box(.012,.12,.04,M.rubber),-.004,.075));g.add(at(cylX(.016,.016,.26,M.blued),.52,.1));g.add(at(cylX(.0082,.011,.54,M.blued),.91,.1));g.add(at(cylX(.013,.013,.3,M.steel),.53,.152));g.add(at(cylX(.022,.013,.075,M.steel),.71,.152));g.add(at(cylX(.013,.018,.05,M.steel),.36,.152));g.add(at(box(.014,.032,.022,M.steel),.45,.125));g.add(at(box(.014,.032,.022,M.steel),.61,.125));g.add(guard(.455,.045,M.blued));g.add(trig(.455,.035,M.steel));}
+ if(id==='lever'){g.add(extrude([[0,.02],[0,.13],[.03,.136],[.33,.097],[.37,.09],[.37,.052],[.31,.044],[.06,.016]],.036,M.walnut));g.add(at(box(.012,.11,.04,M.brass),-.004,.074));g.add(at(box(.15,.062,.034,M.brass),.445,.086));g.add(at(cylX(.0095,.0105,.62,M.blued),.83,.1));g.add(at(cylX(.008,.008,.56,M.blued),.8,.075));g.add(at(box(.3,.03,.034,M.walnut),.67,.074));const lv=mesh(new THREE.TorusGeometry(.03,.0042,10,32),M.blued);lv.scale.set(1.25,.85,1);g.add(at(lv,.405,.03));g.add(trig(.43,.045,M.steel));}
+ if(id==='pump'){g.add(extrude([[0,.015],[0,.132],[.03,.138],[.31,.096],[.38,.09],[.38,.05],[.35,0],[.32,0],[.305,.034],[.06,.012]],.038,M.poly,.008));g.add(at(box(.014,.12,.042,M.rubber),-.005,.073));g.add(at(box(.2,.066,.036,M.poly),.48,.086));g.add(at(cylX(.0115,.012,.64,M.steel),.9,.104));g.add(at(cylX(.0105,.0105,.46,M.steel),.8,.075));g.add(at(cylX(.019,.019,.2,M.poly),.75,.075));for(let i=0;i<7;i++)g.add(at(cylX(.0205,.0205,.006,M.rubber,24),.665+i*.028,.075));g.add(guard(.415,.042,M.poly));g.add(trig(.415,.032,M.steel));}
+ return g;}
+
+/* ---------- product (built along +X, then stood upright) ---------- */
+const WZ=-.075, GY=-.055; // wall plane, gun local->product y offset
+const wallMat=new THREE.MeshStandardMaterial({color:0xd7d0c4,map:plaster,roughness:.96,envMapIntensity:.25});
+const wall=mesh(new THREE.PlaneGeometry(5,4),wallMat);wall.castShadow=false;at(wall,0,.2,WZ);scene.add(wall);
+const floorM=new THREE.MeshStandardMaterial({color:0x2a211b,roughness:.8});
+const product=new THREE.Group();product.rotation.z=Math.PI/2;scene.add(product);
+const parts={};function part(n){const g=new THREE.Group();product.add(g);parts[n]=g;return g;}
+const bolts=part('bolts'),rail=part('rail'),cradle=part('cradle'),cover=part('cover'),lockBody=part('lock'),gateP=part('gate'),gunHolder=part('gun');
+const slotM=new THREE.MeshStandardMaterial({color:0x050505,roughness:.9});
+// barrel ring helper
+function halfRing(R,r,a0,a1,depth,m){const s=new THREE.Shape();s.absarc(0,0,R,a0,a1,false);s.absarc(0,0,r,a1,a0,true);const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelThickness:.002,bevelSize:.002,bevelSegments:3,curveSegments:32});g.translate(0,0,-depth/2);g.rotateY(Math.PI/2);return mesh(g,m);}
+const CR=.036,cr=.024;
+// cover hinge + gate pivot (rebuilt per gun)
+const coverHinge=new THREE.Group();cover.add(coverHinge);
+const gatePivot=new THREE.Group();gateP.add(gatePivot);
+let ring,sensorPos=new THREE.Vector3(),keyPos=new THREE.Vector3();
+let gun=null,gunId='ar',COL=new THREE.Vector3(),BUTT=0;
+const RY=.015; // rail centre (product y)
+function build(id){
+ gunId=id;const G=GUNS[id];
+ [rail,cradle,lockBody,bolts,gunHolder].forEach(g=>g.clear());coverHinge.clear();gatePivot.clear();
+ gun=buildGun(id);gun.position.set(-G.t,GY,0);gunHolder.add(gun);
+ BUTT=-G.t;COL.set(G.cx-G.t,G.cy+GY,0);
+ /* rail: slotted channel, butt to past the barrel lock */
+ const x0=BUTT-.05,x1=COL.x+.12,L=x1-x0,cx=(x0+x1)/2;
+ rail.add(at(rbox(L,.075,.008,.003,shellM),cx,RY,WZ+.004));
+ rail.add(at(rbox(L,.008,.03,.003,shellM),cx,RY+.0335,WZ+.015),at(rbox(L,.008,.03,.003,shellM),cx,RY-.0335,WZ+.015));
+ for(let x=x0+.06;x<x1-.04;x+=.07){rail.add(at(rbox(.028,.012,.002,.004,slotM),x,RY,WZ+.0085));}
+ [x0+.03,cx-.15,cx+.15,x1-.03].forEach(x=>{bolts.add(at(cylZ(.005,.05,M.steel,12),x,RY,WZ-.015));bolts.add(at(cylZ(.009,.004,M.steel,6),x,RY,WZ+.01));});
+ /* stock cradle: floor plate + front lip + arm into rail */
+ const cyc=.02,cw=.16,fz=.055;
+ cradle.add(at(rbox(.014,cw,fz-WZ,.004,shellM),BUTT-.008,cyc,(WZ+fz)/2));
+ cradle.add(at(rbox(.075,cw,.012,.004,shellM),BUTT+.03,cyc,fz-.006));
+ cradle.add(at(rbox(.075,.012,fz-WZ,.004,shellM),BUTT+.03,cyc-cw/2+.006,(WZ+fz)/2),at(rbox(.075,.012,fz-WZ,.004,shellM),BUTT+.03,cyc+cw/2-.006,(WZ+fz)/2));
+ cradle.add(at(box(.07,cw-.03,.004,feltM),BUTT+.03,cyc,fz-.013));
+ /* trigger cover: fixed arm on the rail + hinged shell around the guard */
+ const tw=.075,ty0=-.07,ty1=-.005,tz0=-.032,tz1=.042;
+ cover.add(at(rbox(tw,.04,tz0-WZ+.01,.004,shellM),0,RY-.005,(WZ+tz0)/2));
+ coverHinge.position.set(0,ty0,tz0);
+ const h=ty1-ty0,d=tz1-tz0;
+ coverHinge.add(at(rbox(tw,h,.01,.004,shellM),0,h/2,d));
+ coverHinge.add(at(rbox(tw,.01,d,.004,shellM),0,.005,d/2));
+ coverHinge.add(at(rbox(.01,h,d,.003,shellM),-tw/2+.005,h/2,d/2),at(rbox(.01,h,d,.003,shellM),tw/2-.005,h/2,d/2));
+ coverHinge.add(at(cylX(.005,.005,tw*.9,darkM),0,0,0));
+ coverHinge.add(at(box(tw*.7,.0015,.001,darkM),0,h*.55,d+.0055));
+ /* barrel lock: body on the rail, fixed back ring, hinged front gate, sensor on the body */
+ const bz1=.05;
+ lockBody.add(at(rbox(.095,.075,bz1-WZ,.008,shellM),COL.x,RY-.012,(WZ+bz1)/2));
+ const stem=rbox(.04,COL.y-CR-(RY+.02)+.01,.04,.004,shellM);lockBody.add(at(stem,COL.x,(COL.y-CR+RY+.02)/2,-.02));
+ const back=halfRing(CR,cr,-Math.PI/2,Math.PI/2,.04,shellM),bl=halfRing(cr+.0005,cr-.004,-Math.PI/2,Math.PI/2,.038,M.rubber);
+ back.position.copy(COL);bl.position.copy(COL);lockBody.add(back,bl);
+ sensorPos.set(COL.x,RY-.012,bz1+.001);
+ lockBody.add(at(cylZ(.014,.004,glassBlack,40),sensorPos.x,sensorPos.y,bz1+.002));
+ ring=mesh(new THREE.TorusGeometry(.017,.002,10,48),ringM);lockBody.add(at(ring,sensorPos.x,sensorPos.y,bz1+.0035));
+ lockBody.add(at(box(.026,.003,.002,new THREE.MeshStandardMaterial({color:0x111,emissive:0xffd9a8,emissiveIntensity:1.4})),COL.x-.03,RY-.012,bz1+.002));
+ keyPos.set(COL.x+.032,RY-.034,bz1+.002);lockBody.add(at(cylZ(.0045,.003,darkM,20),keyPos.x,keyPos.y,keyPos.z));
+ const word=new THREE.Mesh(new THREE.PlaneGeometry(.06,.0076),new THREE.MeshBasicMaterial({map:wordTex,transparent:true,opacity:.7,toneMapped:false}));word.rotation.z=-Math.PI/2;lockBody.add(at(word,COL.x+.035,RY-.008,bz1+.002));
+ gatePivot.position.set(COL.x,COL.y+CR-.002,COL.z);
+ const gh=new THREE.Group();gh.position.set(0,-(CR-.002),0);gh.add(halfRing(CR,cr,Math.PI/2,Math.PI*1.5,.04,shellM),halfRing(cr+.0005,cr-.004,Math.PI/2,Math.PI*1.5,.038,M.rubber));gatePivot.add(gh);
+ product.traverse(o=>{if(o.isMesh&&o!==wall){o.castShadow=true;o.receiveShadow=true;}});
+ placeLabels();
+}
+
+/* lights */
+scene.add(new THREE.HemisphereLight(0xfff1dc,0x1a140f,.35));
+const fill=new THREE.DirectionalLight(0xffe9cc,.6);fill.position.set(-2,1,3);scene.add(fill);
+const spot=new THREE.SpotLight(0xffe6c8,14,7,.5,.85,1.3);spot.position.set(.7,1.9,1.4);spot.target.position.set(0,.15,0);spot.castShadow=true;spot.shadow.mapSize.set(2048,2048);spot.shadow.bias=-.0002;spot.shadow.normalBias=.015;scene.add(spot,spot.target);
+const rim=new THREE.SpotLight(0xffd8b0,6,4,.6,1,1.5);rim.position.set(-1,1.2,.7);rim.target.position.set(0,.2,0);scene.add(rim,rim.target);
+
+/* labels */
+const LABS=[
+ {k:'sensor',n:1,t:'l_sensor',p:'l_sensor_p'},
+ {k:'gate',n:2,t:'l_gate',p:'l_gate_p'},
+ {k:'cover',n:3,t:'l_cover',p:'l_cover_p'},
+ {k:'cradle',n:4,t:'l_cradle',p:'l_cradle_p'},
+ {k:'rail',n:5,t:'l_rail',p:'l_rail_p'},
+ {k:'key',n:6,t:'l_key',p:'l_key_p'}];
+const labEl=document.getElementById('labels');
+LABS.forEach(l=>{const d=document.createElement('div');d.className='lab';if(l.k==='key')d.style.setProperty('--ty','16px');if(l.k==='sensor')d.style.setProperty('--ty','-36px');d.innerHTML=`<div class="dot">${l.n}</div><div class="card"><b></b><p></p></div>`;d.querySelector('.dot').onclick=()=>{const o=d.classList.contains('open');labEl.querySelectorAll('.lab').forEach(x=>x.classList.remove('open'));if(!o)d.classList.add('open');};labEl.appendChild(d);l.el=d;});
+const anchors={};
+function placeLabels(){
+ anchors.sensor={obj:lockBody,v:sensorPos.clone().setZ(.056)};
+ anchors.gate={obj:gateP,v:new THREE.Vector3(COL.x,COL.y,COL.z+CR+.004)};
+ anchors.cover={obj:cover,v:new THREE.Vector3(0,-.04,.05)};
+ anchors.cradle={obj:cradle,v:new THREE.Vector3(BUTT+.03,-.03,.06)};
+ anchors.rail={obj:rail,v:new THREE.Vector3((BUTT+COL.x)/2+.12,RY+.02,WZ+.01)};
+ anchors.key={obj:lockBody,v:keyPos.clone().setZ(.054)};
+}
+const tmp=new THREE.Vector3();
+function updateLabels(){const w=innerWidth,h=innerHeight;LABS.forEach(l=>{const a=anchors[l.k];if(!a)return;tmp.copy(a.v).add(a.obj.position);product.localToWorld(tmp);tmp.project(camera);l.el.style.left=((tmp.x+1)/2*w)+'px';l.el.style.top=((1-tmp.y)/2*h)+'px';l.el.style.display=tmp.z<1?'':'none';});}
+
+/* state */
+let open=0,openT=0,gate=0,gateT=0,expl=0,explT=0,busy=false,isOpen=false,ringMode='idle',ringT0=0,shakeT=-9,autoT;
+const toastEl=document.getElementById('toast');let tt;
+function toast(m,deny=false,ms=2600){toastEl.textContent=m;toastEl.classList.toggle('deny',deny);toastEl.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toastEl.classList.remove('show'),ms);}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const bOpen=document.getElementById('bOpen');
+async function unlock(){if(busy)return;busy=true;ringMode='scan';ringT0=performance.now();await wait(140);ringMode='ok';gateT=1;await wait(60);openT=1;isOpen=true;setMain(true);coachOff();toast(Shell.t('t_open'));busy=false;clearTimeout(autoT);autoT=setTimeout(()=>{if(isOpen)lock(true);},10000);}
+async function lock(auto=false){if(busy)return;busy=true;openT=0;await wait(350);gateT=0;await wait(250);ringMode='idle';isOpen=false;setMain(false);toast(Shell.t(auto?'t_auto':'t_lock'));busy=false;}
+bOpen.onclick=()=>isOpen?lock():unlock();
+document.getElementById('bChild').onclick=async()=>{if(busy)return;if(isOpen)await lock();busy=true;ringMode='scan';ringT0=performance.now();await wait(220);ringMode='deny';ringT0=performance.now();shakeT=performance.now();toast(Shell.t('t_deny'),true,3200);await wait(1500);ringMode='idle';busy=false;};
+const bEx=document.getElementById('bExplode');bEx.onclick=()=>{explT=explT?0:1;bEx.classList.toggle('on',!!explT);document.body.classList.toggle('explode',!!explT);view('three');};
+const bL=document.getElementById('bLabels');bL.onclick=()=>{document.body.classList.toggle('nolabels');bL.classList.toggle('on');};
+const bG=document.getElementById('bGun');bG.onclick=()=>{gunHolder.visible=!gunHolder.visible;bG.classList.toggle('on',gunHolder.visible);};
+const bS=document.getElementById('bSpin');bS.onclick=()=>{controls.autoRotate=!controls.autoRotate;bS.classList.toggle('on',controls.autoRotate);};
+const wEl=document.getElementById('weapons');function renderWeapons(){wEl.innerHTML='';Object.entries(GUNS).forEach(([id,g])=>{const b=document.createElement('button');b.className='tile';b.innerHTML=Shell.GUNIC[id==='ar'?'ar':id]+`<span>${Shell.t(g.name)}</span>`;if(id===gunId)b.classList.add('on');b.onclick=()=>{[...wEl.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');build(id);};wEl.appendChild(b);});}renderWeapons();
+const FIN=[{n:'Matte black',c:'#1b1b1c',m:[0x161617,.55,.62]},{n:'Bronze',c:'#8a6a43',m:[0x8a6a43,.95,.3]},{n:'Nickel',c:'#bdb9b1',m:[0xb8b4ac,1,.24]},{n:'Sand',c:'#cbbfa9',m:[0xc8bba3,.1,.55]}];
+function setFinish(f){shellM.color.setHex(f.m[0]);shellM.metalness=f.m[1];shellM.roughness=f.m[2];}
+const fEl=document.getElementById('finishes');FIN.forEach((f,i)=>{const b=document.createElement('button');b.title=Shell.t('f'+i);b.setAttribute('aria-label',Shell.t('f'+i));b.innerHTML=`<i style="background:${f.c}"></i><span></span>`;if(!i)b.classList.add('on');b.onclick=()=>{[...fEl.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');setFinish(f);toast(Shell.t('f'+i));};fEl.appendChild(b);});
+setFinish(FIN[0]);
+const WAL=[{n:'Umber',c:'#4a3c31',k:1},{n:'Warm white',c:'#d7d0c4',k:.6},{n:'Charcoal',c:'#2a2826',k:1}];
+const wlEl=document.getElementById('walls');WAL.forEach((w,i)=>{const b=document.createElement('button');b.title=Shell.t('w'+i);b.setAttribute('aria-label',Shell.t('w'+i));b.innerHTML=`<i style="background:${w.c}"></i><span></span>`;if(!i)b.classList.add('on');b.onclick=()=>{[...wlEl.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');wallMat.color.set(w.c).multiplyScalar(w.k);};wlEl.appendChild(b);});
+wallMat.color.set(WAL[0].c).multiplyScalar(WAL[0].k);
+
+/* views (world: gun upright, butt at y=BUTT) */
+let tw=null;
+function view(v){const yb=BUTT,yt=COL.x+.25,cy=(yb+yt)/2+.02;const P={front:[[.06,cy-.06,2.9],[.06,cy-.06,0]],three:[[1.3,cy+.2,2.1],[.02,cy-.06,0]],detail:[[.45,COL.x+.05,.55],[.02,COL.x-.02,0]],top:[[.25,yt+.9,.9],[0,cy+.1,0]]}[v];
+ let p1=new THREE.Vector3(...P[0]),t1=new THREE.Vector3(...P[1]);if(innerWidth<720&&innerHeight>innerWidth&&v!=='detail'){const k=1.55,off=new THREE.Vector3().subVectors(p1,t1).multiplyScalar(k);t1.y+=.34;p1.copy(t1).add(off);}
+ tw={p0:camera.position.clone(),t0:controls.target.clone(),p1,t1,s:performance.now(),d:1400};
+ document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));}
+document.querySelectorAll('#views button').forEach(b=>b.onclick=()=>view(b.dataset.v));
+controls.addEventListener('start',()=>{tw=null;document.querySelectorAll('#views button').forEach(b=>b.classList.remove('on'));});
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
+
+build('ar');camera.position.set(.06,.12,2.9);controls.target.set(.06,.12,0);view('front');
+const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+const RC={idle:new THREE.Color(0x9c7a4e),scan:new THREE.Color(0xf2ede4),ok:new THREE.Color(0xeadcc2),deny:new THREE.Color(0xc0503a)};
+const EX={bolts:[0,0,0],rail:[0,0,.06],cradle:[-.08,0,.2],cover:[0,-.12,.25],lock:[0,0,.2],gate:[.06,0,.32],gun:[0,.28,.42]};
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+ if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
+ open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
+ gate+=(gateT-gate)*Math.min(1,dt*11);gatePivot.rotation.x=-gate*1.9;
+ expl+=(explT-expl)*Math.min(1,dt*4);const e=ease(Math.min(1,Math.max(0,expl)));
+ for(const k in EX){const o=EX[k];parts[k].position.set(o[0]*e,o[1]*e,o[2]*e);}
+ const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.8+.4*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?2.8:(Math.sin(rt*22)>0?3:.3);
+ const st=(now-shakeT)/1000;product.position.x=st<.45?Math.sin(st*70)*.003*(1-st/.45):0;
+ controls.update();renderer.render(scene,camera);updateLabels();requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+
+
+function setMain(o){bOpen.classList.toggle('open',o);bOpen.querySelector('span').textContent=Shell.t(o?'b_lock':'d_test');}
+function renderDots(){fEl.querySelectorAll('button').forEach((b,i)=>b.querySelector('span').textContent=Shell.t('f'+i));wlEl.querySelectorAll('button').forEach((b,i)=>b.querySelector('span').textContent=Shell.t('w'+i));}
+document.querySelectorAll('[data-ic]').forEach(i=>i.outerHTML=Shell.UIIC[i.dataset.ic]);
+document.getElementById('pkClose').innerHTML=Shell.UIIC.x;
+const picker=document.getElementById('picker');let pk=null;
+function openPk(k){pk=pk===k?null:k;picker.classList.toggle('on',!!pk);document.querySelectorAll('[data-pk]').forEach(b=>b.classList.toggle('on',b.dataset.pk===pk));
+ picker.querySelectorAll('.pk-panel').forEach(p=>p.classList.toggle('on',p.dataset.p===pk));if(pk)document.getElementById('coach').classList.add('hide');if(pk)document.getElementById('pkTitle').textContent=Shell.t('pk_'+pk);}
+document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>openPk(b.dataset.pk));
+document.getElementById('pkClose').onclick=()=>openPk(pk);
+Shell.onLang(()=>{if(pk)document.getElementById('pkTitle').textContent=Shell.t('pk_'+pk);});
+const coach=document.getElementById('coach');let coached=false;function coachOff(){coached=true;coach.classList.add('hide');}
+setTimeout(()=>{if(!coached)coach.classList.remove('hide');},2500);setTimeout(coachOff,12000);
+function i18nScene(){LABS.forEach(l=>{l.el.querySelector('b').textContent=Shell.t(l.t);l.el.querySelector('p').textContent=Shell.t(l.p);});setMain(isOpen);renderWeapons();renderDots();}
+i18nScene();Shell.onLang(i18nScene);
+let finIdx=0;fEl.querySelectorAll('button').forEach((b,i)=>b.addEventListener('click',()=>finIdx=i));
+window.LOCKG_SUMMARY=()=>`LOCKG ONE · ${Shell.t('f'+finIdx)} · ${Shell.t(GUNS[gunId].name)}`;
+document.getElementById('bOrder').onclick=()=>Shell.go('order');
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>Shell.go(b.dataset.go));
+window.__one={unlock,view,build};
+</script>
+
+</body>
+</html>

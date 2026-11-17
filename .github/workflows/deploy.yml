@@ -1,0 +1,17 @@
+name: Deploy to lockg.xmf.app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 1f6220fcd7cd803c660f3f3d18ae318a
+          command: pages deploy site --project-name=lockg --branch=main --commit-dirty=true
