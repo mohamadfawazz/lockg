@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lockg.xmf.app/sitemap.xml

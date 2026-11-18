@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>LOCKG · Shop</title>
+<meta name="description" content="Order LOCKG ONE in 5 easy steps. Wall, car or both, in your finish or your own color.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="LOCKG">
+<meta property="og:title" content="LOCKG · Shop"><meta property="og:description" content="Order LOCKG ONE in 5 easy steps. Wall, car or both, in your finish or your own color.">
+<meta property="og:image" content="https://lockg.xmf.app/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <meta name="theme-color" content="#0e0d0b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500;600&family=Noto+Kufi+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
@@ -52,15 +62,16 @@ html[lang=ar] .kick{letter-spacing:0;font-family:var(--arab);font-size:12px}
 /* flow */
 #flow{padding:24px clamp(18px,4vw,56px) 150px;max-width:640px;width:100%}
 #steps{display:flex;gap:6px;margin:6px 0 30px}
-#steps button{flex:1;background:none;border:0;cursor:pointer;text-align:start;padding:0}
+#steps button{flex:1;background:none;border:0;cursor:pointer;text-align:start;padding:12px 0;min-height:44px}
 #steps i{display:block;height:3px;border-radius:3px;background:rgba(242,237,228,.14);overflow:hidden;position:relative}
 #steps i::after{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .5s}
 html[dir=rtl] #steps i::after{transform-origin:right}
 #steps .done i::after,#steps .cur i::after{transform:scaleX(1)}
 #steps span{display:block;font-size:10.5px;margin-top:8px;color:#f2ede466;letter-spacing:.04em}
 #steps .cur span{color:var(--ivory)}
-h1{font:300 clamp(34px,4.4vw,52px)/1.02 var(--serif);margin:12px 0 8px}
-html[lang=ar] h1{font:400 clamp(28px,3.6vw,40px)/1.35 var(--arab)}
+h1,.h{font:300 clamp(34px,4.4vw,52px)/1.02 var(--serif);margin:12px 0 8px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+html[lang=ar] h1,html[lang=ar] .h{font:400 clamp(28px,3.6vw,40px)/1.35 var(--arab)}
 .sub{font-size:14px;color:#f2ede499;margin-bottom:26px}
 .panel{display:none;animation:in .45s cubic-bezier(.2,.8,.2,1)}
 .panel.on{display:block}
@@ -154,7 +165,7 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
  #stage{position:sticky;top:calc(70px + env(safe-area-inset-top,0px));z-index:6;height:25vh;min-height:170px;border-bottom:1px solid rgba(255,255,255,.06);box-shadow:0 18px 30px rgba(0,0,0,.45)}
  #art{height:96%}#stage .tag{left:16px;bottom:12px}#stage .tag .kick{display:none}#stage .tag b{font-size:19px;margin-top:0}#stage .tag span{font-size:11px}
  #flow{padding:14px 16px 130px}#steps{margin:0 0 18px}#steps span{font-size:9.5px;margin-top:6px}
- h1{font-size:28px;margin:6px 0 4px}html[lang=ar] h1{font-size:22px}.sub{font-size:12.5px;margin-bottom:14px}
+ .h{font-size:28px;margin:6px 0 4px}html[lang=ar] .h{font-size:22px}.sub{font-size:12.5px;margin-bottom:14px}
  .cards{gap:8px}.card{padding:10px 12px;border-radius:16px;gap:12px}.card .pic{width:46px;height:46px;border-radius:12px}.card .pic img{width:42px;height:42px}
  .card b{font-size:17px}html[lang=ar] .card b{font-size:14px}.card small{font-size:11px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.card .pr{font-size:16px}.card .chk{width:18px;height:18px}
  .badge{font-size:7.5px;padding:3px 5px}
@@ -166,38 +177,45 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
  #bar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}#bar .t b{font-size:22px}#next{height:48px;padding:0 22px;font-size:14px}#prev{width:46px;height:46px}
  body:has(#app) #chatfab{display:none}
 }
+@media (max-height:520px) and (orientation:landscape){
+ #app{grid-template-columns:42% 1fr;padding-top:calc(62px + env(safe-area-inset-top,0px))}
+ #stage{position:sticky;top:62px;height:calc(100vh - 62px - 68px);min-height:0;box-shadow:none;border:0}
+ #art{height:92%}#flow{padding:10px 18px 100px}
+}
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=14">
+<link rel="stylesheet" href="/shell.css?v=15">
 </head>
 <body>
+<noscript><div style="padding:40px;color:#F2EDE4;background:#0e0d0b;font-family:Georgia,serif">LOCKG needs JavaScript to show the 3D product. Call us: +961 3 680 853.</div></noscript>
 <div id="app">
  <section id="stage">
   <div id="art"><div class="trunk"></div><img id="im1" alt=""><img id="im2" alt=""><div id="tint1" class="tint"></div><div id="sheen1" class="tint sheen"></div></div><div class="floor"></div>
   <div class="tag"><div class="kick" data-i18n="s_kick">LOCKG ONE</div><b id="tagName"></b><span id="tagSub"></span></div>
  </section>
  <section id="flow">
+  <h1 class="sr">LOCKG Shop</h1>
   <nav id="steps"></nav>
   <!-- 1 -->
   <div class="panel" data-s="0">
-   <div class="kick" data-i18n="s_k1">Step 1</div><h1 data-i18n="s_h1">Pick your LOCKG</h1><p class="sub" data-i18n="s_p1">One rail. Your print opens it in 0.2 s.</p>
+   <div class="kick" data-i18n="s_k1">Step 1</div><h2 class="h" data-i18n="s_h1">Pick your LOCKG</h2><p class="sub" data-i18n="s_p1">One rail. Your print opens it in 0.2 s.</p>
    <div class="cards" id="prods"></div>
   </div>
   <!-- 2 -->
   <div class="panel" data-s="1">
-   <div class="kick" data-i18n="s_k2">Step 2</div><h1 data-i18n="s_h2">Make it yours</h1><p class="sub" data-i18n="s_p2">Choose a finish and the gun it will hold.</p>
+   <div class="kick" data-i18n="s_k2">Step 2</div><h2 class="h" data-i18n="s_h2">Make it yours</h2><p class="sub" data-i18n="s_p2">Choose a finish and the gun it will hold.</p>
    <div class="lbl"><b class="kick" data-i18n="s_finish">Finish</b><span id="finName"></span></div><div class="sw" id="fins"></div>
    <div class="lbl"><b class="kick" data-i18n="s_gun">Your gun</b><span id="gunName"></span></div><div class="guns" id="guns"></div>
   </div>
   <!-- 3 -->
   <div class="panel" data-s="2">
-   <div class="kick" data-i18n="s_k3">Step 3</div><h1 data-i18n="s_h3">Add the extras</h1><p class="sub" data-i18n="s_p3">All optional. Tap to add.</p>
+   <div class="kick" data-i18n="s_k3">Step 3</div><h2 class="h" data-i18n="s_h3">Add the extras</h2><p class="sub" data-i18n="s_p3">All optional. Tap to add.</p>
    <div class="cards" id="extras"></div>
    <div class="qty"><b data-i18n="s_qty">How many?</b><button id="qm" aria-label="-">−</button><output id="qv">1</output><button id="qp" aria-label="+">+</button></div>
   </div>
   <!-- 4 -->
   <div class="panel" data-s="3">
-   <div class="kick" data-i18n="s_k4">Step 4</div><h1 data-i18n="s_h4">Where do we deliver?</h1><p class="sub" data-i18n="s_p4">We call you before we come.</p>
+   <div class="kick" data-i18n="s_k4">Step 4</div><h2 class="h" data-i18n="s_h4">Where do we deliver?</h2><p class="sub" data-i18n="s_p4">We call you before we come.</p>
    <label class="fld" id="fName"><span data-i18n="s_name">Full name</span><input id="iName" autocomplete="name"></label>
    <label class="fld" id="fPhone"><span data-i18n="s_phone">Phone / WhatsApp</span><input id="iPhone" type="tel" autocomplete="tel" inputmode="tel"></label>
    <div class="two"><label class="fld" id="fCity"><span data-i18n="s_city">City</span><input id="iCity" autocomplete="address-level2"></label><label class="fld"><span data-i18n="s_email">Email (optional)</span><input id="iEmail" type="email" autocomplete="email"></label></div>
@@ -206,14 +224,14 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
   </div>
   <!-- 5 -->
   <div class="panel" data-s="4">
-   <div class="kick" data-i18n="s_k5">Step 5</div><h1 data-i18n="s_h5">Pay your way</h1><p class="sub" data-i18n="s_p5">Choose how you want to pay.</p>
+   <div class="kick" data-i18n="s_k5">Step 5</div><h2 class="h" data-i18n="s_h5">Pay your way</h2><p class="sub" data-i18n="s_p5">Choose how you want to pay.</p>
    <div class="cards" id="pays"></div>
    <div class="rev" id="rev"></div>
    <div class="safe"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A574" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-i18n="s_safe">Secure. 30-day return. 2-year warranty.</span></div>
   </div>
   <div id="done">
    <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#17130e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-   <h1 data-i18n="s_thx">It's yours.</h1><p class="sub" data-i18n="s_thx2">Your order is in. Here is what happens next.</p>
+   <h2 class="h" data-i18n="s_thx">It's yours.</h2><p class="sub" data-i18n="s_thx2">Your order is in. Here is what happens next.</p>
    <div class="ono" id="ono"></div>
    <div class="next3" id="next3"></div>
   </div>
@@ -257,8 +275,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=14"></script>
-<script src="/fx.js?v=14"></script>
+<script src="/shell.js?v=15"></script>
+<script src="/fx.js?v=15"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};

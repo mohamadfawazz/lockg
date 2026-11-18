@@ -190,3 +190,23 @@ html[lang=ar] .mgrid span{font-size:15px}
 .mgrid a,.mgrid button{animation:mgIn .5s cubic-bezier(.2,.8,.2,1) backwards}
 .mgrid>*:nth-child(2){animation-delay:.05s}.mgrid>*:nth-child(3){animation-delay:.1s}.mgrid>*:nth-child(4){animation-delay:.15s}.mgrid>*:nth-child(5){animation-delay:.2s}
 @keyframes mgIn{from{opacity:0;transform:translateY(14px) scale(.98)}}
+
+/* links, faq, legal */
+.mlinks{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:18px 0 4px}
+.mlinks button{background:none;border:0;padding:10px 4px;font:500 10px/1 Jost,var(--arab);letter-spacing:.24em;text-transform:uppercase;color:#15130f99;cursor:pointer}
+.mlinks button:hover{color:#15130f}
+.faq details{border-bottom:1px solid rgba(21,19,15,.1);padding:4px 0}
+.faq summary{list-style:none;cursor:pointer;padding:14px 30px 14px 2px;font:400 19px/1.25 'Cormorant Garamond',Georgia,serif;position:relative}
+html[lang=ar] .faq summary{font:500 15px/1.5 var(--arab);padding:14px 2px 14px 30px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:12px;font:300 22px/1 Jost;color:#9C7A4E;transition:transform .3s}
+html[dir=rtl] .faq summary::after{right:auto;left:4px}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 2px 14px;font-size:13.5px;line-height:1.6;opacity:.8;animation:faqIn .35s ease}
+@keyframes faqIn{from{opacity:0;transform:translateY(-4px)}}
+.legal h4{font:500 10px/1 Jost,var(--arab);letter-spacing:.24em;text-transform:uppercase;color:#9C7A4E;margin:18px 0 8px}
+.legal p{font-size:13.5px;line-height:1.65;margin:0;opacity:.85}
+.legal .upd{margin-top:22px;font-size:11px;opacity:.5}
+.ab-logo{padding:10px 0}
+
+.tourbtn{display:flex;align-items:center;justify-content:center;height:50px;margin-top:18px;border-radius:999px;background:#15130F;color:#F2EDE4;text-decoration:none;font:500 13px/1 Jost,var(--arab);letter-spacing:.06em}

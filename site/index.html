@@ -3,7 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>LOCKG ONE · Wall Rack · 3D Product</title>
+<title>LOCKG ONE · The wall gun lock you open with your print</title>
+<meta name="description" content="LOCKG ONE is a wall lock for one long gun. Your fingerprint opens it in 0.2 s, the trigger stays covered, and children can't reach it. See it in 3D.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="LOCKG">
+<meta property="og:title" content="LOCKG ONE · The wall gun lock you open with your print"><meta property="og:description" content="LOCKG ONE is a wall lock for one long gun. Your fingerprint opens it in 0.2 s, the trigger stays covered, and children can't reach it. See it in 3D.">
+<meta property="og:image" content="https://lockg.xmf.app/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--ivory:#F2EDE4;--ink:#15130F;--bronze:#9C7A4E;--line:rgba(242,237,228,.14);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',system-ui,sans-serif}
@@ -101,14 +111,35 @@ body:has(#picker.on) .coach{display:none}
 @media (max-width:560px){.cta{flex-wrap:nowrap}.cta .gpill{height:40px;padding:0 14px;font-size:9px;letter-spacing:.14em;white-space:nowrap;display:inline-flex;align-items:center}.cta a[href="/configure/"]{display:none}
  body.explode .lab .card{padding:5px 9px;border-radius:10px}body.explode .lab .card b{font-size:13px;margin:0}.lab .dot{width:20px;height:20px;line-height:18px}}
 .lab .dot{animation:labPulse 2.6s ease-in-out infinite}@keyframes labPulse{50%{box-shadow:0 0 0 6px rgba(200,165,116,.16)}}
+@media (orientation:landscape) and (max-height:520px){#title{top:calc(62px + env(safe-area-inset-top,0px));left:calc(16px + env(safe-area-inset-left,0px))}#title h1{font-size:26px!important;line-height:1.05}#title p,#title .kick{display:none}.cta{margin-top:8px!important}.cta .gpill{height:36px;padding:0 14px;font-size:9px;letter-spacing:.14em}.cta a[href="/configure/"]{display:none}#spec{display:none!important}.lab .card{display:none}}
+#tour{position:fixed;z-index:60;left:50%;bottom:calc(112px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);width:min(440px,calc(100vw - 24px));border-radius:26px;padding:16px 16px 14px;opacity:0;visibility:hidden;transition:.5s cubic-bezier(.2,.8,.2,1);color:#F2EDE4}
+#tour.on{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.tr-top{display:flex;justify-content:space-between;align-items:center}
+.tr-dots{display:flex;gap:6px}.tr-dots i{width:18px;height:3px;border-radius:3px;background:rgba(242,237,228,.18);transition:.4s}.tr-dots i.on{background:#C8A574;width:30px}
+.tr-x{background:none;border:0;color:#f2ede499;font:500 11px/1 Jost,var(--arab);letter-spacing:.18em;text-transform:uppercase;padding:10px 4px;cursor:pointer}
+.tr-body{display:flex;gap:16px;align-items:flex-start;margin:12px 2px 16px}
+.tr-n{font:300 44px/1 'Cormorant Garamond',serif;color:#C8A574;min-width:52px}
+.tr-body h2{font:400 26px/1.08 'Cormorant Garamond',Georgia,serif;margin:2px 0 6px}
+html[lang=ar] .tr-body h2{font:500 18px/1.4 var(--arab)}
+.tr-body p{font-size:13.5px;line-height:1.5;color:#f2ede4b8;margin:0}
+.tr-body>div:last-child{animation:trIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes trIn{from{opacity:0;transform:translateX(14px)}}
+.tr-act{display:flex;gap:8px}
+.tr-back{width:48px;height:48px;border-radius:50%;border:1px solid rgba(242,237,228,.22);background:none;color:#F2EDE4;display:grid;place-items:center;cursor:pointer;flex:none}
+.tr-back svg{width:18px}html[dir=rtl] .tr-back svg{transform:scaleX(-1)}
+.tr-go{flex:1;height:48px;border-radius:999px;border:0;background:linear-gradient(180deg,#e2c38f,#a9834f);color:#17130e;font:600 14px/1 Jost,var(--arab);cursor:pointer}
+body.touring #title,body.touring #spec,body.touring .coach{opacity:0;pointer-events:none;transition:opacity .4s}
+@media (orientation:landscape) and (max-height:520px){#tour{left:auto;right:calc(12px + env(safe-area-inset-right,0px));bottom:auto;top:62px;transform:translateY(-14px);width:330px;padding:12px}#tour.on{transform:none}.tr-n{font-size:30px;min-width:36px}.tr-body{margin:8px 0 10px}.tr-body h2{font-size:20px}.tr-body p{font-size:12px}}
+@media (min-width:900px){#tour{left:auto;right:28px;bottom:auto;top:96px;transform:translateY(-14px)}#tour.on{transform:none}}
 .gpill.shopnow{background:linear-gradient(180deg,#e2c38f,#a9834f)!important;color:#17130e!important;border:0!important;box-shadow:0 10px 30px rgba(200,165,116,.35);font-weight:600}
 </style>
-<link rel="stylesheet" href="/shell.css?v=14">
+<link rel="stylesheet" href="/shell.css?v=15">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
 </head>
 <body>
+<noscript><div style="padding:40px;color:#F2EDE4;background:#0e0d0b;font-family:Georgia,serif">LOCKG needs JavaScript to show the 3D product. Call us: +961 3 680 853.</div></noscript>
 <canvas id="c"></canvas>
 <div id="labels"></div>
 <div id="toast"></div>
@@ -148,10 +179,18 @@ body:has(#picker.on) .coach{display:none}
  <a class="dk" href="/configure/?photos=1" style="text-decoration:none;color:inherit"><i data-ic="camera"></i><span data-i18n="d_photo">Photos</span></a>
  <button class="dk" data-go="order"><i data-ic="bag"></i><span data-i18n="d_order">Order</span></button>
 </div>
+<div id="tour" class="glass" role="dialog" aria-label="LOCKG tour"><div class="tr-top"><span class="tr-dots" id="trDots"></span><button class="tr-x" id="trSkip" data-i18n="tr_skip">Skip</button></div>
+<div class="tr-body"><div class="tr-n" id="trN">01</div><div><h2 id="trT"></h2><p id="trP"></p></div></div>
+<div class="tr-act"><button class="tr-back" id="trBack" aria-label="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="tr-go" id="trGo"></button></div></div>
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="hint" data-i18n="p_hint">Drag to turn · Pinch to zoom</div>
 
-<script>window.LOCKG_I18N={
+<script>window.LOCKG_I18N={tr_skip:['Skip','تخطَّ'],tr_next:['Next','التالي'],tr_done:['Try it on my wall','جرّبه على جداري'],
+tr1t:['This is LOCKG ONE.','هذا LOCKG ONE.'],tr1p:['A steel rail that locks one long gun to your wall. Displayed, not hidden.','سكة فولاذية تقفل سلاحًا طويلًا واحدًا على جدارك. معروض، لا مخفي.'],
+tr2t:['Four parts. One job.','أربع قطع. مهمة واحدة.'],tr2p:['Barrel lock on top, trigger cover in the middle, cradle at the bottom, all on one rail with 4 hidden bolts.','قفل السبطانة في الأعلى، غطاء الزناد في الوسط، الحامل في الأسفل، على سكة واحدة بأربعة مسامير مخفية.'],
+tr3t:['Nobody reaches the trigger.','لا أحد يصل إلى الزناد.'],tr3p:['While it is locked, the trigger stays covered. Small hands cannot open it, and a wrong print alerts your phone.','أثناء القفل يبقى الزناد مغطى. لا تستطيع الأيدي الصغيرة فتحه، والبصمة الخاطئة ترسل تنبيهًا لهاتفك.'],
+tr4t:['Your print opens it.','بصمتك تفتحه.'],tr4p:['0.2 seconds. No code to forget, and a backup key for the day there is no power.','0.2 ثانية. لا رمز تنساه، ومفتاح احتياطي ليوم انقطاع الكهرباء.'],
+tr5t:['Now see it at home.','شاهده الآن في منزلك.'],tr5p:['Snap your gun and your wall. We put it in the lock, in 3D, on your own wall.','صوّر سلاحك وجدارك. نضعه في القفل، ثلاثي الأبعاد، على جدارك.'],
 p_kick:['LOCKG ONE · Wall rack','LOCKG ONE · حامل جداري'],
 p_h1:['On the wall.<br><em>Locked to it.</em>','على الجدار.<br><em>مقفل عليه.</em>'],
 p_sub:['Your print frees it in 0.2 s.','بصمتك تحرره خلال 0.2 ثانية.'],
@@ -171,8 +210,8 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=14"></script>
-<script src="/fx.js?v=14"></script>
+<script src="/shell.js?v=15"></script>
+<script src="/fx.js?v=15"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -199,7 +238,7 @@ const brushed=ctex(512,64,(x,w,h)=>{x.fillStyle='#dcdcdc';x.fillRect(0,0,w,h);fo
 const wordTex=ctex(512,64,(x,w,h)=>{x.fillStyle='#efe6d6';x.font='400 36px "Cormorant Garamond", Georgia, serif';x.textAlign='center';x.textBaseline='middle';x.fillText('L  O  C  K  G',w/2,h/2+2);});
 
 /* materials */
-const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshPhysicalMaterial({color:0x26272a,metalness:.9,roughness:.32,clearcoat:.5,clearcoatRoughness:.25,map:brushed}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.72}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
+const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshPhysicalMaterial({color:0x26272a,metalness:.9,roughness:.32,clearcoat:.5,clearcoatRoughness:.25,map:brushed}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshPhysicalMaterial({color:0x1a1a1a,roughness:.62,map:brushed,sheen:.25,sheenColor:new THREE.Color(0x555555)}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
 const shellM=new THREE.MeshPhysicalMaterial({color:0x8a6a43,metalness:.95,roughness:.28,map:brushed,clearcoat:.55,clearcoatRoughness:.22,sheen:.15,sheenColor:new THREE.Color(0xfff1d6)});
 const darkM=new THREE.MeshStandardMaterial({color:0x121110,metalness:.6,roughness:.45});
 const feltM=new THREE.MeshStandardMaterial({color:0x2a211a,roughness:1});
@@ -210,7 +249,7 @@ const glassBlack=new THREE.MeshPhysicalMaterial({color:0x070707,roughness:.12,cl
 function mesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=true;return o;}
 function at(o,x,y,z=0){o.position.set(x,y,z);return o;}
 function rbox(w,h,d,r,m){return mesh(new RoundedBoxGeometry(w,h,d,4,r),m);}
-function box(w,h,d,m){return mesh(new THREE.BoxGeometry(w,h,d),m);}
+function box(w,h,d,m){const r=Math.min(w,h,d)*.22;return mesh(r>.0015?new RoundedBoxGeometry(w,h,d,3,r):new THREE.BoxGeometry(w,h,d),m);}
 function cylX(a,b,len,m,seg=28){const g=new THREE.CylinderGeometry(a,b,len,seg);g.rotateZ(-Math.PI/2);return mesh(g,m);}
 function cylZ(r,len,m,seg=28){const g=new THREE.CylinderGeometry(r,r,len,seg);g.rotateX(Math.PI/2);return mesh(g,m);}
 function extrude(pts,depth,m,bev=.006){const s=new THREE.Shape();s.moveTo(...pts[0]);pts.slice(1).forEach(p=>s.lineTo(...p));const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelThickness:bev,bevelSize:bev,bevelSegments:4});g.translate(0,0,-depth/2);return mesh(g,m);}
@@ -233,7 +272,7 @@ function buildGun(id){const g=new THREE.Group();
   const grip=box(.03,.085,.03,P);grip.rotation.z=.32;g.add(at(grip,.29,.005));
   const mag=box(.05,.14,.026,P);mag.rotation.z=-.18;g.add(at(mag,.405,-.025));
   g.add(guard(.335,.042,S));g.add(trig(.335,.035,S));
-  const hg=cylX(.02,.02,.34,S,8);g.add(at(hg,.67,.118));
+  const hg=cylX(.02,.02,.34,S,24);g.add(at(hg,.67,.118));
   for(let i=0;i<6;i++)g.add(at(box(.026,.006,.042,P),.55+i*.05,.118));
   g.add(at(cylX(.008,.009,.2,M.blued),.93,.118));
   g.add(at(cylX(.012,.012,.05,M.blued),1.04,.118));
@@ -245,7 +284,7 @@ function buildGun(id){const g=new THREE.Group();
 
 /* ---------- product (built along +X, then stood upright) ---------- */
 const WZ=-.075, GY=-.055; // wall plane, gun local->product y offset
-const wallMat=new THREE.MeshStandardMaterial({color:0xd7d0c4,map:plaster,roughness:.96,envMapIntensity:.25});
+const wallMat=new THREE.MeshStandardMaterial({color:0xd7d0c4,map:plaster,bumpMap:plaster,bumpScale:1.2,roughness:.96,envMapIntensity:.25});
 const wall=mesh(new THREE.PlaneGeometry(5,4),wallMat);wall.castShadow=false;at(wall,0,.2,WZ);scene.add(wall);
 const floorM=new THREE.MeshStandardMaterial({color:0x2a211b,roughness:.8});
 const product=new THREE.Group();product.rotation.z=Math.PI/2;scene.add(product);
@@ -404,6 +443,22 @@ window.LOCKG_SUMMARY=()=>`LOCKG ONE · ${Shell.t('f'+finIdx)} · ${Shell.t(GUNS[
 document.getElementById('bOrder').onclick=()=>Shell.go('order');
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>Shell.go(b.dataset.go));
 window.__one={unlock,view,build};
+
+/* ===== guided tour: explains LOCKG in 5 steps, once ===== */
+(()=>{const el=document.getElementById('tour');if(!el)return;let i=0;const N=5;
+ const act=[()=>{if(explT){bEx.click();}view('front');},()=>{if(!explT)bEx.click();},()=>{if(explT)bEx.click();view('detail');},()=>{view('three');if(!isOpen)unlock();},()=>{if(isOpen)lock();view('front');}];
+ const paint=()=>{document.getElementById('trDots').innerHTML=Array.from({length:N},(_,k)=>`<i class="${k===i?'on':''}"></i>`).join('');document.getElementById('trN').textContent='0'+(i+1);
+  document.getElementById('trT').textContent=Shell.t('tr'+(i+1)+'t');document.getElementById('trP').textContent=Shell.t('tr'+(i+1)+'p');
+  const b=el.querySelector('.tr-body>div:last-child');b.style.animation='none';void b.offsetWidth;b.style.animation='';
+  document.getElementById('trGo').textContent=i===N-1?Shell.t('tr_done'):Shell.t('tr_next');document.getElementById('trBack').style.visibility=i?'visible':'hidden';};
+ const go=k=>{i=k;paint();try{act[i]();}catch(e){}};
+ const end=()=>{el.classList.remove('on');document.body.classList.remove('touring');try{localStorage.setItem('lockg-tour','1');}catch(e){}if(explT)bEx.click();};
+ document.getElementById('trGo').onclick=()=>{if(i<N-1)go(i+1);else{end();location.href='/configure/?photos=1';}};
+ document.getElementById('trBack').onclick=()=>{if(i>0)go(i-1);};document.getElementById('trSkip').onclick=end;
+ Shell.onLang(paint);
+ let seen=false;try{seen=!!localStorage.getItem('lockg-tour');}catch(e){}
+ if(!seen||/tour/.test(location.search)){setTimeout(()=>{coachOff&&coachOff();document.body.classList.add('touring');el.classList.add('on');go(0);},2600);}
+ window.LOCKG_TOUR=()=>{document.body.classList.add('touring');el.classList.add('on');go(0);};})();
 </script>
 
 </body>

@@ -3,7 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>LOCKG · Place it in a room</title>
+<title>LOCKG · Test it in your room</title>
+<meta name="description" content="Snap your gun and your wall. LOCKG puts your gun in the lock, in 3D, on your own wall.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="LOCKG">
+<meta property="og:title" content="LOCKG · Test it in your room"><meta property="og:description" content="Snap your gun and your wall. LOCKG puts your gun in the lock, in 3D, on your own wall.">
+<meta property="og:image" content="https://lockg.xmf.app/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ivory:#F2EDE4;--ink:#15130F;--bronze:#9C7A4E;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',system-ui,sans-serif}
@@ -97,6 +107,7 @@ html[lang=ar] .q-tx b{font:500 16px/1.4 var(--arab)}
 #qburst i{position:absolute;width:8px;height:8px;border-radius:50%;background:#E6C893;box-shadow:0 0 10px #C8A574}
 .q-win{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);z-index:91;font:300 44px/1 'Cormorant Garamond',var(--arab);color:#F2EDE4;text-shadow:0 0 30px rgba(200,165,116,.8);opacity:0;pointer-events:none;animation:qwin 1.3s cubic-bezier(.2,.8,.2,1)}
 @keyframes qwin{20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}70%{opacity:1;transform:translate(-50%,-60%) scale(1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}
+@media (orientation:landscape) and (max-height:520px){#quest{left:calc(12px + env(safe-area-inset-left,0px));right:auto;top:62px;width:290px;padding:10px 12px;transform:translateY(-10px)}body.live #quest.on{transform:none}.q-body{margin:8px 0}.q-ic{width:38px;height:38px}.q-tx b{font-size:16px}.q-tx small{display:none}.q-go,.q-skip{height:40px}}
 body.ar #quest{top:auto;bottom:calc(112px + env(safe-area-inset-bottom,0px))}
 @media (min-width:900px){#quest{left:auto;right:24px;transform:translateY(-20px)}body.live #quest.on{transform:none}}
 #dock #bChild{display:none!important}
@@ -105,7 +116,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=14">
+<link rel="stylesheet" href="/shell.css?v=15">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -138,6 +149,7 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 };</script>
 </head>
 <body>
+<noscript><div style="padding:40px;color:#F2EDE4;background:#0e0d0b;font-family:Georgia,serif">LOCKG needs JavaScript to show the 3D product. Call us: +961 3 680 853.</div></noscript>
 <canvas id="c"></canvas>
 <div class="vignette"></div>
 <section id="intro">
@@ -170,6 +182,7 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
  <button class="dk" id="bView"><i data-ic="eye"></i><span id="vLabel"></span></button>
  <button class="dk" data-go="order"><i data-ic="bag"></i><span data-i18n="d_order">Order</span></button>
 </div>
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">LOCKG · Test it in your room</h1>
 <div id="quest" class="glass"><div class="q-top"><span class="q-lv" id="qLv"></span><div class="q-bar"><i id="qFill"></i></div><button class="q-min" id="qMin" aria-label="hide">–</button></div>
  <div class="q-body"><div class="q-ic" id="qIc"></div><div class="q-tx"><b id="qT"></b><small id="qS"></small></div></div>
  <div class="q-act"><button class="q-go" id="qGo"></button><button class="q-skip" id="qSkip"></button></div></div>
@@ -179,8 +192,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=14"></script>
-<script src="/fx.js?v=14"></script>
+<script src="/shell.js?v=15"></script>
+<script src="/fx.js?v=15"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -211,7 +224,7 @@ const brushed=ctex(512,64,(x,w,h)=>{x.fillStyle='#dcdcdc';x.fillRect(0,0,w,h);fo
 const wordTex=ctex(512,64,(x,w,h)=>{x.fillStyle='#efe6d6';x.font='400 36px "Cormorant Garamond", Georgia, serif';x.textAlign='center';x.textBaseline='middle';x.fillText('L  O  C  K  G',w/2,h/2+2);});
 
 /* materials */
-const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshPhysicalMaterial({color:0x26272a,metalness:.9,roughness:.32,clearcoat:.5,clearcoatRoughness:.25,map:brushed}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.72}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
+const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshPhysicalMaterial({color:0x26272a,metalness:.9,roughness:.32,clearcoat:.5,clearcoatRoughness:.25,map:brushed}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshPhysicalMaterial({color:0x1a1a1a,roughness:.62,map:brushed,sheen:.25,sheenColor:new THREE.Color(0x555555)}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
 const shellM=new THREE.MeshPhysicalMaterial({color:0x8a6a43,metalness:.95,roughness:.28,map:brushed,clearcoat:.55,clearcoatRoughness:.22,sheen:.15,sheenColor:new THREE.Color(0xfff1d6)});
 const darkM=new THREE.MeshStandardMaterial({color:0x121110,metalness:.6,roughness:.45});
 const feltM=new THREE.MeshStandardMaterial({color:0x2a211a,roughness:1});
@@ -222,7 +235,7 @@ const glassBlack=new THREE.MeshPhysicalMaterial({color:0x070707,roughness:.12,cl
 function mesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=true;return o;}
 function at(o,x,y,z=0){o.position.set(x,y,z);return o;}
 function rbox(w,h,d,r,m){return mesh(new RoundedBoxGeometry(w,h,d,4,r),m);}
-function box(w,h,d,m){return mesh(new THREE.BoxGeometry(w,h,d),m);}
+function box(w,h,d,m){const r=Math.min(w,h,d)*.22;return mesh(r>.0015?new RoundedBoxGeometry(w,h,d,3,r):new THREE.BoxGeometry(w,h,d),m);}
 function cylX(a,b,len,m,seg=28){const g=new THREE.CylinderGeometry(a,b,len,seg);g.rotateZ(-Math.PI/2);return mesh(g,m);}
 function cylZ(r,len,m,seg=28){const g=new THREE.CylinderGeometry(r,r,len,seg);g.rotateX(Math.PI/2);return mesh(g,m);}
 function extrude(pts,depth,m,bev=.006){const s=new THREE.Shape();s.moveTo(...pts[0]);pts.slice(1).forEach(p=>s.lineTo(...p));const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelThickness:bev,bevelSize:bev,bevelSegments:4});g.translate(0,0,-depth/2);return mesh(g,m);}
@@ -245,7 +258,7 @@ function buildGun(id){const g=new THREE.Group();
   const grip=box(.03,.085,.03,P);grip.rotation.z=.32;g.add(at(grip,.29,.005));
   const mag=box(.05,.14,.026,P);mag.rotation.z=-.18;g.add(at(mag,.405,-.025));
   g.add(guard(.335,.042,S));g.add(trig(.335,.035,S));
-  const hg=cylX(.02,.02,.34,S,8);g.add(at(hg,.67,.118));
+  const hg=cylX(.02,.02,.34,S,24);g.add(at(hg,.67,.118));
   for(let i=0;i<6;i++)g.add(at(box(.026,.006,.042,P),.55+i*.05,.118));
   g.add(at(cylX(.008,.009,.2,M.blued),.93,.118));
   g.add(at(cylX(.012,.012,.05,M.blued),1.04,.118));
@@ -320,10 +333,10 @@ function placeLabels(){}
 /* ---------- room ---------- */
 const room=new THREE.Group();scene.add(room);
 const floorTex=ctex(1024,1024,(x,w,h)=>{const pw=w/6;for(let i=0;i<6;i++){for(let j=0;j<3;j++){const off=(i%2)*h/6;const y0=j*h/3+off-h/6;const tone=rnd(.85,1.1);x.fillStyle=`rgb(${(66*tone)|0},${(47*tone)|0},${(32*tone)|0})`;x.fillRect(i*pw,y0,pw,h/3);for(let k=0;k<22;k++){x.strokeStyle=`rgba(20,12,6,${rnd(.08,.25)})`;x.lineWidth=rnd(.5,1.6);x.beginPath();let gx=i*pw+rnd(0,pw);x.moveTo(gx,y0);for(let Y=y0;Y<y0+h/3;Y+=20){gx+=rnd(-1.2,1.2);x.lineTo(gx,Y);}x.stroke();}x.fillStyle='rgba(8,5,3,.6)';x.fillRect(i*pw,y0,pw,2);}x.fillStyle='rgba(8,5,3,.7)';x.fillRect(i*pw,0,2,h);}},[3,3]);
-const wallMat=new THREE.MeshStandardMaterial({color:0x6b625a,map:plaster,roughness:.95,envMapIntensity:.25});
+const wallMat=new THREE.MeshStandardMaterial({color:0x6b625a,map:plaster,bumpMap:plaster,bumpScale:1.2,roughness:.95,envMapIntensity:.25});
 const wall=mesh(new THREE.PlaneGeometry(8,3.4),wallMat);wall.castShadow=false;at(wall,0,1.7,0);room.add(wall);
 const side=mesh(new THREE.PlaneGeometry(6,3.4),wallMat);side.rotation.y=Math.PI/2;side.castShadow=false;at(side,-4,1.7,3);room.add(side);
-const floor=mesh(new THREE.PlaneGeometry(8,7),new THREE.MeshStandardMaterial({map:floorTex,roughness:.5,envMapIntensity:.35}));floor.rotation.x=-Math.PI/2;floor.castShadow=false;at(floor,0,0,3.5);room.add(floor);
+const floor=mesh(new THREE.PlaneGeometry(8,7),new THREE.MeshStandardMaterial({map:floorTex,bumpMap:floorTex,bumpScale:.8,roughness:.5,roughnessMap:floorTex,envMapIntensity:.35}));floor.rotation.x=-Math.PI/2;floor.castShadow=false;at(floor,0,0,3.5);room.add(floor);
 const baseM=new THREE.MeshStandardMaterial({color:0x2c241e,roughness:.8});room.add(at(box(8,.1,.02,baseM),0,.05,.01));
 // window on side wall (soft daylight)
 const winM=new THREE.MeshBasicMaterial({color:0xfff1d8,toneMapped:false});
