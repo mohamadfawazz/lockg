@@ -29,6 +29,20 @@ body.fx-glow #fx-glow{opacity:1}
 .fx-sheen{position:relative;overflow:hidden}
 .fx-sheen::after{content:"";position:absolute;inset:-20%;background:linear-gradient(105deg,transparent 40%,rgba(255,240,210,.35) 50%,transparent 60%);transform:translateX(-120%);animation:fxSh 5.5s 2s ease-in-out infinite;pointer-events:none}
 @keyframes fxSh{0%{transform:translateX(-120%)}22%,100%{transform:translateX(120%)}}
+
+html,body,button,a,label,input,.dk,.gpill,.card{touch-action:manipulation}
+body{animation:fxIn .6s cubic-bezier(.2,.8,.2,1)}
+body.fx-out{opacity:0;transform:scale(.985);filter:blur(4px);transition:opacity .32s,transform .32s,filter .32s}
+@keyframes fxIn{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:none}}
+.fx-tap{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(242,226,190,.55),rgba(200,165,116,.18) 45%,transparent 70%);transform:translate(-50%,-50%) scale(0);animation:fxTap .6s cubic-bezier(.2,.8,.2,1) forwards;z-index:0}
+@keyframes fxTap{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.dk svg,.dk i{transition:transform .35s cubic-bezier(.3,1.6,.4,1)}
+.dk.fx-pop svg{transform:translateY(-4px) scale(1.18)}
+.dk-main{animation:fxBreath 3.2s ease-in-out infinite}
+@keyframes fxBreath{0%,100%{box-shadow:0 0 0 0 rgba(200,165,116,.0),0 10px 30px rgba(0,0,0,.35)}50%{box-shadow:0 0 0 10px rgba(200,165,116,.12),0 0 34px rgba(200,165,116,.35)}}
+.lab .num,.lab>b{animation:fxDot 2.6s ease-in-out infinite}
+@keyframes fxDot{50%{box-shadow:0 0 0 6px rgba(200,165,116,.15)}}
+@media (prefers-reduced-motion: reduce){body,.dk-main,.lab .num,.lab>b{animation:none}}
 @media (prefers-reduced-motion: reduce){.fx-rise{opacity:1;transform:none;filter:none}.fx-sheen::after{display:none}}`;
 const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 const $=(t,c,p=document.body)=>{const e=document.createElement(t);if(c)e.className=c;p.appendChild(e);return e;};
@@ -51,6 +65,21 @@ ready(()=>{
  /* 3. magnetic buttons (desktop) */
  if(FINE&&!RM){document.addEventListener('pointermove',e=>{const b=e.target.closest&&e.target.closest('.gpill,#next,.q-go,.dk-main');document.querySelectorAll('.fx-mag').forEach(m=>{if(m!==b){m.style.transform='';m.classList.remove('fx-mag');}});
   if(!b)return;const r=b.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);b.classList.add('fx-mag');b.style.transition='transform .25s cubic-bezier(.2,.8,.2,1)';b.style.transform=`translate(${dx*.1}px,${dy*.18}px)`;},{passive:true});}
+
+ /* 6. no double-tap zoom, no pinch zoom of the page (the 3D keeps its own pinch) */
+ let lastT=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastT<320&&!e.target.closest('input,textarea,button,a,label,select,canvas'))e.preventDefault();lastT=n;},{passive:false});
+ ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+ document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+ /* 7. gold tap ripple inside buttons + dock icon pop */
+ document.addEventListener('pointerdown',e=>{if(RM)return;const b=e.target.closest&&e.target.closest('.gpill,.dk,.dk-main,.card,.tile,.q-go,#next,.tog button,.guns button,.mlist a,.mlist button');if(!b)return;
+  const r=b.getBoundingClientRect(),cs=getComputedStyle(b);if(cs.position==='static')b.style.position='relative';if(cs.overflow!=='hidden')b.style.overflow='hidden';
+  const t=document.createElement('span');t.className='fx-tap';const d=Math.max(r.width,r.height)*2.2;t.style.width=t.style.height=d+'px';t.style.left=(e.clientX-r.left)+'px';t.style.top=(e.clientY-r.top)+'px';b.appendChild(t);setTimeout(()=>t.remove(),650);
+  if(b.classList.contains('dk')){b.classList.add('fx-pop');setTimeout(()=>b.classList.remove('fx-pop'),260);}
+  try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}},{passive:true});
+ /* 8. soft page transitions between LOCKG pages */
+ document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(!a||RM||e.metaKey||e.ctrlKey||a.target)return;const u=new URL(a.href,location.href);
+  if(u.origin!==location.origin||(u.pathname===location.pathname&&u.search===location.search))return;e.preventDefault();document.body.classList.add('fx-out');setTimeout(()=>location.href=u.href,300);});
+ addEventListener('pageshow',e=>{if(e.persisted)document.body.classList.remove('fx-out');});
  /* 4. reveal anything marked .fx-rise */
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
  const scan=()=>document.querySelectorAll('.fx-rise:not(.in)').forEach(el=>{if(!el.dataset.fxd){el.dataset.fxd=1;el.style.transitionDelay=((VEIL?1.5:0)+(+el.dataset.d||0))+'s';}io.observe(el);});scan();setInterval(scan,1200);

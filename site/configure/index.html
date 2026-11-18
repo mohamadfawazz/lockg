@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>LOCKG · Place it in a room</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -105,7 +105,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=12">
+<link rel="stylesheet" href="/shell.css?v=13">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -179,8 +179,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=12"></script>
-<script src="/fx.js?v=12"></script>
+<script src="/shell.js?v=13"></script>
+<script src="/fx.js?v=13"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
