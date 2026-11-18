@@ -28,6 +28,18 @@ html[lang=ar] .kick{letter-spacing:0;font-family:var(--arab);font-size:12px}
 #im2{opacity:0}
 .tint{position:absolute;inset:0;pointer-events:none;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;mix-blend-mode:color;opacity:0;transition:opacity .4s}
 #art.custom .tint{opacity:.85}
+.tint.sheen{opacity:1!important;mix-blend-mode:screen;background:linear-gradient(105deg,transparent 35%,rgba(255,236,200,.55) 48%,transparent 60%) no-repeat;background-size:300% 100%;animation:shopSheen 6s 1.5s ease-in-out infinite}
+@keyframes shopSheen{0%{background-position:120% 0}30%,100%{background-position:-60% 0}}
+#art img{animation:shopFloat 6s ease-in-out infinite}
+@keyframes shopFloat{50%{translate:0 -8px}}
+.panel.on .card,.panel.on .sw>*,.panel.on .guns button,.panel.on .fld,.panel.on .qty{animation:in .5s cubic-bezier(.2,.8,.2,1) backwards}
+.panel.on .card:nth-child(2),.panel.on .guns button:nth-child(2),.panel.on .sw>*:nth-child(2),.panel.on .fld:nth-of-type(2){animation-delay:.06s}
+.panel.on .card:nth-child(3),.panel.on .guns button:nth-child(3),.panel.on .sw>*:nth-child(3){animation-delay:.12s}
+.panel.on .guns button:nth-child(4),.panel.on .sw>*:nth-child(4){animation-delay:.18s}
+.panel.on .sw>*:nth-child(5){animation-delay:.24s}
+.card.on{animation:pick .4s cubic-bezier(.2,.8,.2,1)!important}
+@keyframes pick{50%{transform:scale(1.015)}}
+@media (prefers-reduced-motion: reduce){#art img,.tint.sheen{animation:none}}
 #art.car .tint,#art.duo .tint{display:none}
 .sw label{width:64px;cursor:pointer;text-align:center;position:relative}.sw label i{display:block;width:56px;height:56px;margin:0 auto;border-radius:50%;box-shadow:inset 0 -6px 12px rgba(0,0,0,.35),inset 0 4px 8px rgba(255,255,255,.18);outline:2px solid transparent;outline-offset:4px}
 .sw label.on i{outline-color:var(--gold)}.sw label em{display:block;font-style:normal;font-size:11px;margin-top:9px;color:#f2ede499}.sw label.on em{color:var(--ivory)}.sw label input{position:absolute;opacity:0;width:1px;height:1px}
@@ -139,12 +151,12 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
 }
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=11">
+<link rel="stylesheet" href="/shell.css?v=12">
 </head>
 <body>
 <div id="app">
  <section id="stage">
-  <div id="art"><div class="trunk"></div><img id="im1" alt=""><img id="im2" alt=""><div id="tint1" class="tint"></div></div><div class="floor"></div>
+  <div id="art"><div class="trunk"></div><img id="im1" alt=""><img id="im2" alt=""><div id="tint1" class="tint"></div><div id="sheen1" class="tint sheen"></div></div><div class="floor"></div>
   <div class="tag"><div class="kick" data-i18n="s_kick">LOCKG ONE</div><b id="tagName"></b><span id="tagSub"></span></div>
  </section>
  <section id="flow">
@@ -228,7 +240,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=11"></script>
+<script src="/shell.js?v=12"></script>
+<script src="/fx.js?v=12"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};
@@ -261,7 +274,7 @@ function art(target,prod,fin,gun,big){
  target.innerHTML=defs+body;}
 const IMG=(f,g)=>`/shop/img/${f==='custom'?'nickel':f}-${g}.webp`;
 const FIN=()=>O.fin==='custom'?CUSTOM:FINS.find(f=>f.id===O.fin);
-function paint(){const a=$('art');a.className=(O.prod==='wall'?'':O.prod)+(O.fin==='custom'?' custom':'');const t=$('tint1');t.style.background=CUSTOM.c;const ms=`url(${IMG(O.fin,O.gun)})`;t.style.webkitMaskImage=ms;t.style.maskImage=ms;const src=IMG(O.fin,O.gun);[$('im1'),$('im2')].forEach(im=>{if(!im.src.endsWith(src)){im.style.opacity=0;const n=new Image();n.onload=()=>{im.src=src;im.style.opacity='';};n.src=src;}});const p=PRODUCTS.find(x=>x.id===O.prod);$('tagName').textContent=L(p)[0];$('tagSub').textContent=L(FIN())+' · '+L(GUNS.find(g=>g.id===O.gun));$('total').textContent=money(total());}
+function paint(){const a=$('art');a.className=(O.prod==='wall'?'':O.prod)+(O.fin==='custom'?' custom':'');const t=$('tint1');t.style.background=CUSTOM.c;const ms=`url(${IMG(O.fin,O.gun)})`;[t,$('sheen1')].forEach(e=>{e.style.webkitMaskImage=ms;e.style.maskImage=ms;});const src=IMG(O.fin,O.gun);[$('im1'),$('im2')].forEach(im=>{if(!im.src.endsWith(src)){im.style.opacity=0;const n=new Image();n.onload=()=>{im.src=src;im.style.opacity='';};n.src=src;}});const p=PRODUCTS.find(x=>x.id===O.prod);$('tagName').textContent=L(p)[0];$('tagSub').textContent=L(FIN())+' · '+L(GUNS.find(g=>g.id===O.gun));$('total').textContent=money(total());}
 /* ---------- UI ---------- */
 function card(o,on,price,extra){const b=document.createElement('button');b.className='card'+(on?' on':'');b.innerHTML=`${extra||''}<div><b>${L(o)[0]}${o.best?`<span class="badge">${AR()?'الأوفر':'Best value'}</span>`:''}</b><small>${L(o)[1]}</small></div>${price!==null?`<div class="pr">${price}</div>`:''}<span class="chk"></span>`;return b;}
 function render(){
@@ -288,7 +301,7 @@ function render(){
  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('on',!sent&&+x.dataset.s===step));
  $('prev').style.visibility=step>0&&!sent?'visible':'hidden';
  $('nextL').textContent=sent?T('s_home'):step===NS-1?T('s_place')+' · '+money(total()):T('s_next');
- $('total').textContent=money(total());}
+ window.LOCKG_FX?LOCKG_FX.count($('total'),total(),money):($('total').textContent=money(total()));}
 function go(i){step=i;render();scrollTo({top:0,behavior:'smooth'});}
 function valid(){const req=[['fName','iName',v=>v.trim().length>1],['fPhone','iPhone',v=>v.replace(/\D/g,'').length>=7],['fCity','iCity',v=>v.trim().length>1],['fAddr','iAddr',v=>v.trim().length>3]];let ok=true;
  req.forEach(([f,i,t])=>{const g=t($(i).value);$(f).classList.toggle('bad',!g);if(!g)ok=false;});const l=$('iLic').checked;$('fLic').classList.toggle('bad',!l);return ok&&l;}
@@ -307,7 +320,7 @@ $('next').onclick=async()=>{
  try{const r=await fetch(Shell.CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'lead',name:$('iName').value.trim(),phone:$('iPhone').value.trim(),email:$('iEmail').value.trim(),area:$('iCity').value.trim(),intent:'buy',summary,page:'/shop/',lang:Shell.lang,order})});
   if(!r.ok)throw 0;const rj=await r.json().catch(()=>({}));sent=true;$('ono').textContent=T('s_order')+' '+ono;if(rj.customer)$('ono').insertAdjacentHTML('afterend',`<p class="sub" style="margin:-8px 0 18px">${T('s_mail')}${$('iEmail').value.trim()}</p>`);
   $('next3').innerHTML=[O.pay==='card'?'s_n1c':'s_n1','s_n2','s_n3'].map((k,i)=>`<div><i>${i+1}</i>${T(k)}</div>`).join('');
-  $('done').classList.add('on');document.querySelector('#steps').style.display='none';render();scrollTo({top:0,behavior:'smooth'});
+  $('done').classList.add('on');setTimeout(()=>{const fx=window.LOCKG_FX;if(fx){fx.ripple(document.querySelector('.tick'));fx.sparks(document.querySelector('.tick'),40);fx.buzz([12,40,12,40,20]);}},450);document.querySelector('#steps').style.display='none';render();scrollTo({top:0,behavior:'smooth'});
  }catch(e){toastMsg(T('s_err')+Shell.CFG.phone);}
  nb.disabled=false;if(!sent)render();};
 function toastMsg(m){let t=$('stoast');if(!t){t=document.createElement('div');t.id='stoast';t.style.cssText='position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;padding:13px 20px;border-radius:999px;background:rgba(21,19,15,.92);border:1px solid #9c7a4e88;font-size:13px;transition:.3s;max-width:90vw;text-align:center';document.body.appendChild(t);}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,3200);}

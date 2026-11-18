@@ -105,7 +105,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=11">
+<link rel="stylesheet" href="/shell.css?v=12">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -179,7 +179,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=11"></script>
+<script src="/shell.js?v=12"></script>
+<script src="/fx.js?v=12"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -418,7 +419,7 @@ function toast(m,deny=false,ms=2400){toastEl.textContent=m;toastEl.classList.tog
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const bTest=document.getElementById('bTest');
 function setMain(o){bTest.classList.toggle('open',o);bTest.querySelector('span').textContent=Shell.t(o?'b_lock':'d_test');}
-async function unlock(){if(S.busy)return;S.busy=true;setTimeout(()=>qDone(2),700);coachOff();ringMode='scan';ringT0=performance.now();await wait(140);ringMode='ok';gateT=1;await wait(60);openT=1;S.open=true;setMain(true);toast(Shell.t('t_open'));S.busy=false;clearTimeout(autoT);autoT=setTimeout(()=>{if(S.open)lock(true);},10000);}
+async function unlock(){if(S.busy)return;S.busy=true;setTimeout(()=>{const fx=window.LOCKG_FX;if(fx){fx.ripple(document.getElementById('bTest'));fx.sparks(document.getElementById('bTest'),22);fx.buzz([10,30,14]);}},120);setTimeout(()=>qDone(2),700);coachOff();ringMode='scan';ringT0=performance.now();await wait(140);ringMode='ok';gateT=1;await wait(60);openT=1;S.open=true;setMain(true);toast(Shell.t('t_open'));S.busy=false;clearTimeout(autoT);autoT=setTimeout(()=>{if(S.open)lock(true);},10000);}
 async function lock(auto=false){if(S.busy)return;S.busy=true;openT=0;await wait(350);gateT=0;await wait(250);ringMode='idle';S.open=false;setMain(false);toast(Shell.t(auto?'t_auto':'t_lock'));S.busy=false;}
 bTest.onclick=()=>S.open?lock():unlock();
 document.getElementById('bChild').onclick=async()=>{if(S.busy)return;if(S.open)await lock();S.busy=true;ringMode='scan';ringT0=performance.now();await wait(220);ringMode='deny';ringT0=performance.now();shakeT=performance.now();toast(Shell.t('t_deny'),true,3000);await wait(1500);ringMode='idle';S.busy=false;};
@@ -756,7 +757,8 @@ document.getElementById('bExplode').onclick=e=>{explT=explT?0:1;e.currentTarget.
 const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
 const RC={idle:new THREE.Color(0x9c7a4e),scan:new THREE.Color(0xf2ede4),ok:new THREE.Color(0xeadcc2),deny:new THREE.Color(0xc0503a)};
 let last=performance.now();
-function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+const dust=window.LOCKG_FX&&LOCKG_FX.dust(THREE,scene,{center:[0,1.7,.9],box:[3.4,2.4,2.2],n:420});
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(dust){dust.tick(now/1000);dust.pts.visible=!ar.on;}
  if(intro){const t=(now-i0)/1000;camera.position.set(Math.sin(t*.12)*1.5+.5,1.5+Math.sin(t*.2)*.05,3.4-Math.cos(t*.12)*.3);controls.target.set(fx,fy,0);}
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  offK+=(offT-offK)*Math.min(1,dt*6);const w=innerWidth,h=innerHeight;if(offK>.001)camera.setViewOffset(w,h,0,h*.14*offK,w,h);else camera.clearViewOffset();camera.updateProjectionMatrix();

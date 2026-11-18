@@ -100,7 +100,7 @@ body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 .gpill.shopnow{background:linear-gradient(180deg,#e2c38f,#a9834f)!important;color:#17130e!important;border:0!important;box-shadow:0 10px 30px rgba(200,165,116,.35);font-weight:600}
 </style>
-<link rel="stylesheet" href="/shell.css?v=11">
+<link rel="stylesheet" href="/shell.css?v=12">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -111,13 +111,13 @@ body:has(#picker.on) .coach{display:none}
 <div id="toast"></div>
 
 <div id="title">
-  <div class="kick" data-i18n="p_kick">LOCKG ONE · Wall rack</div>
-  <h1 data-i18n="p_h1">On the wall.<br><em>Locked to it.</em></h1>
-  <p data-i18n="p_sub">Your print frees it in 0.2 s.</p>
-  <div class="cta"><a class="gpill light" href="/configure/" data-i18n="p_room">Place it in a room</a><a class="gpill light" href="/configure/?photos=1" data-i18n="p_photos">Try with my photos</a><button class="gpill shopnow" id="bOrder" data-i18n="p_shopnow">Shop now</button></div>
+  <div class="kick fx-rise" data-d="0.10" data-i18n="p_kick">LOCKG ONE · Wall rack</div>
+  <h1 class="fx-rise" data-d="0.25" data-i18n="p_h1">On the wall.<br><em>Locked to it.</em></h1>
+  <p class="fx-rise" data-d="0.40" data-i18n="p_sub">Your print frees it in 0.2 s.</p>
+  <div class="cta fx-rise" data-d="0.55"><a class="gpill light" href="/configure/" data-i18n="p_room">Place it in a room</a><a class="gpill light" href="/configure/?photos=1" data-i18n="p_photos">Try with my photos</a><button class="gpill shopnow fx-sheen" id="bOrder" data-i18n="p_shopnow">Shop now</button></div>
 </div>
 
-<div id="spec" class="glass">
+<div id="spec" class="glass fx-rise" data-d="0.70">
   <div class="kick" data-i18n="p_spec">Target spec</div>
   <div class="row"><span data-i18n="sp_unlock">Unlock</span><b data-i18n="sp_unlock_v">0.2 s</b></div>
   <div class="row"><span data-i18n="sp_prints">Prints</span><b data-i18n="sp_prints_v">Up to 10</b></div>
@@ -168,7 +168,8 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=11"></script>
+<script src="/shell.js?v=12"></script>
+<script src="/fx.js?v=12"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -336,7 +337,7 @@ const toastEl=document.getElementById('toast');let tt;
 function toast(m,deny=false,ms=2600){toastEl.textContent=m;toastEl.classList.toggle('deny',deny);toastEl.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toastEl.classList.remove('show'),ms);}
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const bOpen=document.getElementById('bOpen');
-async function unlock(){if(busy)return;busy=true;ringMode='scan';ringT0=performance.now();await wait(140);ringMode='ok';gateT=1;await wait(60);openT=1;isOpen=true;setMain(true);coachOff();toast(Shell.t('t_open'));busy=false;clearTimeout(autoT);autoT=setTimeout(()=>{if(isOpen)lock(true);},10000);}
+async function unlock(){if(busy)return;busy=true;setTimeout(()=>{const fx=window.LOCKG_FX;if(fx){fx.ripple(document.getElementById('bOpen'));fx.sparks(document.getElementById('bOpen'),22);fx.buzz([10,30,14]);}},120);ringMode='scan';ringT0=performance.now();await wait(140);ringMode='ok';gateT=1;await wait(60);openT=1;isOpen=true;setMain(true);coachOff();toast(Shell.t('t_open'));busy=false;clearTimeout(autoT);autoT=setTimeout(()=>{if(isOpen)lock(true);},10000);}
 async function lock(auto=false){if(busy)return;busy=true;openT=0;await wait(350);gateT=0;await wait(250);ringMode='idle';isOpen=false;setMain(false);toast(Shell.t(auto?'t_auto':'t_lock'));busy=false;}
 bOpen.onclick=()=>isOpen?lock():unlock();
 document.getElementById('bChild').onclick=async()=>{if(busy)return;if(isOpen)await lock();busy=true;ringMode='scan';ringT0=performance.now();await wait(220);ringMode='deny';ringT0=performance.now();shakeT=performance.now();toast(Shell.t('t_deny'),true,3200);await wait(1500);ringMode='idle';busy=false;};
@@ -368,7 +369,8 @@ const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
 const RC={idle:new THREE.Color(0x9c7a4e),scan:new THREE.Color(0xf2ede4),ok:new THREE.Color(0xeadcc2),deny:new THREE.Color(0xc0503a)};
 const EX={bolts:[0,0,0],rail:[0,0,.06],cradle:[-.08,0,.2],cover:[0,-.12,.25],lock:[0,0,.2],gate:[.06,0,.32],gun:[0,.28,.42]};
 let last=performance.now();
-function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+const dust=window.LOCKG_FX&&LOCKG_FX.dust(THREE,scene,{center:[0,.15,.3],box:[2.6,2.2,1.6],n:360});
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(dust)dust.tick(now/1000);
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
  gate+=(gateT-gate)*Math.min(1,dt*11);gatePivot.rotation.x=-gate*1.9;
