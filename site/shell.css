@@ -210,3 +210,23 @@ html[dir=rtl] .faq summary::after{right:auto;left:4px}
 .ab-logo{padding:10px 0}
 
 .tourbtn{display:flex;align-items:center;justify-content:center;height:50px;margin-top:18px;border-radius:999px;background:#15130F;color:#F2EDE4;text-decoration:none;font:500 13px/1 Jost,var(--arab);letter-spacing:.06em}
+
+/* opening caution */
+#gate{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 40%,rgba(42,35,27,.92),rgba(7,6,5,.97) 70%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .55s cubic-bezier(.6,0,.2,1)}
+#gate.off{opacity:0;pointer-events:none}
+body.gated{overflow:hidden}
+.gt-card{width:min(420px,100%);text-align:center;color:#F2EDE4;animation:gtIn .8s cubic-bezier(.2,.8,.2,1)}
+@keyframes gtIn{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.gt-logo svg{width:54px;color:#C8A574}
+.gt-k{font:500 10px/1 Jost,var(--arab);letter-spacing:.4em;color:#9C7A4E;margin:22px 0 12px}
+html[lang=ar] .gt-k{letter-spacing:0;font-size:12px}
+#gate h2{font:300 40px/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 24px}
+html[lang=ar] #gate h2{font:500 26px/1.4 var(--arab)}
+.gt-row{display:flex;gap:14px;align-items:flex-start;text-align:start;padding:16px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(200,165,116,.16);margin-bottom:10px}
+.gt-row i{width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;background:rgba(200,165,116,.14);color:#E6C893;font:600 12px/1 Jost;font-style:normal}
+.gt-row i svg{width:18px;height:18px}
+.gt-row b{display:block;font:500 14.5px/1.3 Jost,var(--arab);margin-bottom:4px}
+.gt-row span{display:block;font-size:12.5px;line-height:1.5;color:#f2ede4a8}
+.gt-ok{width:100%;height:54px;margin-top:14px;border:0;border-radius:999px;background:linear-gradient(180deg,#e2c38f,#a9834f);color:#17130e;font:600 15px/1 Jost,var(--arab);cursor:pointer;box-shadow:0 12px 30px rgba(200,165,116,.3)}
+.gt-no{display:inline-block;margin-top:14px;padding:10px;color:#f2ede488;font:500 11px/1 Jost,var(--arab);letter-spacing:.24em;text-transform:uppercase;text-decoration:none}
+.gt-lang{display:block;margin:4px auto 0;background:none;border:0;color:#C8A574;font:500 13px/1 Jost,var(--arab);padding:10px;cursor:pointer}

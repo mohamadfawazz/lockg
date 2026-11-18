@@ -3,7 +3,10 @@
 const CFG={api:'https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api',phone:'+961 3 680 853',phoneLabel:''};
 const I={
  back:['Back','رجوع'],menu:['Menu','القائمة'],close:['Close','إغلاق'],lang:['العربية','English'],
- m_shop:['Shop','المتجر'],m_faq:['Questions','الأسئلة'],m_tour:['Watch the 30 second tour','شاهد الجولة في 30 ثانية'],m_privacy:['Privacy','الخصوصية'],m_terms:['Terms','الشروط'],lg_upd:['Last updated November 2026.','آخر تحديث نوفمبر 2026.'],
+ m_shop:['Shop','المتجر'],gt_k:['BEFORE YOU ENTER','قبل الدخول'],gt_t:['A lock, not a weapon.','قفل، لا سلاح.'],
+gt_1:['We do not sell firearms.','نحن لا نبيع الأسلحة.'],gt_1p:['LOCKG makes locks that keep a legally owned gun away from children and strangers. No firearms or ammunition are sold here.','LOCKG يصنع أقفالًا تبعد السلاح المرخص عن الأطفال والغرباء. لا نبيع أسلحة ولا ذخيرة هنا.'],
+gt_2:['You must be 18 or older.','يجب أن يكون عمرك 18 عامًا أو أكثر.'],gt_2p:['This website shows firearms in its product images. By entering you confirm you are 18+.','يعرض هذا الموقع أسلحة في صور المنتج. بالدخول تؤكد أن عمرك 18 عامًا أو أكثر.'],
+gt_ok:['I am 18+ · Enter','عمري 18+ · دخول'],gt_no:['Leave','مغادرة'],m_faq:['Questions','الأسئلة'],m_tour:['Watch the 30 second tour','شاهد الجولة في 30 ثانية'],m_privacy:['Privacy','الخصوصية'],m_terms:['Terms','الشروط'],lg_upd:['Last updated November 2026.','آخر تحديث نوفمبر 2026.'],
 fq1:['What is LOCKG ONE?','ما هو LOCKG ONE؟'],fa1:['A steel wall rack that locks one long gun. A barrel lock at the top, a cover over the trigger and a cradle under the stock. Your fingerprint opens it.','حامل فولاذي على الجدار يقفل سلاحًا طويلًا واحدًا. قفل للسبطانة في الأعلى، غطاء فوق الزناد وحامل تحت الأخمص. بصمتك تفتحه.'],
 fq2:['Can my children open it?','هل يستطيع أطفالي فتحه؟'],fa2:['No. Only saved prints open it, and new prints need the owner to approve. The trigger stays covered while it is locked.','لا. البصمات المسجلة فقط تفتحه، والبصمة الجديدة تحتاج موافقة المالك. يبقى الزناد مغطى أثناء القفل.'],
 fq3:['What if the battery dies?','ماذا لو نفدت البطارية؟'],fa3:['It stays locked, and the mechanical backup key opens it. Power is only used to open, so a dead battery never leaves it open. One battery lasts about 12 months.','يبقى مقفلًا، ويفتحه المفتاح الاحتياطي. الكهرباء تستخدم للفتح فقط، لذلك لا يبقى مفتوحًا عند نفاد البطارية. البطارية تدوم حوالي 12 شهرًا.'],
@@ -201,5 +204,19 @@ const extra={};
 window.Shell={t:k=>{const p=window.LOCKG_I18N&&window.LOCKG_I18N[k];return p?p[lang==='ar'?1:0]:t(k);},get lang(){return lang},onLang:f=>langFns.push(f),
  UIIC,GUNIC,go(id){if(id==='order'&&!/^\/shop/.test(location.pathname)){location.href='/shop/'+(window.LOCKG_SHOPQ?window.LOCKG_SHOPQ():'');return;}const p=extra[id]||PAGES[id];if(p)show(id,p);},register(id,p){extra[id]=p;},show,close:closeAll,get body(){return body},setBack(fn){backHook=fn;},render:()=>open&&render(open),CFG};
 applyI18n();syncBar();
+/* ===== opening caution: 18+ and no firearm sales ===== */
+(()=>{let ok=false;try{ok=localStorage.getItem('lockg-gate')==='1';}catch(e){}if(ok)return;
+ document.body.classList.add('gated');
+ const g=document.createElement('div');g.id='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-labelledby','gateT');
+ const draw=()=>{g.innerHTML=`<div class="gt-card"><div class="gt-logo">${LOGO}</div><div class="gt-k">${t('gt_k')}</div><h2 id="gateT">${t('gt_t')}</h2>
+  <div class="gt-row"><i>${ICON.story||''}</i><div><b>${t('gt_1')}</b><span>${t('gt_1p')}</span></div></div>
+  <div class="gt-row"><i class="age">18+</i><div><b>${t('gt_2')}</b><span>${t('gt_2p')}</span></div></div>
+  <button class="gt-ok" id="gateOk">${t('gt_ok')}</button><a class="gt-no" href="https://www.google.com">${t('gt_no')}</a>
+  <button class="gt-lang" id="gateLang">${lang==='ar'?'English':'العربية'}</button></div>`;
+  g.querySelector('#gateOk').onclick=()=>{try{localStorage.setItem('lockg-gate','1');}catch(e){}g.classList.add('off');document.body.classList.remove('gated');setTimeout(()=>g.remove(),600);dispatchEvent(new Event('lockg-gate-ok'));};
+  g.querySelector('#gateLang').onclick=()=>{setLang(lang==='ar'?'en':'ar');draw();};
+  setTimeout(()=>{const b=g.querySelector('#gateOk');b&&b.focus();},50);};
+ draw();document.body.appendChild(g);
+})();
 addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAGES[h])){history.replaceState(null,'',location.pathname+location.search);setTimeout(()=>Shell.go(h),400);}});
 })();
