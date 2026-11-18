@@ -1,3 +1,6 @@
+@property --ink{syntax:'<color>';inherits:true;initial-value:#15130F}@property --ivory{syntax:'<color>';inherits:true;initial-value:#F2EDE4}@property --gold{syntax:'<color>';inherits:true;initial-value:#C8A574}@property --gold-d{syntax:'<color>';inherits:true;initial-value:#9C7A4E}@property --a1{syntax:'<color>';inherits:true;initial-value:#e2c38f}@property --a2{syntax:'<color>';inherits:true;initial-value:#a9834f}
+html{transition:--ink 1.4s ease,--ivory 1.4s ease,--gold 1.4s ease,--gold-d 1.4s ease,--a1 1.4s ease,--a2 1.4s ease}
+*{touch-action:manipulation}canvas{touch-action:none}
 :root{--ink:#15130F;--ivory:#F2EDE4;--gold:#C8A574;--gold-d:#9C7A4E;--a1:#e2c38f;--a2:#a9834f}
 /* LOCKG app shell: glass, round, RTL, safe areas */
 :root{--g-dark:rgba(24,21,18,.48);--g-light:rgba(244,239,231,.74);--g-line:rgba(255,255,255,.16);--g-line-d:color-mix(in srgb,var(--ink) 10%,transparent);--r-lg:28px;--r-md:18px;--r-sm:12px;--blur:blur(26px) saturate(170%);--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);--arab:'IBM Plex Sans Arabic','Jost',system-ui,sans-serif}

@@ -14,7 +14,9 @@
 </script>
 <style>
 :root{--ink:#15130F;--ivory:#F2EDE4;--gold:#C8A574;--gold-d:#9C7A4E;--a1:#e2c38f;--a2:#a9834f;--line:rgba(255,255,255,.09);--card:rgba(255,255,255,.035);--mute:rgba(242,237,228,.55);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',system-ui,sans-serif;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}canvas{touch-action:none}
+@property --ink{syntax:'<color>';inherits:true;initial-value:#15130F}@property --ivory{syntax:'<color>';inherits:true;initial-value:#F2EDE4}@property --gold{syntax:'<color>';inherits:true;initial-value:#C8A574}@property --gold-d{syntax:'<color>';inherits:true;initial-value:#9C7A4E}@property --a1{syntax:'<color>';inherits:true;initial-value:#e2c38f}@property --a2{syntax:'<color>';inherits:true;initial-value:#a9834f}
+html{transition:--ink 1.4s ease,--ivory 1.4s ease,--gold 1.4s ease,--gold-d 1.4s ease,--a1 1.4s ease,--a2 1.4s ease}
 html,body{min-height:100%;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
 body{background:radial-gradient(120% 70% at 80% -10%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 60%),var(--ink);transition:background .6s}
 button,input,textarea,select{font:inherit;color:inherit;background:none;border:0;outline:0}
@@ -125,7 +127,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 .add{width:100%;height:64px;border-radius:20px;border:1px dashed color-mix(in srgb,var(--gold) 45%,transparent);color:var(--gold);font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px}
 /* product editor */
 .studio{position:relative;height:340px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(70% 60% at 50% 35%,color-mix(in srgb,var(--gold) 16%,transparent),transparent 70%),linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.25))}
-@media(min-width:880px){.studio{height:460px}}
+@media(min-width:880px){.studio{height:520px}}
 @media(max-width:879px){#prSheet .grid2>.sticky{order:-1}#prSheet .studio{height:300px}}
 .studio .emp{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px;color:var(--mute);font-size:13px;line-height:1.6}
 .studio .emp svg{width:44px;height:44px;color:var(--gold);opacity:.8;margin-bottom:10px}
@@ -133,8 +135,8 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 .studio.busy .busy{display:grid}
 .spin{width:54px;height:54px;border-radius:50%;border:2px solid rgba(255,255,255,.1);border-top-color:var(--gold);animation:sp 1s linear infinite;margin:0 auto 14px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.studio .badge{position:absolute;left:14px;top:14px;z-index:1;font:500 9px var(--sans);letter-spacing:.3em;color:var(--gold);padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--ink) 60%,transparent);border:1px solid var(--line)}
-.studio .hint{position:absolute;right:14px;bottom:12px;z-index:1;font-size:10.5px;color:var(--mute)}
+.studio .badge{position:absolute;left:14px;top:14px;max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;z-index:1;font:500 9px var(--sans);letter-spacing:.3em;color:var(--gold);padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--ink) 60%,transparent);border:1px solid var(--line)}
+.studio .hint{display:none;position:absolute;right:14px;bottom:12px;z-index:1;font-size:10.5px;color:var(--mute)}
 .col{border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 7%,transparent),transparent);border-radius:20px;padding:16px;margin-bottom:14px}
 .col textarea{width:100%;min-height:150px;background:none;font-size:15px;line-height:1.6;resize:vertical}
 .col .ft{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
@@ -173,7 +175,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
  <main>
   <!-- MOOD -->
   <section class="tab" data-t="mood">
-   <div class="hd"><div class="k">01 · Mood</div><h2>Change the whole mood.</h2><p>Pick a palette or mix your own. The website, buttons, glow and 3D scene follow it.</p></div>
+   <div class="hd"><div class="k">01 · Mood</div><h2>Change the whole mood.</h2><p>Quiet tones only. The website glides into the new mood. The 3D scene takes a soft tint; the product keeps its look.</p></div>
    <div class="grid2">
     <div>
      <div class="lbl">Palettes</div><div class="pals" id="pals"></div>
@@ -222,9 +224,10 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
  <div class="grid2">
   <div>
    <div class="k" id="prK">New product</div>
-   <h2 style="font-size:30px;margin:6px 0 16px">Describe it. We build it.</h2>
+   <h2 style="font-size:30px;margin:6px 0 16px">Describe it. We build it.</h2><p style="font-size:12.5px;color:var(--mute);margin:-8px 0 16px;line-height:1.6">Say where it goes: a car, a pickup, a wall, a closet. You get the product, the place as a wireframe, and how it installs.</p>
    <div class="row2"><label class="f"><span>Name (English)</span><input id="prName" placeholder="LOCKG Key Vault"></label><label class="f"><span>Name (Arabic)</span><input id="prNameAr" dir="rtl" placeholder="خزنة المفاتيح"></label></div>
    <div class="row2"><label class="f"><span>Price (USD)</span><input id="prPrice" type="number" min="0" inputmode="decimal" placeholder="180"></label><label class="f"><span>Short line on the card</span><input id="prLine" placeholder="Steel. Print lock. 30 cm."></label></div>
+   <div class="lbl">Quick ideas</div><div class="chips" id="prIdeas"></div>
    <div class="col">
     <div class="lbl" style="color:var(--gold)">The column · write about the product</div>
     <textarea id="prDesc" placeholder="Size, shape, materials, colours, buttons, the details that make it LOCKG. Example: a small wall key cabinet, 30 cm tall, matte black steel, brass fingerprint pad on the door, thin gold strip at the top."></textarea>
@@ -243,6 +246,17 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
  </div>
 </div></div>
 
+<!-- core product editor -->
+<div class="sheet" id="coSheet"><div class="in" style="max-width:640px">
+ <div class="grab"></div>
+ <div class="k">Core product</div><h2 style="font-size:30px;margin:6px 0 16px" id="coH">Edit</h2>
+ <div class="row2"><label class="f"><span>Name (English)</span><input id="coName"></label><label class="f"><span>Name (Arabic)</span><input id="coNameAr" dir="rtl"></label></div>
+ <div class="row2"><label class="f"><span>Line (English)</span><input id="coLine"></label><label class="f"><span>Line (Arabic)</span><input id="coLineAr" dir="rtl"></label></div>
+ <label class="f"><span>Price (USD)</span><input id="coPrice" type="number" min="0" inputmode="decimal"></label>
+ <div class="tg"><div><b>Show in the shop</b><small>Turn off to hide it for now.</small></div><button class="sw-t" id="coOn"></button></div>
+ <div style="display:flex;gap:10px"><button class="gbtn" id="coSave">Save</button><button class="obtn" id="coCancel">Cancel</button><button class="obtn" id="coReset" style="margin-left:auto">Reset</button></div>
+</div></div>
+
 <!-- event editor -->
 <div class="sheet" id="evSheet"><div class="in" style="max-width:640px">
  <div class="grab"></div>
@@ -259,8 +273,12 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 <div class="savebar" id="savebar"><span id="sbTxt">Unsaved changes</span><button class="gbtn" id="sbSave">Publish to website</button></div>
 <div id="toast"></div>
 
+<script>
+(()=>{let t=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-t<330&&!e.target.closest('input,textarea,select,canvas'))e.preventDefault();t=n;},{passive:false});
+['gesturestart','gesturechange'].forEach(k=>document.addEventListener(k,e=>e.preventDefault(),{passive:false}));document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});})();
+</script>
 <script type="module">
-import { mount, snapshot } from '/v3d.js?v=21';
+import { mount, snapshot } from '/v3d.js?v=22';
 const API='https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let AUTH=null,C={theme:{},promo:{},events:[],products:[]},dirty=new Set();
@@ -296,15 +314,15 @@ function tab(id){if(!TABS.some(t=>t[0]===id))id='mood';document.querySelectorAll
 /* ---------- mood ---------- */
 const PALS=[
  {id:'noir',n:'Noir Gold',s:'The original',ink:'#15130F',ivory:'#F2EDE4',accent:'#C8A574',a1:'#e2c38f',a2:'#a9834f'},
- {id:'midnight',n:'Midnight',s:'Cool and calm',ink:'#0c1220',ivory:'#EEF1F6',accent:'#9fb3d1',a1:'#c9d6ea',a2:'#6e84a8'},
- {id:'oxblood',n:'Oxblood',s:'Deep and warm',ink:'#1a0d0e',ivory:'#F3E9E4',accent:'#c0716b',a1:'#e3a49c',a2:'#8e403c'},
- {id:'ramadan',n:'Ramadan Night',s:'Emerald and gold',ink:'#0b1612',ivory:'#EFEDE4',accent:'#c9a95e',a1:'#e6cf8e',a2:'#8f7436'},
- {id:'graphite',n:'Graphite',s:'Steel and silver',ink:'#121314',ivory:'#EDEDEC',accent:'#b9bcc0',a1:'#e3e5e8',a2:'#85898e'},
- {id:'desert',n:'Desert Dusk',s:'Sand and amber',ink:'#1c140d',ivory:'#F5EADB',accent:'#d99a5b',a1:'#f0c08d',a2:'#a8682f'},
- {id:'rose',n:'Rose Gold',s:'Soft and rich',ink:'#170f10',ivory:'#F6ECE8',accent:'#d4a197',a1:'#efc7bd',a2:'#a46d63'},
- {id:'national',n:'National Day',s:'Green to red',ink:'#0d1511',ivory:'#F2EFE8',accent:'#4fae6e',a1:'#86d6a0',a2:'#c2433b'},
- {id:'amethyst',n:'Amethyst',s:'Night violet',ink:'#120f18',ivory:'#EFEAF4',accent:'#a58cc9',a1:'#cdb9ea',a2:'#7258a0'},
- {id:'ocean',n:'Gulf Blue',s:'Sea and pearl',ink:'#08141a',ivory:'#EAF2F3',accent:'#6fb3c2',a1:'#a9dbe4',a2:'#3b7f91'}];
+ {id:'espresso',n:'Espresso',s:'Warm and deep',ink:'#1a1410',ivory:'#F1E9DF',accent:'#b8916a',a1:'#d9b994',a2:'#8c6a48'},
+ {id:'olive',n:'Olive Night',s:'Ramadan, calm gold',ink:'#12150f',ivory:'#EEEBE1',accent:'#b5a273',a1:'#d6c79c',a2:'#857549'},
+ {id:'champagne',n:'Midnight',s:'Navy and champagne',ink:'#0f131b',ivory:'#EDEBE6',accent:'#b9a687',a1:'#d8c9ad',a2:'#8a7a5f'},
+ {id:'stone',n:'Stone',s:'Graphite and linen',ink:'#141516',ivory:'#ECEBE8',accent:'#a9a59d',a1:'#cfccc5',a2:'#7b7770'},
+ {id:'wine',n:'Soft Wine',s:'Muted oxblood',ink:'#1a1112',ivory:'#F1E8E3',accent:'#b88a7c',a1:'#d8b2a6',a2:'#8a5f53'},
+ {id:'sand',n:'Sand',s:'Desert dusk',ink:'#1b1712',ivory:'#F3ECE1',accent:'#c9ad86',a1:'#e3cfae',a2:'#9a8160'},
+ {id:'rose',n:'Rose Gold',s:'Soft and rich',ink:'#181213',ivory:'#F4EBE7',accent:'#c6a294',a1:'#e2c6ba',a2:'#946f62'},
+ {id:'national',n:'National Day',s:'Muted green, a touch of red',ink:'#111612',ivory:'#EFEDE6',accent:'#9fae8c',a1:'#c5d0b4',a2:'#8d5e55'},
+ {id:'pearl',n:'Pearl',s:'Silver and pearl',ink:'#131416',ivory:'#F4F2EE',accent:'#c8c3b8',a1:'#e6e2da',a2:'#9a958b'}];
 const mix=(h,k)=>{const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return '#'+[f(r),f(g),f(b)].map(x=>x.toString(16).padStart(2,'0')).join('');};
 function applyVars(el,t){if(!t||!t.ink)return;const v={ink:t.ink,ivory:t.ivory,gold:t.accent,'gold-d':mix(t.accent,-.22),a1:t.a1,a2:t.a2};for(const k in v)el.style.setProperty('--'+k,v[k]);document.querySelector('meta[name=theme-color]').content=t.ink;}
 function phone(el,t,promo){const s=el.style;s.setProperty('--pink',t.ink);s.setProperty('--pivory',t.ivory);s.setProperty('--pgold',t.accent);s.setProperty('--pgoldd',mix(t.accent,-.22));s.setProperty('--pa1',t.a1);s.setProperty('--pa2',t.a2);
@@ -339,10 +357,24 @@ $('evSave').onclick=()=>{const e={id:evIx>=0?C.events[evIx].id:Date.now().toStri
  evIx>=0?C.events[evIx]=e:C.events.push(e);$('evSheet').classList.remove('on');renderEvents();touch('events');};
 $('evDel').onclick=()=>{C.events.splice(evIx,1);$('evSheet').classList.remove('on');renderEvents();touch('events');};
 
+/* ---------- core products ---------- */
+const CORE0={wall:{name:'LOCKG ONE · Wall',name_ar:'LOCKG ONE · جدار',line:'For your home. Rail, print lock, trigger cover, cradle.',line_ar:'للمنزل. سكة، قفل بالبصمة، غطاء الزناد، حامل.',price:390,active:true},
+ car:{name:'LOCKG ONE · Car',name_ar:'LOCKG ONE · سيارة',line:'Same lock, made for your trunk. Bolts to the floor.',line_ar:'نفس القفل، لصندوق السيارة. يثبت بالأرضية.',price:420,active:true},
+ duo:{name:'Home + Car set',name_ar:'مجموعة المنزل + السيارة',line:'One for the wall, one for the car. Same fingerprints.',line_ar:'واحد للجدار وواحد للسيارة. نفس البصمات.',price:740,active:true}};
+let coId=null;const core=id=>Object.assign({},CORE0[id],(C.core||{})[id]||{});
+function openCo(id){coId=id;const c=core(id);$('coH').textContent=c.name;$('coName').value=c.name;$('coNameAr').value=c.name_ar;$('coLine').value=c.line;$('coLineAr').value=c.line_ar;$('coPrice').value=c.price;$('coOn').classList.toggle('on',c.active!==false);$('coSheet').classList.add('on');}
+$('coOn').onclick=()=>$('coOn').classList.toggle('on');$('coCancel').onclick=()=>$('coSheet').classList.remove('on');
+$('coReset').onclick=()=>{C.core=C.core||{};delete C.core[coId];$('coSheet').classList.remove('on');renderShop();touch('core');};
+$('coSave').onclick=()=>{const v={name:$('coName').value.trim()||CORE0[coId].name,name_ar:$('coNameAr').value.trim(),line:$('coLine').value.trim(),line_ar:$('coLineAr').value.trim(),price:Math.max(0,+$('coPrice').value||0),active:$('coOn').classList.contains('on')};if(!v.price){toast('Add a price');return;}
+ C.core=C.core||{};C.core[coId]=v;$('coSheet').classList.remove('on');renderShop();touch('core');};
+const IDEAS=['A car with a trunk. Show how the car adapter goes inside.','A car with a pickup. Lock bolted in the bed.','An SUV. LOCKG in the cargo floor.','LOCKG ONE on the majlis wall.','A lock box inside the closet.','A drawer safe in the bedside table.','A key vault in the garage.'];
+$('prIdeas').innerHTML=IDEAS.map((t,i)=>`<button data-i="${i}">${t.split('.')[0]}</button>`).join('');
+$('prIdeas').onclick=e=>{const t=IDEAS[e.target.dataset.i];if(!t)return;$('prDesc').value=t;$('prLen').textContent=t.length+' / 1500';buzz(6);};
+
 /* ---------- shop products ---------- */
 let prIx=-1,draft=null,viewer=null;
 function renderShop(){const l=$('prList');l.innerHTML='';
- [['LOCKG ONE · Wall',390],['LOCKG ONE · Car',420],['Home + Car set',740]].forEach(([n,p])=>{const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar.webp" alt="" style="object-fit:contain;padding:4px"></div><div class="tx"><b>${n}<span class="tag">CORE</span></b><small>Always in the shop</small></div><div class="pr">$${p}</div>`;l.appendChild(d);});
+ ['wall','car','duo'].forEach(id=>{const c=core(id);const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar.webp" alt="" style="object-fit:contain;padding:4px;${id==='car'?'transform:rotate(-90deg)':''}"></div><div class="tx"><b>${esc(c.name)}${c.active===false?'<span class="tag">HIDDEN</span>':'<span class="tag">CORE</span>'}</b><small>${esc(c.line)}</small></div><div class="pr">$${esc(c.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;d.querySelector('button').onclick=()=>openCo(id);l.appendChild(d);});
  C.products.forEach((p,i)=>{const d=document.createElement('div');d.className='it';let img='';try{img=p.model?snapshot(p.model,220,180):'';}catch(e){}
   d.innerHTML=`<div class="th">${img?`<img src="${img}" alt="">`:''}</div><div class="tx"><b>${esc(p.name)}${p.active?'<span class="tag live">LIVE</span>':'<span class="tag">DRAFT</span>'}</b><small>${esc(p.line||p.desc||'').slice(0,80)}</small></div><div class="pr">$${esc(p.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;
   d.querySelector('button').onclick=()=>openPr(i);l.appendChild(d);});}
@@ -350,14 +382,14 @@ function openPr(i){prIx=i;draft=i>=0?JSON.parse(JSON.stringify(C.products[i])):{
  $('prK').textContent=i>=0?'Edit product':'New product';$('prName').value=draft.name||'';$('prNameAr').value=draft.name_ar||'';$('prPrice').value=draft.price||'';$('prLine').value=draft.line||'';$('prDesc').value=draft.desc||'';$('prLen').textContent=(draft.desc||'').length+' / 1500';
  $('prOn').classList.toggle('on',!!draft.active);$('prDel').style.display=i>=0?'':'none';$('prSheet').classList.add('on');showModel();}
 function showModel(){const st=$('studio');$('stEmp').style.display=draft.model?'none':'';if(!draft.model){if(viewer){viewer.dispose();viewer=null;}return;}
- if(viewer)viewer.set(draft.model);else viewer=mount(st,draft.model);}
+ if(viewer)viewer.set(draft.model);else viewer=mount(st,draft.model);const sc=draft.model.scene&&draft.model.scene.type;st.querySelector('.badge').textContent=sc&&sc!=='none'?('3D · '+sc+(draft.model.mount&&draft.model.mount.at?' · '+draft.model.mount.at.replace(/_/g,' '):'')).toUpperCase():'3D SHOWCASE';}
 $('prAdd').onclick=()=>openPr(-1);
 $('prCancel').onclick=()=>{$('prSheet').classList.remove('on');if(viewer){viewer.dispose();viewer=null;}};
 $('prOn').onclick=()=>{$('prOn').classList.toggle('on');buzz(8);};
 $('prDesc').oninput=e=>{$('prLen').textContent=e.target.value.length+' / 1500';};
 $('prBuild').onclick=async()=>{const name=$('prName').value.trim(),desc=$('prDesc').value.trim();if(desc.length<12){toast('Write a little more about it first');$('prDesc').focus();return;}
- const st=$('studio'),b=$('prBuild');st.classList.add('busy');b.disabled=true;const msgs=['Reading your words…','Shaping the parts…','Choosing the materials…','Lighting the stage…'];let mi=0;$('stMsg').textContent=msgs[0];const iv=setInterval(()=>{$('stMsg').textContent=msgs[++mi%msgs.length];},2200);
- try{const j=await admin('build3d',{text:(name?name+': ':'')+desc.slice(0,1500)});if(!j.model||!Array.isArray(j.model.parts)||!j.model.parts.length)throw 0;draft.model=j.model;showModel();buzz([10,30,10]);toast('3D ready · drag to turn');}
+ const st=$('studio'),b=$('prBuild');st.classList.add('busy');b.disabled=true;const msgs=['Reading your words…','Choosing the place…','Shaping the parts…','Planning the install…','Lighting the stage…'];let mi=0;$('stMsg').textContent=msgs[0];const iv=setInterval(()=>{$('stMsg').textContent=msgs[++mi%msgs.length];},2200);
+ try{const j=await admin('build3d',{text:(name?name+': ':'')+desc.slice(0,1500)});if(!j.model||!((Array.isArray(j.model.parts)&&j.model.parts.length)||j.model.base&&j.model.base!=='none'))throw 0;draft.model=j.model;showModel();buzz([10,30,10]);toast('3D ready · drag to turn');}
  catch(e){toast('Could not build. Try again.');}
  clearInterval(iv);st.classList.remove('busy');b.disabled=false;b.querySelector('span').textContent='Rebuild 3D';};
 $('prSave').onclick=()=>{Object.assign(draft,{name:$('prName').value.trim(),name_ar:$('prNameAr').value.trim(),price:Math.max(0,+$('prPrice').value||0),line:$('prLine').value.trim(),desc:$('prDesc').value.trim().slice(0,1500),active:$('prOn').classList.contains('on')});
@@ -371,7 +403,7 @@ async function loadLeads(){const l=$('ldList');try{const j=await admin('leads');
  catch(e){l.innerHTML='<div class="lead">Could not load.</div>';}}
 
 /* ---------- save ---------- */
-function touch(k){dirty.add(k);$('sbTxt').textContent=[...dirty].map(x=>({theme:'Mood',promo:'Offer',events:'Occasions',products:'Shop'}[x])).join(' · ')+' changed';$('savebar').classList.add('on');}
+function touch(k){dirty.add(k);$('sbTxt').textContent=[...dirty].map(x=>({theme:'Mood',promo:'Offer',events:'Occasions',products:'Shop',core:'Core products'}[x])).join(' · ')+' changed';$('savebar').classList.add('on');}
 $('sbSave').onclick=async()=>{const b=$('sbSave');b.disabled=true;b.textContent='Publishing…';
  try{for(const k of [...dirty]){await admin('set',{key:k,value:C[k]});dirty.delete(k);}$('savebar').classList.remove('on');toast('Live on the website ✓');buzz([10,40,10]);}
  catch(e){toast('Could not publish: '+e.message);}b.disabled=false;b.textContent='Publish to website';};

@@ -185,13 +185,14 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
 }
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=21">
+<link rel="stylesheet" href="/shell.css?v=22">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
 <style>
 #v3d{position:absolute;inset:0;display:none;z-index:1}#stage.adm #v3d{display:block}#stage.adm #art{display:none}
-#stage .tag{z-index:2;pointer-events:none}
+#stage .tag{z-index:2;pointer-events:none}#stage.adm .tag{bottom:auto;top:24px}
+@media(max-width:880px){#v3d .v3ui .cap small,#v3d .v3ui .cap em{display:none}#v3d .v3ui .cap b{font-size:14px}#v3d .v3ui .cap{bottom:8px}#v3d .v3ui .bt{top:auto;bottom:40px;right:8px}#v3d .v3ui .bt button{height:28px;padding:0 10px}#stage.adm .tag{top:12px;left:14px}}
 .card .pr s{opacity:.45;font-size:.8em;margin-right:4px}
 .offer{display:flex;align-items:center;gap:10px;margin:0 0 16px;padding:10px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--gold) 12%,transparent),transparent);font-size:12.5px}
 .offer b{font:400 22px var(--serif);color:var(--a1)}
@@ -287,8 +288,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=21"></script>
-<script src="/fx.js?v=21"></script>
+<script src="/shell.js?v=22"></script>
+<script src="/fx.js?v=22"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};
@@ -380,15 +381,18 @@ Shell.onLang(()=>{render();paint();});render();paint();
 setTimeout(()=>FINS.forEach(f=>GUNS.forEach(g=>{new Image().src=IMG(f.id,g.id);})),1500);
 </script>
 <script type="module">
-import { mount, snapshot } from '/v3d.js?v=21';
+import { mount, snapshot } from '/v3d.js?v=22';
 let V=null;
 window.LOCKG_V3D=m=>{const el=document.getElementById('v3d');if(!m)return;if(V)V.set(m);else V=mount(el,m);};
-function load(c){const list=((c&&c.products)||[]).filter(p=>p&&p.active&&p.model&&p.name&&+p.price>0);
+const CORE_ORIG=PRODUCTS.filter(p=>!p.admin).map(p=>({...p,en:[...p.en],ar:[...p.ar]}));
+function load(c){
+ PRODUCTS.length=0;CORE_ORIG.forEach(p=>{const o=(c&&c.core||{})[p.id];const q={...p,en:[...p.en],ar:[...p.ar]};if(o){if(o.active===false)return;if(+o.price>0)q.price=+o.price;if(o.name)q.en[0]=o.name;if(o.line)q.en[1]=o.line;if(o.name_ar)q.ar[0]=o.name_ar;if(o.line_ar)q.ar[1]=o.line_ar;}PRODUCTS.push(q);});
+ const list=((c&&c.products)||[]).filter(p=>p&&p.active&&p.model&&p.name&&+p.price>0);
  for(let i=PRODUCTS.length-1;i>=0;i--)if(PRODUCTS[i].admin)PRODUCTS.splice(i,1);
  list.forEach(p=>{let snap='';try{snap=snapshot(p.model,360,300);}catch(e){}
   PRODUCTS.push({id:'x_'+p.id,admin:true,price:+p.price,model:p.model,snap,line:p.line||'',line_ar:p.line_ar||'',en:[p.name,p.line||p.desc?.slice(0,90)||''],ar:[p.name_ar||p.name,p.line_ar||p.line||'']});});
  const q=new URLSearchParams(location.search).get('p');if(q&&PRODUCTS.some(x=>x.id===q))O.prod=q;
- if(!PRODUCTS.some(x=>x.id===O.prod))O.prod='wall';render();paint();}
+ if(!PRODUCTS.some(x=>x.id===O.prod))O.prod=PRODUCTS[0].id;render();paint();}
 if(window.LOCKG_CFG)load(window.LOCKG_CFG);
 addEventListener('lockg-config',e=>load(e.detail));
 </script>
