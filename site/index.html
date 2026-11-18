@@ -131,9 +131,14 @@ html[lang=ar] .tr-body h2{font:500 18px/1.4 var(--arab)}
 body.touring #title,body.touring #spec,body.touring .coach{opacity:0;pointer-events:none;transition:opacity .4s}
 @media (orientation:landscape) and (max-height:520px){#tour{left:auto;right:calc(12px + env(safe-area-inset-right,0px));bottom:auto;top:62px;transform:translateY(-14px);width:330px;padding:12px}#tour.on{transform:none}.tr-n{font-size:30px;min-width:36px}.tr-body{margin:8px 0 10px}.tr-body h2{font-size:20px}.tr-body p{font-size:12px}}
 @media (min-width:900px){#tour{left:auto;right:28px;bottom:auto;top:96px;transform:translateY(-14px)}#tour.on{transform:none}}
+/* minimal tour */
+#tour{width:min(360px,calc(100vw - 28px));padding:11px 12px 12px;border-radius:22px}
+.tr-body{margin:6px 2px 10px;gap:12px}.tr-n{font-size:28px;min-width:34px}
+.tr-body h2{font-size:19px;margin:1px 0 4px}html[lang=ar] .tr-body h2{font-size:15px}.tr-body p{font-size:12px;line-height:1.45}
+.tr-back{width:40px;height:40px}.tr-go{height:40px;font-size:13px}.tr-x{padding:6px 2px;font-size:10px}
 .gpill.shopnow{background:linear-gradient(180deg,#e2c38f,#a9834f)!important;color:#17130e!important;border:0!important;box-shadow:0 10px 30px rgba(200,165,116,.35);font-weight:600}
 </style>
-<link rel="stylesheet" href="/shell.css?v=19">
+<link rel="stylesheet" href="/shell.css?v=20">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -210,13 +215,18 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=19"></script>
-<script src="/fx.js?v=19"></script>
+<script src="/shell.js?v=20"></script>
+<script src="/fx.js?v=20"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight,false);
@@ -383,7 +393,37 @@ async function unlock(){if(busy)return;busy=true;setTimeout(()=>{const fx=window
 async function lock(auto=false){if(busy)return;busy=true;openT=0;await wait(350);gateT=0;await wait(250);ringMode='idle';isOpen=false;setMain(false);toast(Shell.t(auto?'t_auto':'t_lock'));busy=false;}
 bOpen.onclick=()=>isOpen?lock():unlock();
 document.getElementById('bChild').onclick=async()=>{if(busy)return;if(isOpen)await lock();busy=true;ringMode='scan';ringT0=performance.now();await wait(220);ringMode='deny';ringT0=performance.now();shakeT=performance.now();toast(Shell.t('t_deny'),true,3200);await wait(1500);ringMode='idle';busy=false;};
-const bEx=document.getElementById('bExplode');bEx.onclick=()=>{explT=explT?0:1;bEx.classList.toggle('on',!!explT);document.body.classList.toggle('explode',!!explT);view('three');};
+/* ===== cinematic layer: motion trails, film grade, slow-motion explode ===== */
+const CINE={uniforms:{tDiffuse:{value:null},uT:{value:0},uK:{value:0},uV:{value:1}},
+ vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+ fragmentShader:`uniform sampler2D tDiffuse;uniform float uT,uK,uV;varying vec2 vUv;
+ float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233))+uT)*43758.5453);}
+ void main(){vec2 d=vUv-.5;float r=length(d);vec2 off=d*(.002+.012*uK)*r;
+  vec3 c=vec3(texture2D(tDiffuse,vUv+off).r,texture2D(tDiffuse,vUv).g,texture2D(tDiffuse,vUv-off).b);
+  c*=mix(1.,smoothstep(.95,.25,r),.55*uV);           // vignette
+  c=mix(c,c*vec3(1.05,1.,.92),.35);                   // warm grade
+  c+=(h(vUv*vec2(913.,557.))-.5)*.028;                // film grain
+  gl_FragColor=vec4(c,1.);}`};
+function makeCine(renderer,scene,camera,THREE,EffectComposer,RenderPass,AfterimagePass,ShaderPass,OutputPass,extra){
+ const comp=new EffectComposer(renderer);comp.setPixelRatio(Math.min(devicePixelRatio,innerWidth<820?1.5:2));comp.setSize(innerWidth,innerHeight);
+ comp.addPass(new RenderPass(scene,camera));if(extra)extra(comp);
+ const trail=new AfterimagePass(0);comp.addPass(trail);const grade=new ShaderPass(CINE);comp.addPass(grade);comp.addPass(new OutputPass());
+ return {comp,trail,grade};}
+const EXR={bolts:[0,0,.25],rail:[0,0,-.06],cradle:[.5,-.35,.4],cover:[-.6,.3,-.35],lock:[.35,.6,-.3],gate:[-.8,-.5,.6],gun:[.12,-.18,.22]};
+const XS={dir:0,t0:0,from:0,val:0,fov0:0};
+const eOutExpo=k=>k>=1?1:1-Math.pow(2,-10*k),eOutCub=k=>1-Math.pow(1-k,3),eInOut=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+function explodeStart(on,now){XS.dir=on?1:-1;XS.t0=now;XS.from=XS.val;
+ const fx=window.LOCKG_FX,b=document.getElementById('bExplode');if(on&&fx&&b){fx.ripple(b);fx.sparks(b,18);fx.buzz([8,20,30]);}}
+function explodeTick(now,cine,camera){const t=(now-XS.t0)/1000;let damp=0,k=0;
+ if(XS.dir===1){const p=t<.22?.8*eOutExpo(t/.22):.8+.2*eOutCub(Math.min(1,(t-.22)/2.6));XS.val=Math.max(XS.from,p);damp=t<.18?.9:Math.max(0,.86-(t-.18)*.32);k=Math.max(0,1-t/1.4);}
+ else if(XS.dir===-1){const q=Math.min(1,t/.85);XS.val=XS.from*(1-eInOut(q));damp=q<1?.55*(1-q):0;k=0;}
+ if(cine){cine.trail.uniforms.damp.value=damp;cine.grade.uniforms.uK.value=k;cine.grade.uniforms.uT.value=(now/1000)%100;}
+ if(camera){if(!XS.fov0)XS.fov0=camera.fov;const kick=XS.dir===1?Math.exp(-t*4)*Math.sin(Math.min(1,t*6)*Math.PI)*3.2:0;const f=XS.fov0-kick;if(Math.abs(camera.fov-f)>.01){camera.fov=f;camera.updateProjectionMatrix();}}
+ return XS.val;}
+
+const cine=makeCine(renderer,scene,camera,THREE,EffectComposer,RenderPass,AfterimagePass,ShaderPass,OutputPass);
+addEventListener('resize',()=>cine.comp.setSize(innerWidth,innerHeight));
+const bEx=document.getElementById('bExplode');bEx.onclick=()=>{explT=explT?0:1;explodeStart(!!explT,performance.now());bEx.classList.toggle('on',!!explT);document.body.classList.toggle('explode',!!explT);view('three');};
 const bL=document.getElementById('bLabels');bL.onclick=()=>{document.body.classList.toggle('nolabels');bL.classList.toggle('on');};
 const bG=document.getElementById('bGun');bG.onclick=()=>{gunHolder.visible=!gunHolder.visible;bG.classList.toggle('on',gunHolder.visible);};
 const bS=document.getElementById('bSpin');bS.onclick=()=>{controls.autoRotate=!controls.autoRotate;bS.classList.toggle('on',controls.autoRotate);};
@@ -416,11 +456,11 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(dust)dust.
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
  gate+=(gateT-gate)*Math.min(1,dt*11);gatePivot.rotation.x=-gate*1.9;
- expl+=(explT-expl)*Math.min(1,dt*4);const e=ease(Math.min(1,Math.max(0,expl)));
- for(const k in EX){const o=EX[k];parts[k].position.set(o[0]*e,o[1]*e,o[2]*e);}
+ const e=explodeTick(now,cine,camera);
+ for(const k in EX){const o=EX[k],r=EXR[k]||[0,0,0];parts[k].position.set(o[0]*e,o[1]*e,o[2]*e);parts[k].rotation.set(r[0]*e,r[1]*e,r[2]*e);}
  const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.8+.4*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?2.8:(Math.sin(rt*22)>0?3:.3);
  const st=(now-shakeT)/1000;product.position.x=st<.45?Math.sin(st*70)*.003*(1-st/.45):0;
- controls.update();renderer.render(scene,camera);updateLabels();requestAnimationFrame(loop);}
+ controls.update();cine.comp.render();updateLabels();requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 
 
