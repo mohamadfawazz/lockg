@@ -135,7 +135,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=23">
+<link rel="stylesheet" href="/shell.css?v=24">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -212,8 +212,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=23"></script>
-<script src="/fx.js?v=23"></script>
+<script src="/shell.js?v=24"></script>
+<script src="/fx.js?v=24"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -725,7 +725,7 @@ function wallTex(kind){if(WTEX[kind])return WTEX[kind];let t;
  const N=(x,w,h,a)=>{const d=x.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){const n=rnd(-a,a);d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}x.putImageData(d,0,0);};
  if(kind==='wood')t=ctex(512,512,(x,w,h)=>{for(let i=0;i<8;i++){const v=200+rnd(-25,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(i*w/8,0,w/8,h);x.fillStyle='rgba(0,0,0,.35)';x.fillRect(i*w/8,0,2,h);for(let k=0;k<26;k++){x.strokeStyle=`rgba(0,0,0,${rnd(.04,.12)})`;x.beginPath();let gx=i*w/8+rnd(0,w/8);x.moveTo(gx,0);for(let y=0;y<h;y+=24){gx+=rnd(-1.5,1.5);x.lineTo(gx,y);}x.stroke();}}},[4,1.6]);
  else if(kind==='tile'||kind==='marble'){t=ctex(512,512,(x,w,h)=>{x.fillStyle='#e6e6e6';x.fillRect(0,0,w,h);if(kind==='marble'){for(let k=0;k<14;k++){x.strokeStyle=`rgba(90,90,90,${rnd(.08,.25)})`;x.lineWidth=rnd(.6,2.2);x.beginPath();let px=rnd(0,w),py=0;x.moveTo(px,py);while(py<h){px+=rnd(-30,30);py+=rnd(20,50);x.lineTo(px,py);}x.stroke();}}N(x,w,h,6);x.fillStyle='rgba(0,0,0,.25)';for(let i=0;i<=4;i++){x.fillRect(i*w/4-1,0,2,h);x.fillRect(0,i*h/4-1,w,2);}},[4,1.7]);}
- else if(kind==='brick')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);const bh=h/16,bw=w/4;for(let r=0;r<16;r++)for(let c=-1;c<5;c++){const v=230+rnd(-30,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(c*bw+(r%2)*bw/2+2,r*bh+2,bw-4,bh-4);}N(x,w,h,10);},[3,1.4]);
+ else if(kind==='brick')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);const bh=h/16,bw=w/4;for(let r=0;r<16;r++)for(let c=-1;c<5;c++){const v=240+rnd(-30,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(c*bw+(r%2)*bw/2+2,r*bh+2,bw-4,bh-4);}N(x,w,h,10);},[3,1.4]);
  else if(kind==='concrete'||kind==='stone')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#d0d0d0';x.fillRect(0,0,w,h);for(let i=0;i<300;i++){const r=rnd(10,60),px=rnd(0,w),py=rnd(0,h),g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,`rgba(${Math.random()>.5?255:120},${Math.random()>.5?255:120},${Math.random()>.5?255:120},.07)`);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2);}N(x,w,h,16);if(kind==='concrete'){x.fillStyle='rgba(0,0,0,.18)';for(let i=1;i<3;i++)x.fillRect(0,i*h/3,w,1);for(let i=1;i<2;i++)x.fillRect(i*w/2,0,1,h);[[.2,.2],[.8,.2],[.2,.53],[.8,.53],[.2,.86],[.8,.86]].forEach(([a,b])=>{x.beginPath();x.arc(a*w,b*h,4,0,7);x.fill();});}},[2,1]);
  else if(kind==='wallpaper')t=ctex(256,256,(x,w,h)=>{x.fillStyle='#e8e8e8';x.fillRect(0,0,w,h);x.strokeStyle='rgba(0,0,0,.09)';x.lineWidth=2;for(let i=0;i<8;i++){x.beginPath();x.moveTo(i*w/8+w/16,0);x.lineTo(i*w/8+w/16,h);x.stroke();}N(x,w,h,5);},[10,4]);
  else t=plaster;

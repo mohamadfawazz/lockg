@@ -143,8 +143,15 @@ addEventListener('popstate',()=>{if(!open)return;if(closing){closing=false;hide(
 sheet.querySelector('.sh-back').onclick=goBack;sheet.querySelector('.sh-x').onclick=closeAll;scrim.onclick=closeAll;
 addEventListener('keydown',e=>{if(e.key==='Escape'&&open)goBack();});
 // swipe down to close on phones
-let ty=null;sheet.addEventListener('touchstart',e=>{if(body.scrollTop<=0)ty=e.touches[0].clientY;},{passive:true});
-sheet.addEventListener('touchend',e=>{if(ty!==null&&e.changedTouches[0].clientY-ty>90)closeAll();ty=null;});
+/* swipe down to close: only from the top bar, or when nothing under the finger can scroll up */
+let ty=null,tx=0,tt=0,sc=[];
+const scrollers=el=>{const out=[];for(let n=el;n&&n!==sheet.parentNode;n=n.parentElement){if(n.scrollHeight>n.clientHeight+2){const o=getComputedStyle(n).overflowY;if(o==='auto'||o==='scroll'||n===body)out.push(n);}}return out;};
+sheet.addEventListener('touchstart',e=>{ty=null;if(e.touches.length!==1||e.target.closest('input,textarea,select,[contenteditable]'))return;
+ const r=sheet.getBoundingClientRect(),y=e.touches[0].clientY,head=y-r.top<64;sc=head?[]:scrollers(e.target);if(sc.some(n=>n.scrollTop>0))return;
+ ty=y;tx=e.touches[0].clientX;tt=Date.now();sc=sc.map(n=>[n,n.scrollTop]);},{passive:true});
+sheet.addEventListener('touchmove',e=>{if(ty===null)return;if(sc.some(([n,v])=>n.scrollTop!==v))ty=null;},{passive:true});
+sheet.addEventListener('touchend',e=>{if(ty===null)return;const t=e.changedTouches[0],dy=t.clientY-ty,dx=Math.abs(t.clientX-tx),fast=Date.now()-tt<600;ty=null;
+ if(dy>110&&dy>dx*2&&fast&&!sc.some(([n,v])=>n.scrollTop!==v))closeAll();});
 function syncBar(){bBack.hidden=!open&&isHome;}
 
 /* menu */
