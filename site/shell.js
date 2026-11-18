@@ -219,4 +219,35 @@ applyI18n();syncBar();
  draw();document.body.appendChild(g);
 })();
 addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAGES[h])){history.replaceState(null,'',location.pathname+location.search);setTimeout(()=>Shell.go(h),400);}});
+
+/* ===== live site config from the admin panel: mood (theme), offer, events ===== */
+(()=>{
+ const root=document.documentElement;
+ const mix=(h,k)=>{const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return '#'+[f(r),f(g),f(b)].map(x=>x.toString(16).padStart(2,'0')).join('');};
+ const HEX=/^#[0-9a-f]{6}$/i;
+ function applyTheme(t){if(!t||!HEX.test(t.ink||'')||!HEX.test(t.accent||''))return;
+  const v={ink:t.ink,ivory:HEX.test(t.ivory||'')?t.ivory:'#F2EDE4',gold:t.accent,'gold-d':mix(t.accent,-.22),a1:HEX.test(t.a1||'')?t.a1:mix(t.accent,.25),a2:HEX.test(t.a2||'')?t.a2:mix(t.accent,-.15)};
+  for(const k in v)root.style.setProperty('--'+k,v[k]);window.LOCKG_THEME=v;dispatchEvent(new CustomEvent('lockg-theme',{detail:v}));}
+ const live=(c)=>{const today=new Date().toISOString().slice(0,10);
+  const p=c&&c.promo;const promo=p&&p.active&&+p.percent>0&&(!p.ends||p.ends>=today)?p:null;
+  const events=((c&&c.events)||[]).filter(e=>e&&e.active&&(!e.from||e.from<=today)&&(!e.to||e.to>=today));
+  return {promo,events};};
+ function ribbon(c){if(/^\/admin/.test(location.pathname))return;const{promo,events}=live(c);const old=document.getElementById('lgRib');if(old)old.remove();
+  const ar=Shell.lang==='ar';const items=[];
+  events.forEach(e=>items.push({id:'e'+(e.id||e.title),t:(ar&&e.title_ar)||e.title,s:(ar&&e.text_ar)||e.text||'',href:e.link||''}));
+  if(promo)items.push({id:'p'+promo.percent+promo.ends,t:(ar&&promo.label_ar)||promo.label||'Offer',s:(ar?'خصم ':'')+promo.percent+'%'+(ar?'':' off')+(promo.ends?(ar?' حتى ':' until ')+promo.ends:''),href:'/shop/'});
+  let hid=[];try{hid=JSON.parse(sessionStorage.getItem('lockg-rib')||'[]');}catch(e){}
+  const it=items.find(i=>!hid.includes(i.id));if(!it)return;
+  const r=document.createElement(it.href?'a':'div');r.id='lgRib';if(it.href)r.href=it.href;
+  r.innerHTML=`<i></i><b></b><span></span><button aria-label="close">×</button>`;r.querySelector('b').textContent=it.t;r.querySelector('span').textContent=it.s;
+  r.querySelector('button').onclick=e=>{e.preventDefault();e.stopPropagation();hid.push(it.id);try{sessionStorage.setItem('lockg-rib',JSON.stringify(hid));}catch(_){}r.classList.add('off');setTimeout(()=>r.remove(),400);};
+  document.body.appendChild(r);requestAnimationFrame(()=>r.classList.add('on'));}
+ let cfg=null;try{cfg=JSON.parse(localStorage.getItem('lockg-cfg')||'null');}catch(e){}
+ if(cfg){applyTheme(cfg.theme);window.LOCKG_CFG=cfg;}
+ const done=c=>{window.LOCKG_CFG=c;window.LOCKG_LIVE=live(c);applyTheme(c.theme);ribbon(c);dispatchEvent(new CustomEvent('lockg-config',{detail:c}));};
+ if(cfg)window.LOCKG_LIVE=live(cfg);
+ fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'config'})}).then(r=>r.json()).then(j=>{if(!j||!j.config)throw 0;try{localStorage.setItem('lockg-cfg',JSON.stringify(j.config));}catch(e){}done(j.config);}).catch(()=>{if(cfg)done(cfg);});
+ Shell.onLang(()=>window.LOCKG_CFG&&ribbon(window.LOCKG_CFG));
+ Shell.theme=applyTheme;Shell.live=live;
+})();
 })();
