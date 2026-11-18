@@ -105,7 +105,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=13">
+<link rel="stylesheet" href="/shell.css?v=14">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -179,8 +179,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=13"></script>
-<script src="/fx.js?v=13"></script>
+<script src="/shell.js?v=14"></script>
+<script src="/fx.js?v=14"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -190,6 +190,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 const canvas=document.getElementById('c');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight,false);
@@ -210,8 +211,8 @@ const brushed=ctex(512,64,(x,w,h)=>{x.fillStyle='#dcdcdc';x.fillRect(0,0,w,h);fo
 const wordTex=ctex(512,64,(x,w,h)=>{x.fillStyle='#efe6d6';x.font='400 36px "Cormorant Garamond", Georgia, serif';x.textAlign='center';x.textBaseline='middle';x.fillText('L  O  C  K  G',w/2,h/2+2);});
 
 /* materials */
-const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshStandardMaterial({color:0x26272a,metalness:.88,roughness:.36}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.72}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
-const shellM=new THREE.MeshPhysicalMaterial({color:0x8a6a43,metalness:.95,roughness:.3,map:brushed,clearcoat:.3,clearcoatRoughness:.3});
+const M={walnut:new THREE.MeshStandardMaterial({color:0x4a2a16,map:grain,roughness:.36}),steel:new THREE.MeshPhysicalMaterial({color:0x26272a,metalness:.9,roughness:.32,clearcoat:.5,clearcoatRoughness:.25,map:brushed}),blued:new THREE.MeshStandardMaterial({color:0x1b1f27,metalness:.92,roughness:.28}),silver:new THREE.MeshStandardMaterial({color:0xb0aea7,map:engrave,metalness:1,roughness:.3}),brass:new THREE.MeshStandardMaterial({color:0xa6824d,metalness:1,roughness:.3}),poly:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.72}),rubber:new THREE.MeshStandardMaterial({color:0x111111,roughness:.9})};
+const shellM=new THREE.MeshPhysicalMaterial({color:0x8a6a43,metalness:.95,roughness:.28,map:brushed,clearcoat:.55,clearcoatRoughness:.22,sheen:.15,sheenColor:new THREE.Color(0xfff1d6)});
 const darkM=new THREE.MeshStandardMaterial({color:0x121110,metalness:.6,roughness:.45});
 const feltM=new THREE.MeshStandardMaterial({color:0x2a211a,roughness:1});
 const ringM=new THREE.MeshStandardMaterial({color:0x111111,emissive:0x9c7a4e,emissiveIntensity:1});
@@ -748,7 +749,7 @@ function layout(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=i
 addEventListener('resize',()=>{layout();if(!intro)view(S.view);});
 /* bloom (desktop) */
 let composer=null;
-if(innerWidth>820&&devicePixelRatio<=2){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.55,.86));composer.addPass(new OutputPass());}
+if(innerWidth>820&&devicePixelRatio<=2){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));try{const ao=new GTAOPass(scene,camera,innerWidth,innerHeight);ao.blendIntensity=.85;ao.updateGtaoMaterial({radius:.18,distanceExponent:1.4,thickness:1,scale:1});composer.addPass(ao);}catch(e){}composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.55,.86));composer.addPass(new OutputPass());}
 /* init */
 build('ar');setFinish(0);setWall(0);setLight(true);place();renderUI();layout();
 /* loop */

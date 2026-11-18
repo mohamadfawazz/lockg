@@ -167,3 +167,26 @@ html[lang=ar] .pk-sub{letter-spacing:0}
 @media (max-width:520px){.dk{width:54px;height:56px;font-size:9.5px}.dk-main{width:66px;height:66px;margin:-20px 4px 0}#picker{bottom:calc(92px + var(--sab))}}
 @media (orientation:landscape) and (max-height:520px){#dock{bottom:calc(6px + var(--sab));padding:6px}.dk{height:50px}.dk-main{width:58px;height:58px;margin:-12px 4px 0}.dk-main span{display:none}#picker{bottom:calc(72px + var(--sab));max-height:46dvh;overflow:auto}.coach{bottom:calc(80px + var(--sab))}}
 @media (max-width:520px){#dock .dk[data-go=order]{display:none}}
+
+/* menu grid */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.mgrid a,.mgrid button{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:26px;min-height:116px;padding:16px;border-radius:22px;background:linear-gradient(160deg,#1d1a16,#0f0e0c);border:1px solid rgba(200,165,116,.16);color:#F2EDE4;text-decoration:none;text-align:start;font:400 17px/1.15 'Cormorant Garamond',Georgia,serif;overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s}
+html[lang=ar] .mgrid a,html[lang=ar] .mgrid button{font:500 14px/1.4 var(--arab)}
+.mgrid a:active,.mgrid button:active{transform:scale(.97)}
+.mgrid a:hover,.mgrid button:hover{border-color:rgba(200,165,116,.5)}
+.mgrid b{position:absolute;top:16px;right:16px;font:500 9px/1 Jost,sans-serif;letter-spacing:.2em;color:#9C7A4E}
+html[dir=rtl] .mgrid b{right:auto;left:16px}
+.mgrid i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(200,165,116,.12);color:#E6C893;font-style:normal}
+.mgrid i svg{width:18px;height:18px}
+.mgrid span{font-size:21px}
+html[lang=ar] .mgrid span{font-size:15px}
+.mgrid .here{border-color:#C8A574}
+.mgrid .here::after{content:"";position:absolute;left:16px;bottom:14px;width:18px;height:2px;border-radius:2px;background:#C8A574}
+.mgrid .feat{grid-column:1/-1;min-height:96px;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;background:linear-gradient(120deg,#e2c38f,#a9834f);border:0;color:#17130e}
+.mgrid .feat i{background:rgba(23,19,14,.12);color:#17130e}
+.mgrid .feat b{color:#17130e99}
+.mgrid .feat::before{content:"";position:absolute;inset:-30%;background:linear-gradient(105deg,transparent 42%,rgba(255,250,235,.45) 50%,transparent 58%);transform:translateX(-100%);animation:mgSheen 4.5s 1s ease-in-out infinite}
+@keyframes mgSheen{0%{transform:translateX(-100%)}30%,100%{transform:translateX(100%)}}
+.mgrid a,.mgrid button{animation:mgIn .5s cubic-bezier(.2,.8,.2,1) backwards}
+.mgrid>*:nth-child(2){animation-delay:.05s}.mgrid>*:nth-child(3){animation-delay:.1s}.mgrid>*:nth-child(4){animation-delay:.15s}.mgrid>*:nth-child(5){animation-delay:.2s}
+@keyframes mgIn{from{opacity:0;transform:translateY(14px) scale(.98)}}

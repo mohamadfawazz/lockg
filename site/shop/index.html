@@ -149,9 +149,26 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
  #flow{padding-top:18px;margin:0 auto}
  .guns span{font-size:10px}
 }
+@media (max-width:860px){
+ #app{align-content:start}
+ #stage{position:sticky;top:calc(70px + env(safe-area-inset-top,0px));z-index:6;height:25vh;min-height:170px;border-bottom:1px solid rgba(255,255,255,.06);box-shadow:0 18px 30px rgba(0,0,0,.45)}
+ #art{height:96%}#stage .tag{left:16px;bottom:12px}#stage .tag .kick{display:none}#stage .tag b{font-size:19px;margin-top:0}#stage .tag span{font-size:11px}
+ #flow{padding:14px 16px 130px}#steps{margin:0 0 18px}#steps span{font-size:9.5px;margin-top:6px}
+ h1{font-size:28px;margin:6px 0 4px}html[lang=ar] h1{font-size:22px}.sub{font-size:12.5px;margin-bottom:14px}
+ .cards{gap:8px}.card{padding:10px 12px;border-radius:16px;gap:12px}.card .pic{width:46px;height:46px;border-radius:12px}.card .pic img{width:42px;height:42px}
+ .card b{font-size:17px}html[lang=ar] .card b{font-size:14px}.card small{font-size:11px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.card .pr{font-size:16px}.card .chk{width:18px;height:18px}
+ .badge{font-size:7.5px;padding:3px 5px}
+ .lbl{margin:16px 0 9px}.sw{gap:8px}.sw button,.sw label{width:52px}.sw i,.sw label i{width:44px;height:44px}.sw em,.sw label em{font-size:10px;margin-top:6px}
+ .guns button{padding:10px 4px 8px;border-radius:14px}.guns svg{width:36px;height:18px;margin-bottom:5px}
+ .qty{padding:10px 14px;border-radius:16px}.qty button{width:34px;height:34px}
+ .fld{margin-bottom:9px}.fld input{padding:12px 14px;border-radius:13px;font-size:16px}.lic{padding:11px 13px;font-size:11.5px}
+ .rev{margin-top:12px;padding:2px 14px}.rev div{padding:9px 0;font-size:12.5px}.rev .tot{font-size:20px;padding:11px 0}
+ #bar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}#bar .t b{font-size:22px}#next{height:48px;padding:0 22px;font-size:14px}#prev{width:46px;height:46px}
+ body:has(#app) #chatfab{display:none}
+}
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=13">
+<link rel="stylesheet" href="/shell.css?v=14">
 </head>
 <body>
 <div id="app">
@@ -240,8 +257,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=13"></script>
-<script src="/fx.js?v=13"></script>
+<script src="/shell.js?v=14"></script>
+<script src="/fx.js?v=14"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};

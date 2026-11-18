@@ -124,8 +124,8 @@ sheet.addEventListener('touchend',e=>{if(ty!==null&&e.changedTouches[0].clientY-
 function syncBar(){bBack.hidden=!open&&isHome;}
 
 /* menu */
-function openMenu(){show('menu',{title:'menu',html:()=>{const it=(ic,k,attr)=>`<${attr.startsWith('href')?'a':'button'} ${attr}><i>${ICON[ic]}</i><span>${t(k)}</span><em>›</em></${attr.startsWith('href')?'a':'button'}>`;
- return `<div class="mlist">${it('cube','m_home','href="/"')}${it('bag','m_shop','href="/shop/"')}${it('story','m_about','data-go="story"')}${it('chat','m_contact','data-go="contact"')}${it('room','m_test','href="/configure/"')}${it('globe','lang','data-go="lang"')}</div>`;},
+function openMenu(){show('menu',{title:'menu',html:()=>{let n=0;const it=(ic,k,attr)=>{n++;const tag=attr.startsWith('href')?'a':'button';const here=attr.startsWith('href')&&attr.includes(`"${location.pathname}"`);return `<${tag} ${attr} class="${k==='m_test'?'feat':''}${here?' here':''}"><b>0${n}</b><i>${ICON[ic]}</i><span>${t(k)}</span></${tag}>`;};
+ return `<div class="mgrid">${it('cube','m_home','href="/"')}${it('bag','m_shop','href="/shop/"')}${it('story','m_about','data-go="story"')}${it('chat','m_contact','data-go="contact"')}${it('room','m_test','href="/configure/"')}</div>`;},
  after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{const g=x.dataset.go;if(g==='lang'){setLang(lang==='ar'?'en':'ar');render(open);return;}Shell.go(g);})});}
 
 /* built-in pages */
