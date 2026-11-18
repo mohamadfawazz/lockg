@@ -1,5 +1,6 @@
 /* LOCKG app shell: app bar, back/history, glass sheets, EN/AR, order form, chat */
 (function(){
+const EDIT=/[?&]edit=1/.test(location.search)&&window.parent!==window;window.LOCKG_EDIT=EDIT;
 const CFG={api:'https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api',phone:'+961 3 680 853',phoneLabel:''};
 const I={
  back:['Back','رجوع'],menu:['Menu','القائمة'],close:['Close','إغلاق'],lang:['العربية','English'],
@@ -65,7 +66,8 @@ tm6t:['Safe use','الاستخدام الآمن'],tm6:['LOCKG reduces access to 
 };
 let lang='en';try{lang=localStorage.getItem('lockg-lang')||(navigator.language||'').startsWith('ar')&&'ar'||'en';}catch(e){}
 const qs=new URLSearchParams(location.search);if(qs.get('lang'))lang=qs.get('lang')==='ar'?'ar':'en';
-const t=k=>{const v=I[k];return v?v[lang==='ar'?1:0]:k;};
+const TXv=(k)=>{const x=window.LOCKG_TX&&window.LOCKG_TX[k];const i=lang==='ar'?1:0;return x&&x[i]?x[i]:null;};
+const t=k=>{const o=TXv(k);if(o)return o;const v=I[k];return v?v[lang==='ar'?1:0]:k;};
 const langFns=[];
 const ICON={
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -197,15 +199,27 @@ const fab=document.createElement('button');fab.id='chatfab';fab.className='glass
 
 /* i18n */
 function applyI18n(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';bLang.textContent=t('lang');
- document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;const v=(window.LOCKG_I18N&&window.LOCKG_I18N[k])||I[k];if(v)el.innerHTML=v[lang==='ar'?1:0];});}
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;const o=TXv(k);if(o){el.innerHTML=o.replace(/</g,'&lt;').replace(/\n/g,'<br>');return;}const v=(window.LOCKG_I18N&&window.LOCKG_I18N[k])||I[k];if(v)el.innerHTML=v[lang==='ar'?1:0];});applyEdits();}
+const PKEY=()=>{const p=location.pathname.replace(/index\.html$/,'');return p.endsWith('/')||p.endsWith('.html')?p:p+'/';};
+function applyEdits(){const all=window.LOCKG_PG||{},E=all[PKEY()]||{};let st=document.getElementById('lgEd');if(!st){st=document.createElement('style');st.id='lgEd';document.head.appendChild(st);}
+ document.querySelectorAll('[data-lged]').forEach(el=>{el.style.removeProperty('font-size');el.style.removeProperty('color');el.style.removeProperty('translate');el.style.removeProperty('opacity');el.style.removeProperty('font-weight');el.style.removeProperty('text-align');el.style.removeProperty('display');if(el.dataset.lgorig!==undefined&&!el.dataset.i18n)el.innerHTML=el.dataset.lgorig;el.removeAttribute('data-lged');});
+ const C={ivory:'var(--ivory)',gold:'var(--gold)',glow:'var(--a1)',muted:'color-mix(in srgb,var(--ivory) 55%,transparent)',ink:'var(--ink)'};
+ for(const sel in E){let el;try{el=document.querySelector(sel);}catch(e){continue;}if(!el)continue;const v=E[sel]||{};el.setAttribute('data-lged','1');
+  if(v.hide){el.style.setProperty('display','none','important');continue;}
+  if(v.fs&&v.fs!==1){if(!el.dataset.lgfs)el.dataset.lgfs=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=(el.dataset.lgfs*v.fs)+'px';}
+  if(v.color)el.style.color=C[v.color]||(/^#[0-9a-f]{6}$/i.test(v.color)?v.color:'');
+  if(v.x||v.y)el.style.translate=(v.x||0)+'px '+(v.y||0)+'px';
+  if(v.op!==undefined&&v.op<1)el.style.opacity=v.op;
+  if(v.w)el.style.fontWeight=v.w;if(v.al)el.style.textAlign=v.al;
+  if(v.text&&!el.dataset.i18n&&!el.children.length){if(el.dataset.lgorig===undefined)el.dataset.lgorig=el.innerHTML;const tx=v.text[lang==='ar'?1:0]||v.text[0];if(tx)el.textContent=tx;}}}
 function setLang(l){lang=l;try{localStorage.setItem('lockg-lang',l);}catch(e){}applyI18n();langFns.forEach(f=>f(l));}
 
 const extra={};
-window.Shell={t:k=>{const p=window.LOCKG_I18N&&window.LOCKG_I18N[k];return p?p[lang==='ar'?1:0]:t(k);},get lang(){return lang},onLang:f=>langFns.push(f),
+window.Shell={t:k=>{const o=TXv(k);if(o)return o;const p=window.LOCKG_I18N&&window.LOCKG_I18N[k];return p?p[lang==='ar'?1:0]:t(k);},keys:()=>({site:I,page:window.LOCKG_I18N||{}}),edits:(pg,tx)=>{window.LOCKG_PG=pg||{};const sig=JSON.stringify(tx||{});if(sig!==window.__lgTx){window.__lgTx=sig;window.LOCKG_TX=tx||{};setLang(lang);}else applyEdits();},setLang:l=>setLang(l),get lang(){return lang},onLang:f=>langFns.push(f),
  UIIC,GUNIC,go(id){if(id==='order'&&!/^\/shop/.test(location.pathname)){location.href='/shop/'+(window.LOCKG_SHOPQ?window.LOCKG_SHOPQ():'');return;}const p=extra[id]||PAGES[id];if(p)show(id,p);},register(id,p){extra[id]=p;},show,close:closeAll,get body(){return body},setBack(fn){backHook=fn;},render:()=>open&&render(open),CFG};
 applyI18n();syncBar();
 /* ===== opening caution: 18+ and no firearm sales ===== */
-(()=>{let ok=false;try{ok=localStorage.getItem('lockg-gate')==='1';}catch(e){}if(ok)return;
+(()=>{let ok=EDIT;try{ok=ok||localStorage.getItem('lockg-gate')==='1';}catch(e){}if(ok)return;
  document.body.classList.add('gated');
  const g=document.createElement('div');g.id='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-labelledby','gateT');
  const draw=()=>{g.innerHTML=`<div class="gt-card"><div class="gt-logo">${LOGO}</div><div class="gt-k">${t('gt_k')}</div><h2 id="gateT">${t('gt_t')}</h2>
@@ -242,9 +256,10 @@ addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAG
   r.innerHTML=`<i></i><b></b><span></span><button aria-label="close">×</button>`;r.querySelector('b').textContent=it.t;r.querySelector('span').textContent=it.s;
   r.querySelector('button').onclick=e=>{e.preventDefault();e.stopPropagation();hid.push(it.id);try{sessionStorage.setItem('lockg-rib',JSON.stringify(hid));}catch(_){}r.classList.add('off');setTimeout(()=>r.remove(),400);};
   document.body.appendChild(r);requestAnimationFrame(()=>r.classList.add('on'));}
+ let edSig='';const useEd=c=>{const sig=JSON.stringify([c.texts||{},c.pages||{}]);if(sig===edSig)return;const first=!edSig;edSig=sig;window.LOCKG_TX=c.texts||{};window.LOCKG_PG=c.pages||{};if(first&&sig==='[{},{}]')return;Shell.setLang(Shell.lang);};
  let cfg=null;try{cfg=JSON.parse(localStorage.getItem('lockg-cfg')||'null');}catch(e){}
- if(cfg){applyTheme(cfg.theme);window.LOCKG_CFG=cfg;}
- const done=c=>{window.LOCKG_CFG=c;window.LOCKG_LIVE=live(c);applyTheme(c.theme);ribbon(c);dispatchEvent(new CustomEvent('lockg-config',{detail:c}));};
+ if(cfg){applyTheme(cfg.theme);window.LOCKG_CFG=cfg;if(!EDIT)useEd(cfg);}
+ const done=c=>{if(!EDIT)useEd(c);window.LOCKG_CFG=c;window.LOCKG_LIVE=live(c);applyTheme(c.theme);ribbon(c);dispatchEvent(new CustomEvent('lockg-config',{detail:c}));};
  if(cfg)window.LOCKG_LIVE=live(cfg);
  fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'config'})}).then(r=>r.json()).then(j=>{if(!j||!j.config)throw 0;try{localStorage.setItem('lockg-cfg',JSON.stringify(j.config));}catch(e){}done(j.config);}).catch(()=>{if(cfg)done(cfg);});
  Shell.onLang(()=>window.LOCKG_CFG&&ribbon(window.LOCKG_CFG));

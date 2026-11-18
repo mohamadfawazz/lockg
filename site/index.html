@@ -139,7 +139,7 @@ body.touring #title,body.touring #spec,body.touring .coach{opacity:0;pointer-eve
 .tr-back{width:40px;height:40px}.tr-go{height:40px;font-size:13px}.tr-x{padding:6px 2px;font-size:10px}
 .gpill.shopnow{background:linear-gradient(180deg,var(--a1),var(--a2))!important;color:var(--ink)!important;border:0!important;box-shadow:0 10px 30px color-mix(in srgb,var(--gold) 35%,transparent);font-weight:600}
 </style>
-<link rel="stylesheet" href="/shell.css?v=22">
+<link rel="stylesheet" href="/shell.css?v=23">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -216,8 +216,8 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=22"></script>
-<script src="/fx.js?v=22"></script>
+<script src="/shell.js?v=23"></script>
+<script src="/fx.js?v=23"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -499,7 +499,7 @@ window.__one={unlock,view,build};
  document.getElementById('trGo').onclick=()=>{if(i<N-1)go(i+1);else{end();location.href='/configure/?photos=1';}};
  document.getElementById('trBack').onclick=()=>{if(i>0)go(i-1);};document.getElementById('trSkip').onclick=end;
  Shell.onLang(paint);
- let seen=false;try{seen=!!localStorage.getItem('lockg-tour');}catch(e){}
+ let seen=!!window.LOCKG_EDIT;try{seen=seen||!!localStorage.getItem('lockg-tour');}catch(e){}
  if(!seen||/tour/.test(location.search)){const start=()=>{coachOff&&coachOff();document.body.classList.add('touring');el.classList.add('on');go(0);};if(document.body.classList.contains('gated'))addEventListener('lockg-gate-ok',()=>setTimeout(start,900),{once:true});else setTimeout(start,2600);}
  window.LOCKG_TOUR=()=>{document.body.classList.add('touring');el.classList.add('on');go(0);};})();
 </script>
