@@ -3,7 +3,7 @@
 const CFG={api:'https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api',phone:'+961 3 680 853',phoneLabel:''};
 const I={
  back:['Back','رجوع'],menu:['Menu','القائمة'],close:['Close','إغلاق'],lang:['العربية','English'],
- m_shop:['Shop','المتجر'],c_call:['Call us','اتصل بنا'],c_chat:['Chat with LOCKG','تحدث مع LOCKG'],m_home:['Home','الرئيسية'],m_about:['About us','من نحن'],m_contact:['Contact us','تواصل معنا'],m_test:['Test your room','جرّبه في غرفتك'],m_product:['LOCKG ONE','LOCKG ONE'],m_room:['Place it in a room','ضعه في غرفة'],m_how:['How it works','كيف يعمل'],m_quiz:['Find yours','اختر قطعتك'],m_specs:['Specs','المواصفات'],m_story:['Story','القصة'],m_order:['Order','اطلب'],m_chat:['Ask us','اسألنا'],
+ m_shop:['Shop','المتجر'],p_shopnow:['Shop now','تسوّق الآن'],c_call:['Call us','اتصل بنا'],c_chat:['Chat with LOCKG','تحدث مع LOCKG'],m_home:['Home','الرئيسية'],m_about:['About us','من نحن'],m_contact:['Contact us','تواصل معنا'],m_test:['Test your room','جرّبه في غرفتك'],m_product:['LOCKG ONE','LOCKG ONE'],m_room:['Place it in a room','ضعه في غرفة'],m_how:['How it works','كيف يعمل'],m_quiz:['Find yours','اختر قطعتك'],m_specs:['Specs','المواصفات'],m_story:['Story','القصة'],m_order:['Order','اطلب'],m_chat:['Ask us','اسألنا'],
  how_t:['Touch. Open. Lift.','المس. افتح. ارفع.'],
  how1:['Touch','المس'],how1p:['Your print on the sensor.','بصمتك على الحساس.'],
  how2:['Open','افتح'],how2p:['Unlocks in 0.2 s.','يفتح خلال 0.2 ثانية.'],

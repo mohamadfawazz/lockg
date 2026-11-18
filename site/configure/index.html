@@ -30,6 +30,9 @@ body:not(.live) #dock,body:not(.live) #picker,body:not(.live) .coach{opacity:0;p
 #hgt.warn{background:rgba(192,80,58,.18)}
 html body #chatfab{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
 @media (orientation:landscape) and (max-height:520px){#intro{padding:70px 24px 20px;justify-content:center}#intro h2{font-size:44px;margin:8px 0}#intro p{display:none}html body #chatfab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:auto;left:calc(16px + env(safe-area-inset-left,0px))}}
+.dots .cust{display:flex;flex-direction:column;align-items:center;gap:7px;font:500 10.5px/1.2 Jost,var(--arab);color:#f2ede4b0;width:58px;cursor:pointer;position:relative}
+.dots .cust i{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 4px 12px rgba(0,0,0,.3);outline:2px solid transparent;outline-offset:3px}
+.dots .cust.on i{outline-color:#C8A574}.dots .cust input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 .up2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .upt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:118px;padding:14px 10px;border-radius:20px;border:1.5px dashed rgba(242,237,228,.3);background:rgba(255,255,255,.05);cursor:pointer;text-align:center;overflow:hidden;transition:.2s}
 .upt:hover{background:rgba(255,255,255,.1);border-color:rgba(242,237,228,.6)}
@@ -102,7 +105,7 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 </style>
-<link rel="stylesheet" href="/shell.css?v=10">
+<link rel="stylesheet" href="/shell.css?v=11">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -117,7 +120,7 @@ h_low:['Too low for kids','منخفض للأطفال'],h_ok:['Out of kids\' reac
 l_day:['Day','نهار'],l_night:['Night','ليل'],p_light:['Light','الإضاءة'],
 v_cyc:['View','العرض'],v_front:['Front','أمامي'],v_close:['Close','قريب'],v_room:['Room','الغرفة'],
 t_open:['Unlocked · 0.2 s','فُتح · 0.2 ث'],t_lock:['Locked','مقفل'],t_auto:['Auto locked','قُفل تلقائياً'],t_deny:['Not your print · Owner alerted','ليست بصمتك · تم تنبيه المالك'],t_drag:['Drag it on the wall','اسحبه على الجدار'],
-b_lock:['Lock','اقفل'],
+b_lock:['Lock','اقفل'],f_custom:['Your color','لونك'],
 p_read:['AI is looking at your photo','الذكاء الاصطناعي يقرأ صورتك'],p_ai:['Found your gun','وجدنا سلاحك'],p_bg:['Removing the background','إزالة الخلفية'],p_straight:['Straightening it','تعديل الاتجاه'],p_3d:['Making it 3D','تحويلها إلى ثلاثي الأبعاد'],p_place:['Locking it in the rack','قفلها في الحامل'],
 p_wread:['Reading your wall','قراءة جدارك'],p_wlight:['Matching your light','مطابقة الإضاءة'],p_wplace:['Hanging it on your wall','تعليقه على جدارك'],
 q_lv:['LEVEL','المرحلة'],q_of:['of','من'],q_skip:['Skip','تخطَّ'],q_win:['Nice!','رائع!'],
@@ -176,7 +179,7 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=10"></script>
+<script src="/shell.js?v=11"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -423,7 +426,7 @@ document.getElementById('bChild').onclick=async()=>{if(S.busy)return;if(S.open)a
 document.querySelectorAll('[data-ic]').forEach(i=>i.outerHTML=Shell.UIIC[i.dataset.ic]);
 document.getElementById('pkClose').innerHTML=Shell.UIIC.x;
 const picker=document.getElementById('picker');let pk=null;
-function openPk(k){pk=pk===k?null:k;picker.classList.toggle('on',!!pk);document.querySelectorAll('[data-pk]').forEach(b=>b.classList.toggle('on',b.dataset.pk===pk));picker.querySelectorAll('.pk-panel').forEach(p=>p.classList.toggle('on',p.dataset.p===pk));if(pk){document.getElementById('pkTitle').textContent=Shell.t('pk_'+pk);coach.classList.add('hide');}offT=pk?1:0;if(!pk&&S.place)togglePlace(false);}
+function openPk(k){pk=pk===k?null:k;if(pk==='photo')setTimeout(warmAI,50);picker.classList.toggle('on',!!pk);document.querySelectorAll('[data-pk]').forEach(b=>b.classList.toggle('on',b.dataset.pk===pk));picker.querySelectorAll('.pk-panel').forEach(p=>p.classList.toggle('on',p.dataset.p===pk));if(pk){document.getElementById('pkTitle').textContent=Shell.t('pk_'+pk);coach.classList.add('hide');}offT=pk?1:0;if(!pk&&S.place)togglePlace(false);}
 document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>openPk(b.dataset.pk));
 document.getElementById('pkClose').onclick=()=>openPk(pk);
 const GKEYS={ar:'g_ar',pump:'g_pump',bolt:'g_bolt',lever:'g_lever'};
@@ -434,6 +437,8 @@ function renderUI(){
  const dots=(el,arr,key,lab,fn)=>{el.innerHTML='';arr.forEach((c,i)=>{const b=document.createElement('button');if(S[key]===i)b.classList.add('on');b.innerHTML=`<i style="background:${c}"></i><span>${Shell.t(lab+i)}</span>`;b.onclick=()=>{S[key]=i;fn(i);renderUI();};el.appendChild(b);});};
  dots(document.getElementById('pWall'),WALLS,'wall','w',setWall);
  dots(document.getElementById('pFin'),FIN.map(f=>f.c),'fin','f',setFinish);
+ {const el=document.getElementById('pFin'),b=document.createElement('label');b.className='cust'+(S.fin===4?' on':'');b.innerHTML=`<i style="background:${S.fin===4?S.hex:'conic-gradient(#e94b4b,#f2c94c,#6fcf97,#56ccf2,#9b51e0,#e94b4b)'}"></i><span>${Shell.t('f_custom')}</span><input type="color" value="${S.hex||'#7a1f2b'}">`;
+  const inp=b.querySelector('input');inp.oninput=e=>{S.fin=4;S.hex=e.target.value;shellM.color.set(S.hex);shellM.metalness=.75;shellM.roughness=.32;b.querySelector('i').style.background=S.hex;el.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');};inp.onchange=()=>renderUI();el.appendChild(b);}
  const pl=document.getElementById('pLight');pl.innerHTML='';[[false,'sun','l_day'],[true,'moon','l_night']].forEach(([n,ic,k])=>{const b=document.createElement('button');if(S.night===n)b.classList.add('on');b.innerHTML=Shell.UIIC[ic]+`<span>${Shell.t(k)}</span>`;b.onclick=()=>{setLight(n);renderUI();};pl.appendChild(b);});
  document.querySelector('#bMove span').textContent=Shell.t(S.place?'p_done':'p_move');document.getElementById('bMove').classList.toggle('on',S.place);
  if(pk)document.getElementById('pkTitle').textContent=Shell.t('pk_'+pk);
@@ -524,40 +529,60 @@ function cutout(src,hint){
  for(let p=0;p<N;p++){let a=0;if(F[p]){const px=p%w;const edge=(px>0&&!F[p-1])||(px<w-1&&!F[p+1])||(p>=w&&!F[p-w])||(p<N-w&&!F[p+w]);a=edge?150:255;}d[p*4+3]=a;}
  x.putImageData(id,0,0);
  const rot=(img,a,cx,cy)=>{const S=Math.ceil(Math.hypot(img.width,img.height)),r=document.createElement('canvas');r.width=S;r.height=S;const rx=r.getContext('2d');rx.translate(S/2,S/2);rx.rotate(a);rx.drawImage(img,-cx,-cy);return r;};
- const trim=cv=>{const W=cv.width,H=cv.height,dd=cv.getContext('2d').getImageData(0,0,W,H).data;let x0=W,y0=H,x1=-1,y1=-1;for(let y=0;y<H;y++)for(let X=0;X<W;X++)if(dd[(y*W+X)*4+3]>80){if(X<x0)x0=X;if(X>x1)x1=X;if(y<y0)y0=y;if(y>y1)y1=y;}if(x1<0)return null;const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').drawImage(cv,-x0,-y0);return o;};
+ const trim=cv=>{const W=cv.width,H=cv.height,dd=cv.getContext('2d').getImageData(0,0,W,H).data;let x0=W,y0=H,x1=-1,y1=-1;for(let y=0;y<H;y++)for(let X=0;X<W;X++)if(dd[(y*W+X)*4+3]>80){if(X<x0)x0=X;if(X>x1)x1=X;if(y<y0)y0=y;if(y>y1)y1=y;}if(x1<0)return null;const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').drawImage(cv,-x0,-y0);o._ox=x0;o._oy=y0;return o;};
  const alphaOf=cv=>cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data;
- let o=trim(rot(c,-ang,mx,my));if(!o)return null;
+ // track key points (butt end, trigger, muzzle) through every step
+ let P=(hint&&hint.pts?hint.pts:[]).map(q=>q&&isFinite(q[0])?[q[0]*w,q[1]*h]:null);
+ const tRot=(a,cx,cy,S)=>{const co=Math.cos(a),si=Math.sin(a);P=P.map(q=>q&&[co*(q[0]-cx)-si*(q[1]-cy)+S/2,si*(q[0]-cx)+co*(q[1]-cy)+S/2]);};
+ const rotT=(img,a,cx,cy)=>{const r=rot(img,a,cx,cy);tRot(a,cx,cy,r.width);return r;};
+ const trimT=cv=>{const t=trim(cv);if(t)P=P.map(q=>q&&[q[0]-t._ox,q[1]-t._oy]);return t;};
+ let o=trimT(rotT(c,-ang,mx,my));if(!o)return null;
  // muzzle to the right: the stock end is the thicker end
  const thickEnds=cv=>{const W=cv.width,H=cv.height,a=alphaOf(cv),band=Math.max(2,(W*.14)|0);let l=0,r=0;for(let y=0;y<H;y++){for(let X=0;X<band;X++)if(a[(y*W+X)*4+3]>80)l++;for(let X=W-band;X<W;X++)if(a[(y*W+X)*4+3]>80)r++;}return [l,r];};
  const flipH=cv=>{const n=document.createElement('canvas');n.width=cv.width;n.height=cv.height;const k=n.getContext('2d');k.translate(cv.width,0);k.scale(-1,1);k.drawImage(cv,0,0);return n;};
  const flipV=cv=>{const n=document.createElement('canvas');n.width=cv.width;n.height=cv.height;const k=n.getContext('2d');k.translate(0,cv.height);k.scale(1,-1);k.drawImage(cv,0,0);return n;};
- if(!(hint&&isFinite(hint.angle))){const [l,r]=thickEnds(o);if(r>l)o=flipH(o);}
+ const fH=cv=>{P=P.map(q=>q&&[cv.width-q[0],q[1]]);return flipH(cv);},fV=cv=>{P=P.map(q=>q&&[q[0],cv.height-q[1]]);return flipV(cv);};
+ if(!(hint&&isFinite(hint.angle))){const [l,r]=thickEnds(o);if(r>l)o=fH(o);}
  // straighten on the barrel: the top edge of the front half should be level
  const topEdge=(cv,f0,f1)=>{const W=cv.width,H=cv.height,a=alphaOf(cv),pts=[];for(let X=(W*f0)|0;X<(W*f1)|0;X+=2){for(let y=0;y<H;y++)if(a[(y*W+X)*4+3]>80){pts.push([X,y]);break;}}return pts;};
  for(let pass=0;pass<2;pass++){
   const pts=topEdge(o,.55,.97),sl=[];for(let i=0;i<pts.length;i+=3)for(let j=i+6;j<pts.length;j+=5)sl.push((pts[j][1]-pts[i][1])/(pts[j][0]-pts[i][0]));
   if(sl.length<8)break;sl.sort((a,b)=>a-b);const corr=Math.atan(sl[sl.length>>1]);if(Math.abs(corr)<.004||Math.abs(corr)>.35)break;
-  o=trim(rot(o,-corr,o.width/2,o.height/2))||o;}
+  o=trimT(rotT(o,-corr,o.width/2,o.height/2))||o;}
  // gun belly (grip, magazine, stock) must hang below the bore
  const bore=cv=>{const W=cv.width,H=cv.height,a=alphaOf(cv),ys=[];for(let X=(W*.62)|0;X<(W*.92)|0;X+=2){let y0=-1,y1=-1;for(let y=0;y<H;y++){const on=a[(y*W+X)*4+3]>80;if(on&&y0<0)y0=y;if(y0>=0&&!on){y1=y;break;}}if(y0>=0)ys.push((y0+(y1<0?H:y1))/2);}ys.sort((m,n)=>m-n);return ys.length?ys[ys.length>>1]/H:.3;};
  const massY=cv=>{const W=cv.width,H=cv.height,a=alphaOf(cv);let s=0,n=0;for(let y=0;y<H;y++)for(let X=0;X<W;X++)if(a[(y*W+X)*4+3]>80){s+=y;n++;}return s/n/H;};
- let bf=bore(o);if(massY(o)<bf){o=flipV(o);bf=bore(o);}
- return {canvas:o,bore:bf};
+ let bf=bore(o);if(massY(o)<bf){o=fV(o);bf=bore(o);}
+ const OW=o.width,OH=o.height,A=alphaOf(o);
+ // butt: centre of the stock end; trigger: from the AI point if we have it
+ const buttY=(()=>{const ys=[];for(let X=0;X<Math.max(2,OW*.025);X++)for(let y=0;y<OH;y++)if(A[(y*OW+(X|0))*4+3]>80)ys.push(y);ys.sort((a,b)=>a-b);return ys.length?(ys[0]+ys[ys.length-1])/2/OH:.5;})();
+ const topRun=u=>{const X=Math.min(OW-1,Math.max(0,Math.round(u*OW)));let y0=-1,y1=-1;for(let y=0;y<OH;y++){const on=A[(y*OW+X)*4+3]>80;if(on&&y0<0)y0=y;if(y0>=0&&!on){y1=y;break;}}return y0<0?bf:(y0+(y1<0?OH:y1))/2/OH;};
+ const fr=q=>q&&q[0]>-OW*.1&&q[0]<OW*1.1&&q[1]>-OH*.2&&q[1]<OH*1.2?[q[0]/OW,q[1]/OH]:null;
+ return {canvas:o,bore:bf,butt:[0,buttY],trig:fr(P[1]),topRun};
 }
-let photoGun=null,photoTex=null,photoBore=.3,gunInfo=null,flipX=false,flipY=false,useMyPhoto=false;
+let photoCut=null,photoGun=null,photoTex=null,photoBore=.3,gunInfo=null,flipX=false,flipY=false,useMyPhoto=false;
 function placePhotoGun(){
  if(photoGun){if(photoGun.parent)photoGun.parent.remove(photoGun);photoGun=null;}
- if(!photoTex||!useMyPhoto){if(gun)gun.visible=true;return;}
+ if(!photoTex||!useMyPhoto){if(gun)gun.visible=true;coverShift.set(0,0);return;}
  if(gun)gun.visible=true;
  // length of the 3D gun in its own units
  gun.updateMatrixWorld(true);const lb=new THREE.Box3();gun.traverse(o=>{if(o.isMesh){o.geometry.computeBoundingBox();const b=o.geometry.boundingBox.clone().applyMatrix4(o.matrix);lb.union(b);}});
  const L=Math.max(.7,lb.max.x-lb.min.x),H=L*photoTex.image.height/photoTex.image.width;
- const bf=flipY?1-photoBore:photoBore;
- photoGun=new THREE.Group();const solid=solidGun(photoTex,L,H);
- if(solid){solid.position.set(-L/2,-H/2,0);photoGun.add(solid);}
- else{const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,H),new THREE.MeshStandardMaterial({map:photoTex,transparent:true,alphaTest:.45,side:THREE.DoubleSide}));pl.castShadow=true;photoGun.add(pl);}
- photoGun.scale.set(1,flipY?-1:1,1);photoGun.userData.sy=flipY?-1:1;
- photoGun.position.set(BUTT+lb.min.x+L/2,COL.y+(bf-.5)*H,0);
+ photoGun=new THREE.Group();const solid=solidGun(photoTex,L,H);const inner=new THREE.Group();photoGun.add(inner);
+ if(solid)inner.add(solid);else{const pl=new THREE.Mesh(new THREE.PlaneGeometry(L,H),new THREE.MeshStandardMaterial({map:photoTex,transparent:true,alphaTest:.45,side:THREE.DoubleSide}));pl.position.set(L/2,H/2,0);pl.castShadow=true;inner.add(pl);}
+ if(flipY){inner.scale.y=-1;inner.position.y=H;}
+ const vv=v=>flipY?v:1-v;                       // photo fraction (from top) -> local up fraction
+ const pc=photoCut||{butt:[0,.5],topRun:()=>photoBore,trig:null};
+ const B=new THREE.Vector2(0,vv(pc.butt[1])*H);
+ const T1=new THREE.Vector2(BUTT+.004,.02);      // cradle centre
+ const tgt=new THREE.Vector2(COL.x,COL.y).sub(T1);
+ const D=tgt.length(),bu=Math.min(.97,D/L),Pb=new THREE.Vector2(bu*L,vv(pc.topRun(bu))*H).sub(B);
+ const th=Math.atan2(tgt.y,tgt.x)-Math.atan2(Pb.y,Pb.x);
+ photoGun.rotation.z=th;const Bw=B.clone().rotateAround(new THREE.Vector2(),th);
+ photoGun.position.set(T1.x-Bw.x,T1.y-Bw.y,0);photoGun.userData.sy=1;
+ // move the trigger cover onto the real trigger
+ coverShift.set(0,0);if(pc.trig){const t=new THREE.Vector2(pc.trig[0]*L,vv(pc.trig[1])*H).rotateAround(new THREE.Vector2(),th).add(new THREE.Vector2(photoGun.position.x,photoGun.position.y));
+  coverShift.set(THREE.MathUtils.clamp(t.x,-.25,.25),THREE.MathUtils.clamp(t.y+.035,-.05,.05));}
  gunHolder.add(photoGun);if(gun)gun.visible=false;}
 window.__afterBuild=()=>{try{photoGun=null;placePhotoGun();}catch(e){}};
 function tintGun(info){if(!gun)return;
@@ -567,28 +592,33 @@ function tintGun(info){if(!gun)return;
 function cropTo(cv,box,m){const W=cv.width,H=cv.height;let [x0,y0,x1,y1]=box.map(Number);if(![x0,y0,x1,y1].every(isFinite)||x1-x0<.15)return null;
  const mx=(x1-x0)*m+.02,my=(y1-y0)*m+.03;x0=Math.max(0,x0-mx);y0=Math.max(0,y0-my);x1=Math.min(1,x1+mx);y1=Math.min(1,y1+my);
  const c=document.createElement('canvas');c.width=Math.round((x1-x0)*W);c.height=Math.round((y1-y0)*H);c.getContext('2d').drawImage(cv,-x0*W,-y0*H);return {c,x0,y0,x1,y1};}
+function warmAI(){if(!bgLib)bgLib=import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm').catch(()=>null);bgLib.then(l=>{if(l&&l.preload&&!warmAI.done){warmAI.done=1;l.preload({model:'isnet_quint8'}).catch(()=>{});}});}
 async function onGunPhoto(f){
  if(!f)return;
  try{const im=await loadImg(f);const full=scaleTo(im,1600);setThumb('upGun',full);
-  proc.start(full,['p_read','p_ai','p_bg','p_straight','p_3d','p_place']);
-  proc.step(0);if(!bgLib)bgLib=import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm').catch(()=>null);
-  const info=await vision('weapon',full);
-  if(info&&!info.ok){proc.end();toast(Shell.t('u_nogun'),true,3200);return;}
-  proc.step(1);if(info&&info.box)proc.box(info.box);await proc.wait(500);
-  // crop to the gun the AI found, and get its true axis from muzzle and butt
-  let src=full,hint=null;const cr=info&&info.box?cropTo(full,info.box,.06):null;
-  if(cr){src=cr.c;if(Array.isArray(info.muzzle)&&Array.isArray(info.butt)){const W=full.width,H=full.height;const ang=Math.atan2((info.muzzle[1]-info.butt[1])*H,(info.muzzle[0]-info.butt[0])*W);hint={angle:ang};}}
-  proc.step(2);const blob=await new Promise(r=>src.toBlob(r,'image/png'));const ai=await aiCut(blob,p=>proc.pct(2,p));
-  proc.step(3);await proc.wait(250);
-  const cut=(ai&&cutout(ai,hint))||cutout(src,hint)||cutout(full);
-  proc.step(4);await proc.wait(250);
+  proc.start(full,['p_read','p_ai','p_bg','p_straight','p_3d','p_place']);proc.step(0);warmAI();
+  // AI reading and background removal run at the same time
+  const small=scaleTo(full,1024);let visionDone=false;
+  const vP=vision('weapon',full).then(v=>{visionDone=true;if(!(v&&v.ok))proc.step(2);if(v&&v.ok){proc.step(1);if(v.box)proc.box(v.box);setTimeout(()=>{if(proc.cur()<2)proc.step(2);},500);}return v;});
+  const blob=await new Promise(r=>small.toBlob(r,'image/png'));
+  const aP=aiCut(blob,p=>{if(visionDone)proc.pct(2,p);});
+  let info=await vP;if(info&&!info.ok)info=null;
+  if(!info){proc.step(2);}
+  const ai=await aP;
+  proc.step(3);await proc.wait(120);
+  const base=ai||small;let src=base,hint=null;
+  if(info&&info.box){const cr=cropTo(base,info.box,.05);if(cr){src=cr.c;const m=q=>Array.isArray(q)?[(q[0]-cr.x0)/(cr.x1-cr.x0),(q[1]-cr.y0)/(cr.y1-cr.y0)]:null;
+   const pts=[m(info.butt),m(info.trigger),m(info.muzzle)];let ang;if(info.muzzle&&info.butt){ang=Math.atan2((info.muzzle[1]-info.butt[1])*base.height,(info.muzzle[0]-info.butt[0])*base.width);}
+   hint={angle:ang,pts};}}
+  const cut=cutout(src,hint)||(src!==base&&cutout(base))||null;
+  proc.step(4);await proc.wait(150);
   gunInfo=info;
   if(info&&GKEYS[info.type]){S.gun=info.type;build(info.type);place();}
   if(info)tintGun(info);
-  if(cut){photoTex=new THREE.CanvasTexture(cut.canvas);photoTex.colorSpace=THREE.SRGBColorSpace;photoTex.anisotropy=8;photoBore=cut.bore;flipY=false;useMyPhoto=true;proc.preview(cut.canvas);}
-  else{photoTex=null;useMyPhoto=false;}
+  if(cut){photoCut=cut;photoTex=new THREE.CanvasTexture(cut.canvas);photoTex.colorSpace=THREE.SRGBColorSpace;photoTex.anisotropy=8;photoBore=cut.bore;flipY=false;useMyPhoto=true;proc.preview(cut.canvas);}
+  else{photoCut=null;photoTex=null;useMyPhoto=false;}
   placePhotoGun();growT=1;grow=0;renderUI();renderPhotoUI();
-  proc.step(5);await proc.wait(700);proc.done();
+  proc.step(5);await proc.wait(600);proc.done();
   if(ar.on)enterAR();else view(0);
   qDone(0);toast(cut?(info&&info.name?info.name:Shell.t('u_done')):Shell.t('u_3d'),false,2600);
  }catch(e){console.error(e);proc.end();toast(Shell.t('u_fail'),true);}
@@ -671,7 +701,7 @@ const proc=(()=>{const el=document.getElementById('proc'),img=el.querySelector('
  const tick=()=>{shown+=(target()-shown)*.08+.0008;if(shown>target())shown=target();fg.style.strokeDashoffset=169.6*(1-shown);pb.textContent=Math.round(shown*100)+'%';raf=requestAnimationFrame(tick);};
  const paintSteps=()=>{ul.innerHTML=keys.map((k,i)=>`<li class="${i<cur?'ok':i===cur?'act':''}${i===cur+1?' next':''}"><i></i>${Shell.t(k)}</li>`).join('');const okd=[...ul.querySelectorAll('.ok')];okd.slice(0,-1).forEach(l=>l.style.display='none');};
  return {start(cv,k){keys=k;cur=0;sub=0;shown=0;iw=cv.width;ih=cv.height;img.src=scaleTo(cv,700).toDataURL('image/jpeg',.85);ph.classList.remove('cut');bx.classList.remove('on');paintSteps();el.classList.add('on');cancelAnimationFrame(raf);tick();try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}},
-  step(i){cur=i;sub=0;paintSteps();},pct(i,p){if(i===cur)sub=Math.max(sub,Math.min(.95,p));},
+  step(i){if(i<cur)return;cur=i;sub=0;paintSteps();},cur:()=>cur,pct(i,p){if(i===cur)sub=Math.max(sub,Math.min(.95,p));},
   wait:ms=>new Promise(r=>setTimeout(r,ms)),
   box(b){const r=ph.getBoundingClientRect(),k=Math.min(r.width/iw,r.height/ih),ox=(r.width-iw*k)/2,oy=(r.height-ih*k)/2;bx.style.left=(ox+b[0]*iw*k)+'px';bx.style.top=(oy+b[1]*ih*k)+'px';bx.style.width=((b[2]-b[0])*iw*k)+'px';bx.style.height=((b[3]-b[1])*ih*k)+'px';bx.classList.add('on');},
   preview(cv){bx.classList.remove('on');img.style.opacity=0;setTimeout(()=>{img.src=cv.toDataURL('image/png');ph.classList.add('cut');img.style.opacity=1;},250);},
@@ -680,7 +710,7 @@ const proc=(()=>{const el=document.getElementById('proc'),img=el.querySelector('
 function arSpot(sp){if(!wallPhoto||!ar.on||camera.aspect<1)return;const rp=wallPhoto.repeat,of=wallPhoto.offset;const sx=(sp[0]-of.x)/rp.x,sy=((1-sp[1])-of.y)/rp.y;if(!isFinite(sx)||!isFinite(sy))return;const cx=Math.min(.75,Math.max(.25,sx)),cy=Math.min(.7,Math.max(.4,sy));
  ndc.set(cx*2-1,cy*2-1);ray.setFromCamera(ndc,camera);const t=-ray.ray.origin.z/ray.ray.direction.z;const P=ray.ray.origin.clone().add(ray.ray.direction.clone().multiplyScalar(t));ar.x=P.x;ar.y+=P.y-1.2;}
 /* ===== the journey (quests) ===== */
-const QI=[{t:'q1t',s:'q1s',g:'q1g',ic:'camera',go:()=>document.querySelector('#upGun input').click(),skip:()=>{qDone(0);}},
+const QI=[{t:'q1t',s:'q1s',g:'q1g',ic:'camera',go:()=>{warmAI();document.querySelector('#upGun input').click();},skip:()=>{qDone(0);}},
  {t:'q2t',s:'q2s',g:'q2g',ic:'place',go:()=>document.querySelector('#upWall input').click(),skip:()=>{qDone(1);}},
  {t:'q3t',s:'q3s',g:'q3g',ic:'print',go:()=>{if(!S.open)unlock();},skip:()=>{qDone(2);}},
  {t:'q4t',s:'q4s',g:'q4g',ic:'bag',go:()=>Shell.go('order'),skip:()=>{qEl.classList.remove('on');},sk:'q4k'}];
@@ -708,7 +738,7 @@ function enter(){if(!intro)return;intro=false;setTimeout(()=>{qEl.classList.add(
 document.getElementById('enter').onclick=enter;
 if(/photos/.test(location.search)){setTimeout(()=>{enter();setTimeout(()=>openPk('photo'),900);},300);}
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>Shell.go(b.dataset.go)));
-window.LOCKG_SHOPQ=()=>`?fin=${['black','bronze','nickel','sand'][S.fin]||'black'}&gun=${S.gun}&p=${S.mount==='car'?'car':'wall'}`;
+window.LOCKG_SHOPQ=()=>`?fin=${S.fin===4?'custom&hex='+encodeURIComponent(S.hex):(['black','bronze','nickel','sand'][S.fin]||'black')}&gun=${S.gun}&p=${S.mount==='car'?'car':'wall'}`;
 window.LOCKG_SUMMARY=()=>`LOCKG ONE · ${Shell.t('f'+S.fin)} · ${Shell.t(GKEYS[S.gun])} · ${Shell.t(S.mount==='wall'?'p_wall':'p_car')}`;
 Shell.onLang(()=>renderUI());
 /* layout */
@@ -721,7 +751,7 @@ if(innerWidth>820&&devicePixelRatio<=2){composer=new EffectComposer(renderer);co
 /* init */
 build('ar');setFinish(0);setWall(0);setLight(true);place();renderUI();layout();
 /* loop */
-let expl=0,explT=0;const EX={bolts:[0,0,0],rail:[0,0,.06],cradle:[-.08,0,.2],cover:[0,-.12,.25],lock:[0,0,.2],gate:[.06,0,.32],gun:[0,.28,.42]};
+let expl=0,explT=0;const coverShift=new THREE.Vector2();const EX={bolts:[0,0,0],rail:[0,0,.06],cradle:[-.08,0,.2],cover:[0,-.12,.25],lock:[0,0,.2],gate:[.06,0,.32],gun:[0,.28,.42]};
 document.getElementById('bExplode').onclick=e=>{explT=explT?0:1;e.currentTarget.classList.toggle('on',!!explT);if(explT&&!ar.on)view(0);};
 const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
 const RC={idle:new THREE.Color(0x9c7a4e),scan:new THREE.Color(0xf2ede4),ok:new THREE.Color(0xeadcc2),deny:new THREE.Color(0xc0503a)};
@@ -731,7 +761,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  offK+=(offT-offK)*Math.min(1,dt*6);const w=innerWidth,h=innerHeight;if(offK>.001)camera.setViewOffset(w,h,0,h*.14*offK,w,h);else camera.clearViewOffset();camera.updateProjectionMatrix();
  if(photoGun){grow+=(growT-grow)*Math.min(1,dt*2.2);photoGun.scale.z=Math.max(.02,grow);}
- expl+=(explT-expl)*Math.min(1,dt*4);{const e=ease(Math.min(1,Math.max(0,expl)));for(const k in EX){if(parts[k])parts[k].position.set(EX[k][0]*e,EX[k][1]*e,EX[k][2]*e);}}
+ expl+=(explT-expl)*Math.min(1,dt*4);{const e=ease(Math.min(1,Math.max(0,expl)));for(const k in EX){if(parts[k])parts[k].position.set(EX[k][0]*e+(k==='cover'?coverShift.x:0),EX[k][1]*e+(k==='cover'?coverShift.y:0),EX[k][2]*e);}}
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
  gateA+=(gateT-gateA)*Math.min(1,dt*11);gatePivot.rotation.x=-gateA*1.9;
  const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.9+.5*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?3:(Math.sin(rt*22)>0?3.2:.3);
