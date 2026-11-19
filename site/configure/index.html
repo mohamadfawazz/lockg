@@ -136,7 +136,7 @@ body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 .tile .gunph{width:100%;height:34px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));margin-bottom:6px}
 </style>
-<link rel="stylesheet" href="/shell.css?v=25">
+<link rel="stylesheet" href="/shell.css?v=26">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -213,8 +213,8 @@ d_photo:['Photos','الصور'],pk_photo:['Your photos','صورك']
 <div class="coach hide" id="coach" data-i18n="coach">Tap to test the lock</div>
 <div id="toast"></div>
 <div id="busy" class="glass"><i></i><span></span></div>
-<script src="/shell.js?v=25"></script>
-<script src="/fx.js?v=25"></script>
+<script src="/shell.js?v=26"></script>
+<script src="/fx.js?v=26"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -480,12 +480,12 @@ function presetCut(img,trig){const W=img.naturalWidth,H=img.naturalHeight,c=docu
  const ys=[];for(let X=0;X<Math.max(2,W*.025);X++)for(let y=0;y<H;y++)if(A[(y*W+X)*4+3]>80)ys.push(y);ys.sort((a,b)=>a-b);const buttY=ys.length?(ys[0]+ys[ys.length-1])/2/H:.5;
  return {canvas:c,bore,butt:[0,buttY],trig,topRun:u=>{const v=run(u*W);return v===null?bore:v;}};}
 function loadPreset(id){const P=PRESET[id];if(!P)return Promise.resolve(null);if(presetCache[id])return Promise.resolve(presetCache[id]);
- return new Promise(res=>{const im=new Image();im.onload=()=>{const cut=presetCut(im,P.trig);const tex=new THREE.CanvasTexture(cut.canvas);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;presetCache[id]={cut,tex,len:P.len};res(presetCache[id]);};im.onerror=()=>res(null);im.src='/configure/guns/'+id+'.webp?v=1';});}
+ return new Promise(res=>{const im=new Image();im.onload=()=>{const cut=presetCut(im,P.trig);const tex=new THREE.CanvasTexture(cut.canvas);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;presetCache[id]={cut,tex,len:P.len};res(presetCache[id]);};im.onerror=()=>res(null);im.src='/configure/guns/'+id+'.webp?v=2';});}
 window.LOCKG_PICK=id=>pickGun(id);
 function pickGun(id){S.gun=id;build(baseOf(id));place();presetTex=null;presetCutP=null;placePhotoGun();
  loadPreset(id).then(p=>{if(!p||S.gun!==id)return;presetTex=p.tex;presetCutP=p.cut;presetLen=p.len;placePhotoGun();});}
 function renderUI(){
- const pg=document.getElementById('pGun');pg.innerHTML='';Object.keys(GKEYS).forEach(id=>{const b=document.createElement('button');b.className='tile'+(S.gun===id?' on':'');b.innerHTML=`<img class="gunph" src="/configure/guns/${id}.webp?v=1" alt=""><span>${Shell.t(GKEYS[id])}</span>`;b.onclick=()=>{useMyPhoto=false;pickGun(id);renderUI();renderPhotoUI();};pg.appendChild(b);});
+ const pg=document.getElementById('pGun');pg.innerHTML='';Object.keys(GKEYS).forEach(id=>{const b=document.createElement('button');b.className='tile'+(S.gun===id?' on':'');b.innerHTML=`<img class="gunph" src="/configure/guns/${id}.webp?v=2" alt=""><span>${Shell.t(GKEYS[id])}</span>`;b.onclick=()=>{useMyPhoto=false;pickGun(id);renderUI();renderPhotoUI();};pg.appendChild(b);});
  const pp=document.getElementById('pPlace');pp.innerHTML='';[['wall','place','p_wall'],['car','car','p_car']].forEach(([id,ic,k])=>{const b=document.createElement('button');b.className='tile'+(S.mount===id?' on':'');b.innerHTML=`<span class="ic">${Shell.UIIC[ic]}</span><span>${Shell.t(k)}</span>`;b.onclick=()=>{if(S.place)togglePlace(false);S.mount=id;place();view(0);renderUI();};pp.appendChild(b);});
  document.getElementById('wallOpts').style.display=S.mount==='wall'?'':'none';
  const dots=(el,arr,key,lab,fn)=>{el.innerHTML='';arr.forEach((c,i)=>{const b=document.createElement('button');if(S[key]===i)b.classList.add('on');b.innerHTML=`<i style="background:${c}"></i><span>${Shell.t(lab+i)}</span>`;b.onclick=()=>{S[key]=i;fn(i);renderUI();};el.appendChild(b);});};
@@ -529,30 +529,61 @@ async function aiCut(file,onp){
 }
 /* outline of the cut-out -> real 3D solid with the photo on both faces */
 function traceOutline(cv){
- const W=Math.min(1000,cv.width),k=W/cv.width,H=Math.max(2,Math.round(cv.height*k));
+ const W=Math.min(1600,cv.width),k=W/cv.width,H=Math.max(2,Math.round(cv.height*k));
  const t=document.createElement('canvas');t.width=W;t.height=H;t.getContext('2d').drawImage(cv,0,0,W,H);
- const a=t.getContext('2d').getImageData(0,0,W,H).data,on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&a[(y*W+x)*4+3]>110;
+ const a=t.getContext('2d').getImageData(0,0,W,H).data,raw=new Uint8Array(W*H);for(let i=0;i<W*H;i++)raw[i]=a[i*4+3]>60?1:0;
+ // grow the shape by 1 px so the soft photo edge sits inside the solid (smooth silhouette)
+ const M=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;M[i]=raw[i]||(x>0&&raw[i-1])||(x<W-1&&raw[i+1])||(y>0&&raw[i-W])||(y<H-1&&raw[i+W])?1:0;}
+ const on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&M[y*W+x]===1;
  let sx=-1,sy=-1;outer:for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(on(x,y)){sx=x;sy=y;break outer;}
  if(sx<0)return null;
- const DX=[1,1,0,-1,-1,-1,0,1],DY=[0,1,1,1,0,-1,-1,-1];const pts=[];let x=sx,y=sy,dir=7,guard=0;
- do{pts.push([x,y]);let found=false;for(let i=0;i<8;i++){const d=(dir+6+i)%8;const nx=x+DX[d],ny=y+DY[d];if(on(nx,ny)){x=nx;y=ny;dir=d;found=true;break;}}if(!found)break;}while((x!==sx||y!==sy)&&++guard<40000);
+ const DX=[1,1,0,-1,-1,-1,0,1],DY=[0,1,1,1,0,-1,-1,-1];let pts=[];let x=sx,y=sy,dir=7,guard=0;
+ do{pts.push([x+.5,y+.5]);let found=false;for(let i=0;i<8;i++){const d=(dir+6+i)%8;const nx=x+DX[d],ny=y+DY[d];if(on(nx,ny)){x=nx;y=ny;dir=d;found=true;break;}}if(!found)break;}while((x!==sx||y!==sy)&&++guard<80000);
+ // remove pixel stair-steps: circular moving average, then simplify, then round the corners
+ const n=pts.length,R=3,sm=[];for(let i=0;i<n;i++){let ax=0,ay=0;for(let j=-R;j<=R;j++){const p=pts[(i+j+n)%n];ax+=p[0];ay+=p[1];}sm.push([ax/(2*R+1),ay/(2*R+1)]);}
  const rdp=(p,eps)=>{if(p.length<3)return p;let i0=0,dm=0;const [ax,ay]=p[0],[bx,by]=p[p.length-1],L=Math.hypot(bx-ax,by-ay)||1;for(let i=1;i<p.length-1;i++){const d=Math.abs((by-ay)*p[i][0]-(bx-ax)*p[i][1]+bx*ay-by*ax)/L;if(d>dm){dm=d;i0=i;}}return dm>eps?rdp(p.slice(0,i0+1),eps).slice(0,-1).concat(rdp(p.slice(i0),eps)):[p[0],p[p.length-1]];};
- const half=pts.length>>1;let simp=rdp(pts.slice(0,half+1),1.1).slice(0,-1).concat(rdp(pts.slice(half),1.1).slice(0,-1));
+ const half=sm.length>>1;let simp=rdp(sm.slice(0,half+1),.55).slice(0,-1).concat(rdp(sm.slice(half),.55).slice(0,-1));
  for(let it=0;it<2;it++){const o=[];for(let i=0;i<simp.length;i++){const a=simp[i],b=simp[(i+1)%simp.length];o.push([a[0]*.75+b[0]*.25,a[1]*.75+b[1]*.25],[a[0]*.25+b[0]*.75,a[1]*.25+b[1]*.75]);}simp=o;}
  return {pts:simp.map(([px,py])=>[px/W,1-py/H])};
 }
-let grow=1,growT=1;
+/* surface maps from the photo: relief (normal), gloss (roughness) and metal */
+function gunMaps(img){if(img._maps)return img._maps;
+ const W=Math.min(1024,img.width),H=Math.max(2,Math.round(img.height*W/img.width));
+ const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(img,0,0,W,H);const d=x.getImageData(0,0,W,H).data;
+ const N=W*H,h=new Float32Array(N),sat=new Float32Array(N),lum=new Float32Array(N);
+ for(let i=0;i<N;i++){const r=d[i*4]/255,g=d[i*4+1]/255,b=d[i*4+2]/255,a=d[i*4+3]/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);lum[i]=.3*r+.59*g+.11*b;sat[i]=mx-mn;h[i]=(lum[i]*.7+a*.6);}
+ // soften the height so the relief reads as form, not noise
+ const blur=(s)=>{const o=new Float32Array(N);for(let y=0;y<H;y++)for(let X=0;X<W;X++){let t=0,c2=0;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const xx=X+i,yy=y+j;if(xx<0||yy<0||xx>=W||yy>=H)continue;t+=s[yy*W+xx];c2++;}o[y*W+X]=t/c2;}return o;};
+ const hb=blur(blur(h));
+ const mk=()=>{const cv=document.createElement('canvas');cv.width=W;cv.height=H;return cv;};
+ const nC=mk(),nX=nC.getContext('2d'),nI=nX.createImageData(W,H),rC=mk(),rX=rC.getContext('2d'),rI=rX.createImageData(W,H);
+ const S=2.6,at=(X,y)=>hb[Math.min(H-1,Math.max(0,y))*W+Math.min(W-1,Math.max(0,X))];
+ for(let y=0;y<H;y++)for(let X=0;X<W;X++){const i=y*W+X;
+  const dx=(at(X+1,y-1)+2*at(X+1,y)+at(X+1,y+1))-(at(X-1,y-1)+2*at(X-1,y)+at(X-1,y+1)),dy=(at(X-1,y+1)+2*at(X,y+1)+at(X+1,y+1))-(at(X-1,y-1)+2*at(X,y-1)+at(X+1,y-1));
+  let nx=-dx*S,ny=dy*S,nz=1;const l=Math.hypot(nx,ny,nz);nx/=l;ny/=l;nz/=l;
+  nI.data[i*4]=(nx*.5+.5)*255;nI.data[i*4+1]=(ny*.5+.5)*255;nI.data[i*4+2]=(nz*.5+.5)*255;nI.data[i*4+3]=255;
+  // wood / tan / colour = matte; dark low-colour steel = glossy metal; grey polymer = satin
+  const wood=Math.min(1,Math.max(0,(sat[i]-.12)*4)),dark=Math.min(1,Math.max(0,(.32-lum[i])*4))*(1-wood);
+  const rough=.62*wood+(1-wood)*(.5-dark*.24),metal=dark*.75;
+  rI.data[i*4]=0;rI.data[i*4+1]=rough*255;rI.data[i*4+2]=metal*255;rI.data[i*4+3]=255;}
+ nX.putImageData(nI,0,0);rX.putImageData(rI,0,0);
+ const nT=new THREE.CanvasTexture(nC),rT=new THREE.CanvasTexture(rC);[nT,rT].forEach(t=>{t.anisotropy=8;});
+ // side colour: average of the darkest third of the gun
+ const ds=[];for(let i=0;i<N;i+=7)if(d[i*4+3]>200)ds.push(lum[i]);ds.sort((a,b)=>a-b);const sl=ds.length?ds[(ds.length*.3)|0]:.12;
+ return img._maps={nT,rT,side:new THREE.Color(sl*.9,sl*.85,sl*.8)};}
 function solidGun(tex,L,H){
  const ol=traceOutline(tex.image);if(!ol||ol.pts.length<6)return null;
  const sh=new THREE.Shape(ol.pts.map(([u,v])=>new THREE.Vector2(u*L,v*H)));
- const depth=Math.min(.045,Math.max(.022,H*.16));
- const g=new THREE.ExtrudeGeometry(sh,{depth,bevelEnabled:true,bevelThickness:.004,bevelSize:.0025,bevelSegments:2,curveSegments:1});
+ const depth=Math.min(.04,Math.max(.018,H*.13));
+ const g=new THREE.ExtrudeGeometry(sh,{depth,bevelEnabled:true,bevelThickness:.003,bevelSize:.0012,bevelSegments:4,curveSegments:1});
  g.translate(0,0,-depth/2);
  const pos=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,pos.getX(i)/L,pos.getY(i)/H);uv.needsUpdate=true;g.computeVertexNormals();
- const cap=new THREE.MeshPhysicalMaterial({map:tex,color:0x7a7a7a,bumpMap:tex,bumpScale:.5,alphaTest:.4,transparent:true,roughness:.58,metalness:.1,envMapIntensity:.55,clearcoat:.22,clearcoatRoughness:.45});
- const side=new THREE.MeshStandardMaterial({color:0x232220,roughness:.42,metalness:.45});
- const m=new THREE.Mesh(g,[cap,side]);m.castShadow=true;m.receiveShadow=true;return m;
+ const mp=gunMaps(tex.image);tex.anisotropy=16;tex.generateMipmaps=true;tex.minFilter=THREE.LinearMipmapLinearFilter;
+ const cap=new THREE.MeshPhysicalMaterial({map:tex,color:0xa6a6a6,normalMap:mp.nT,normalScale:new THREE.Vector2(.9,.9),roughnessMap:mp.rT,metalnessMap:mp.rT,roughness:1,metalness:1,transparent:true,alphaTest:.02,envMapIntensity:.7,clearcoat:.18,clearcoatRoughness:.35,specularIntensity:.6});
+ const side=new THREE.MeshStandardMaterial({color:mp.side.clone().multiplyScalar(.55),roughness:.6,metalness:.3,envMapIntensity:.35});
+ const m=new THREE.Mesh(g,[cap,side]);m.castShadow=true;m.receiveShadow=true;m.renderOrder=2;return m;
 }
+let grow=1,growT=1;
 
 /* ===== smart gun finder: layers + colors, no manual step =====
    Builds many candidate masks (AI cut, AI minus mat, dark layer, color clusters, border flood),
@@ -741,7 +772,7 @@ function wallTex(kind){if(WTEX[kind])return WTEX[kind];let t;
  const N=(x,w,h,a)=>{const d=x.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){const n=rnd(-a,a);d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n;}x.putImageData(d,0,0);};
  if(kind==='wood')t=ctex(512,512,(x,w,h)=>{for(let i=0;i<8;i++){const v=200+rnd(-25,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(i*w/8,0,w/8,h);x.fillStyle='rgba(0,0,0,.35)';x.fillRect(i*w/8,0,2,h);for(let k=0;k<26;k++){x.strokeStyle=`rgba(0,0,0,${rnd(.04,.12)})`;x.beginPath();let gx=i*w/8+rnd(0,w/8);x.moveTo(gx,0);for(let y=0;y<h;y+=24){gx+=rnd(-1.5,1.5);x.lineTo(gx,y);}x.stroke();}}},[4,1.6]);
  else if(kind==='tile'||kind==='marble'){t=ctex(512,512,(x,w,h)=>{x.fillStyle='#e6e6e6';x.fillRect(0,0,w,h);if(kind==='marble'){for(let k=0;k<14;k++){x.strokeStyle=`rgba(90,90,90,${rnd(.08,.25)})`;x.lineWidth=rnd(.6,2.2);x.beginPath();let px=rnd(0,w),py=0;x.moveTo(px,py);while(py<h){px+=rnd(-30,30);py+=rnd(20,50);x.lineTo(px,py);}x.stroke();}}N(x,w,h,6);x.fillStyle='rgba(0,0,0,.25)';for(let i=0;i<=4;i++){x.fillRect(i*w/4-1,0,2,h);x.fillRect(0,i*h/4-1,w,2);}},[4,1.7]);}
- else if(kind==='brick')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);const bh=h/16,bw=w/4;for(let r=0;r<16;r++)for(let c=-1;c<5;c++){const v=250+rnd(-30,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(c*bw+(r%2)*bw/2+2,r*bh+2,bw-4,bh-4);}N(x,w,h,10);},[3,1.4]);
+ else if(kind==='brick')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);const bh=h/16,bw=w/4;for(let r=0;r<16;r++)for(let c=-1;c<5;c++){const v=260+rnd(-30,25);x.fillStyle=`rgb(${v},${v},${v})`;x.fillRect(c*bw+(r%2)*bw/2+2,r*bh+2,bw-4,bh-4);}N(x,w,h,10);},[3,1.4]);
  else if(kind==='concrete'||kind==='stone')t=ctex(512,512,(x,w,h)=>{x.fillStyle='#d0d0d0';x.fillRect(0,0,w,h);for(let i=0;i<300;i++){const r=rnd(10,60),px=rnd(0,w),py=rnd(0,h),g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,`rgba(${Math.random()>.5?255:120},${Math.random()>.5?255:120},${Math.random()>.5?255:120},.07)`);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2);}N(x,w,h,16);if(kind==='concrete'){x.fillStyle='rgba(0,0,0,.18)';for(let i=1;i<3;i++)x.fillRect(0,i*h/3,w,1);for(let i=1;i<2;i++)x.fillRect(i*w/2,0,1,h);[[.2,.2],[.8,.2],[.2,.53],[.8,.53],[.2,.86],[.8,.86]].forEach(([a,b])=>{x.beginPath();x.arc(a*w,b*h,4,0,7);x.fill();});}},[2,1]);
  else if(kind==='wallpaper')t=ctex(256,256,(x,w,h)=>{x.fillStyle='#e8e8e8';x.fillRect(0,0,w,h);x.strokeStyle='rgba(0,0,0,.09)';x.lineWidth=2;for(let i=0;i<8;i++){x.beginPath();x.moveTo(i*w/8+w/16,0);x.lineTo(i*w/8+w/16,h);x.stroke();}N(x,w,h,5);},[10,4]);
  else t=plaster;
