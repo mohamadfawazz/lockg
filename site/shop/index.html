@@ -185,7 +185,7 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
 }
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 </style>
-<link rel="stylesheet" href="/shell.css?v=24">
+<link rel="stylesheet" href="/shell.css?v=25">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -288,8 +288,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=24"></script>
-<script src="/fx.js?v=24"></script>
+<script src="/shell.js?v=25"></script>
+<script src="/fx.js?v=25"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};
@@ -381,7 +381,7 @@ Shell.onLang(()=>{render();paint();});render();paint();
 setTimeout(()=>FINS.forEach(f=>GUNS.forEach(g=>{new Image().src=IMG(f.id,g.id);})),1500);
 </script>
 <script type="module">
-import { mount, snapshot } from '/v3d.js?v=24';
+import { mount, snapshot } from '/v3d.js?v=25';
 let V=null;
 window.LOCKG_V3D=m=>{const el=document.getElementById('v3d');if(!m)return;if(V)V.set(m);else V=mount(el,m);};
 const CORE_ORIG=PRODUCTS.filter(p=>!p.admin).map(p=>({...p,en:[...p.en],ar:[...p.ar]}));
