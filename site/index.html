@@ -21,6 +21,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;overflow:hidden;-webkit-font-smoothing:antialiased}
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+body.trunk #title h1,body.trunk #title .kick{text-shadow:0 2px 22px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
+#dip{position:fixed;inset:0;background:#0b0a09;opacity:0;pointer-events:none;will-change:opacity}
 button{font-family:var(--sans);cursor:pointer;border:0;background:none;color:inherit}
 .kick{font:500 9.5px/1 var(--sans);letter-spacing:.38em;text-transform:uppercase;color:var(--bronze)}
 #title{position:fixed;left:36px;top:30px;z-index:5;pointer-events:none}
@@ -212,7 +214,7 @@ html[dir=rtl] .in-skip{right:auto;left:calc(14px + env(safe-area-inset-left,0px)
 </head>
 <body>
 <noscript><div style="padding:40px;color:#F2EDE4;background:#0e0d0b;font-family:Georgia,serif">LOCKG needs JavaScript to show the 3D product. Call us: +961 3 680 853.</div></noscript>
-<canvas id="c"></canvas>
+<canvas id="c"></canvas><div id="dip"></div>
 <div id="labels"></div>
 <div id="toast"></div>
 
@@ -327,7 +329,7 @@ const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d0c0a);scene.f
 scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;
 const camera=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,.02,40);camera.position.set(.15,.06,1.75);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;
-controls.target.set(.2,0,0);controls.minDistance=.2;controls.maxDistance=5;controls.minAzimuthAngle=-1.45;controls.maxAzimuthAngle=1.45;controls.autoRotateSpeed=.8;
+controls.target.set(.2,0,0);controls.minDistance=.2;controls.maxDistance=9;controls.minAzimuthAngle=-1.45;controls.maxAzimuthAngle=1.45;controls.autoRotateSpeed=.8;
 
 /* textures */
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -502,7 +504,7 @@ const CINE={uniforms:{tDiffuse:{value:null},uT:{value:0},uK:{value:0},uV:{value:
   c*=mix(1.,smoothstep(1.05,.3,r),.28*uV);           // soft vignette
   gl_FragColor=vec4(c,1.);}`};
 function makeCine(renderer,scene,camera,THREE,EffectComposer,RenderPass,AfterimagePass,ShaderPass,OutputPass,extra){
- const pr=Math.min(devicePixelRatio,(window.LGS||((p,d)=>d))('scene.quality','auto')==='eco'?1.5:2),rt=new THREE.WebGLRenderTarget(innerWidth*pr,innerHeight*pr,{type:THREE.HalfFloatType,samples:renderer.capabilities.isWebGL2?4:0});
+ const pr=Math.max(1,Math.min(devicePixelRatio,(window.LGS||((p,d)=>d))('scene.quality','auto')==='eco'?1.25:1.6,Math.sqrt(2.6e6/(innerWidth*innerHeight)))),rt=new THREE.WebGLRenderTarget(innerWidth*pr,innerHeight*pr,{type:THREE.HalfFloatType,samples:renderer.capabilities.isWebGL2?(pr>1.3?2:4):0});
  const comp=new EffectComposer(renderer,rt);comp.setPixelRatio(pr);comp.setSize(innerWidth,innerHeight);
  comp.addPass(new RenderPass(scene,camera));if(extra)extra(comp);
  const trail=new AfterimagePass(0);comp.addPass(trail);const grade=new ShaderPass(CINE);comp.addPass(grade);comp.addPass(new OutputPass());
@@ -522,11 +524,12 @@ const exK=(k,v)=>{const i=EXO[k]||0,q=Math.max(0,Math.min(1,v*1.4-i*.4/6));retur
 const cine=makeCine(renderer,scene,camera,THREE,EffectComposer,RenderPass,AfterimagePass,ShaderPass,OutputPass,c=>{if(SQ==='high'){try{const ao=new GTAOPass(scene,camera,innerWidth,innerHeight);ao.blendIntensity=.7;ao.updateGtaoMaterial({radius:.06,distanceExponent:1.4,thickness:1,scale:1});c.addPass(ao);}catch(e){}}if(SQ!=='eco'){const b=new UnrealBloomPass(new THREE.Vector2(innerWidth/2,innerHeight/2),((window.LGS||((p,d)=>d))('scene.bloom',25))/100,.4,1.0);window.__bloom=b;c.addPass(b);}});
 addEventListener('resize',()=>cine.comp.setSize(innerWidth,innerHeight));
 /* smooth first: the render resolution adapts so motion stays fluid, and climbs back when there is headroom */
-const PRMAX=Math.min(devicePixelRatio,(window.LGS?LGS('scene.quality','auto'):'auto')==='eco'?1.5:2),PRMIN=Math.min(PRMAX,1.15);let prNow=PRMAX,fN=0,fT=performance.now(),prHold=0;
-window.__adapt=now=>{fN++;const dt=now-fT;if(dt<900)return;const fps=fN*1000/dt;fN=0;fT=now;if(document.hidden)return;
+const PRMAX=Math.max(1,Math.min(devicePixelRatio,(window.LGS?LGS('scene.quality','auto'):'auto')==='eco'?1.25:1.6,Math.sqrt(2.6e6/(innerWidth*innerHeight)))),PRMIN=Math.min(PRMAX,1);let slowN=0;let prNow=PRMAX,fN=0,fT=performance.now(),prHold=0;
+window.__adapt=now=>{fN++;const dt=now-fT;if(dt<900)return;const fps=fN*1000/dt;fN=0;fT=now;if(document.hidden||TR||tw)return;
+ if(fps<40&&prNow<=PRMIN+.01&&++slowN>=2&&!window.__fxOff){window.__fxOff=1;cine.comp.passes.forEach(p=>{const n=p.constructor&&p.constructor.name;if(/GTAO|Bloom/.test(n))p.enabled=false;});}
  if(fps<52&&prNow>PRMIN){prNow=Math.max(PRMIN,prNow-(fps<38?.3:.15));cine.comp.setPixelRatio(prNow);prHold=now+2500;}
  else if(fps>58.5&&prNow<PRMAX&&now>prHold&&!TR){prNow=Math.min(PRMAX,prNow+.1);cine.comp.setPixelRatio(prNow);prHold=now+1800;}};
-setTimeout(()=>{try{const v=car.visible;car.visible=true;renderer.compile(scene,camera);car.visible=v;}catch(e){}},1500);
+setTimeout(()=>{try{const v=car.visible,w=wall.visible,rt=new THREE.WebGLRenderTarget(64,64);car.visible=true;wall.visible=true;renderer.compile(scene,camera);renderer.setRenderTarget(rt);renderer.render(scene,camera);renderer.setRenderTarget(null);rt.dispose();car.visible=v;wall.visible=w;renderer.shadowMap.needsUpdate=true;}catch(e){}},1200);
 const bEx=document.getElementById('bExplode');bEx.onclick=()=>{explT=explT?0:1;explodeStart(!!explT,performance.now());bEx.classList.toggle('on',!!explT);document.body.classList.toggle('explode',!!explT);view('three');};
 const bL=document.getElementById('bLabels');bL.onclick=()=>{document.body.classList.toggle('nolabels');bL.classList.toggle('on');};
 const bG=document.getElementById('bGun');bG.onclick=()=>{gunHolder.visible=!gunHolder.visible;bG.classList.toggle('on',gunHolder.visible);};
@@ -580,7 +583,7 @@ function setRig(a,b,e){spot.position.lerpVectors(a.sp,b.sp,e);spot.target.positi
 /* fade the car and the wall in and out */
 const fadeMats=[];car.traverse(o=>{if(o.isMesh)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(!fadeMats.includes(m))fadeMats.push(m);});});
 const setFade=(mats,a,on)=>mats.forEach(m=>{if(m.transparent!==on){m.transparent=on;m.depthWrite=!on||a>.98;m.needsUpdate=true;}m.opacity=a;});
-let TR=null;
+let TR=null;const dipEl=document.getElementById('dip');
 function setTitle(on){const tk=document.querySelector('#title .kick'),th=document.querySelector('#title h1');if(tk){tk.dataset.i18n=on?'p_kick_t':'p_kick';tk.textContent=Shell.t(tk.dataset.i18n);}if(th){th.dataset.i18n=on?'p_h1_t':'p_h1';th.innerHTML=Shell.t(th.dataset.i18n);}}
 function goTo(mode,orient,dur){if(TR)return;const toTrunk=mode==='trunk',wasTrunk=trunkOn,now=performance.now();
  orient=orient||window.__orient;const P=toTrunk?POSE.trunk:POSE[orient];
@@ -589,12 +592,12 @@ function goTo(mode,orient,dur){if(TR)return;const toTrunk=mode==='trunk',wasTrun
  document.body.classList.toggle('trunk',toTrunk);document.body.classList.add('morph');setTitle(toTrunk);
  document.getElementById('bTrunk').classList.toggle('on',toTrunk);syncOrient();
  if(typeof sceneSet==='function')sceneSet();const L1={...RIG[toTrunk?'trunk':'wall'],sbb:softbox.userData.b,stb:strip.userData.b};
+ controls.enableDamping=false;controls.update();controls.enableDamping=true;
  const [cp1,ct1]=viewPose('front');const c0=camera.position.clone(),t0=controls.target.clone(),back=c0.clone().sub(t0).normalize();
- const swap=toTrunk!==wasTrunk;car.visible=true;wall.visible=true;
- if(swap){setFade(fadeMats,wasTrunk?1:0,true);setFade([wallMat],wasTrunk?0:1,true);}
+ const swap=toTrunk!==wasTrunk;
  controls.enabled=false;controls.minAzimuthAngle=-Math.PI;controls.maxAzimuthAngle=Math.PI;controls.maxPolarAngle=Math.PI;tw=null;
  const dist=c0.distanceTo(t0);
- TR={s:now,d:(dur||(swap?2600:1700))*(window.__tslow||1),swap,wasTrunk,toTrunk,p0:product.position.clone(),q0:product.quaternion.clone(),p1:P.p.clone(),q1:new THREE.Quaternion().setFromEuler(P.r),L0,L1,c0,t0,cp1,ct1,back,A:swap?Math.max(.7,dist*.42):Math.max(.35,dist*.22),lift:swap?.28:.14};
+ TR={s:now,d:(dur||(swap?1900:1300))*(window.__tslow||1),swapped:false,swap,wasTrunk,toTrunk,p0:product.position.clone(),q0:product.quaternion.clone(),p1:P.p.clone(),q1:new THREE.Quaternion().setFromEuler(P.r),L0,L1,c0,t0,cp1,ct1,back,A:swap?Math.max(.4,dist*.25):Math.max(.18,dist*.1),lift:swap?.12:.08};
  document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.v==='front'));}
 window.__trans=now=>{if(!TR)return;const k=Math.min(1,(now-TR.s)/TR.d),e=ease(k),arc=Math.sin(Math.PI*e);
  // the product floats off its mount, turns, and settles in the new place
@@ -602,10 +605,10 @@ window.__trans=now=>{if(!TR)return;const k=Math.min(1,(now-TR.s)/TR.d),e=ease(k)
  // cinematic pull back, then in to the new framing
  camera.position.lerpVectors(TR.c0,TR.cp1,e).addScaledVector(TR.back,TR.A*arc);controls.target.lerpVectors(TR.t0,TR.ct1,e);
  setRig(TR.L0,TR.L1,e);
- if(TR.swap){const a=Math.min(1,Math.max(0,(e-.18)/.5)),b=Math.min(1,Math.max(0,(e-.32)/.5));
-  setFade([wallMat],TR.toTrunk?1-a:b,true);setFade(fadeMats,TR.toTrunk?b:1-a,true);}
+ if(TR.swap){const d=Math.max(0,1-Math.abs(k-.5)/.3),dd=d*d*(3-2*d);dipEl.style.opacity=dd.toFixed(3);
+  if(k>=.5&&!TR.swapped){TR.swapped=true;car.visible=TR.toTrunk;wall.visible=!TR.toTrunk;}}
  if(k>=1){product.position.copy(TR.p1);product.quaternion.copy(TR.q1);window.__pbx=TR.p1.x;
-  if(TR.swap){setFade(fadeMats,1,false);setFade([wallMat],1,false);}
+  dipEl.style.opacity='0';
   car.visible=TR.toTrunk;wall.visible=!TR.toTrunk;
   if(TR.toTrunk){controls.minAzimuthAngle=-1.25;controls.maxAzimuthAngle=1.25;controls.maxPolarAngle=Math.PI*.47;}
   else{controls.minAzimuthAngle=camLim.min;controls.maxAzimuthAngle=camLim.max;controls.maxPolarAngle=camLim.pol;}
@@ -630,7 +633,7 @@ const FLK=[[0,1],[.06,.18],[.16,.15],[.21,.95],[.42,.88],[.47,.06],[.58,.05],[.6
 let flkOn=false,flkNext=0;const flkF=k=>{for(let i=1;i<FLK.length;i++)if(k<=FLK[i][0]){const a=FLK[i-1],b=FLK[i],u=(k-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*u;}return 1;};
 const flkStart=()=>{if(flkOn)return;flkOn=true;flkNext=performance.now()+3500;};
 if(window.__introPlanned)addEventListener('lockg-intro-done',()=>setTimeout(flkStart,800),{once:true});else setTimeout(flkStart,2500);
-window.__flicker=now=>{let f=1;if(flkOn&&!window.__introOn&&!document.hidden&&(window.LGS?LGS('scene.flicker',true):true)!==false&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const k=(now-flkNext)/1000;if(k>=0&&k<=1)f=flkF(k);else if(k>1)flkNext=now+10000-(k-1)*1000;}
+window.__flicker=now=>{let f=1;if(flkOn&&!TR&&!window.__introOn&&!document.hidden&&(window.LGS?LGS('scene.flicker',true):true)!==false&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const k=(now-flkNext)/1000;if(k>=0&&k<=1)f=flkF(k);else if(k>1)flkNext=now+10000-(k-1)*1000;}
  [spot,rim,softbox,strip].forEach(l=>{if(l.userData.b!=null)l.intensity=l.userData.b*(l===rim?(.55+.45*f):f);});if(car.userData.lens)car.userData.lens.emissiveIntensity=2.2*f;};
 
 /* ===== real guns: photo cut-outs made 3D ===== */
@@ -738,12 +741,12 @@ moodScene();addEventListener('lockg-theme',moodScene);
 let tw=null;
 function fitDist(w,h){const vf=THREE.MathUtils.degToRad(camera.fov)/2,hf=Math.atan(Math.tan(vf)*camera.aspect);return Math.max((h/2)/Math.tan(vf),(w/2)/Math.tan(hf));}
 function viewPose(v){const yb=BUTT,yt=COL.x+.25,cy=(yb+yt)/2+.02;const bx=window.__pbx||0;let P;
- if(window.__trunk)P={front:[[0,1.22,2.45],[0,.86,-.45]],hero:[[0,1.22,2.45],[0,.86,-.45]],three:[[1.75,1.3,2.25],[0,.84,-.4]],detail:[[COL.x+CXH+.22,1.04,.22],[COL.x+CXH,.92,-.52]],top:[[0,1.36,.95],[0,.78,-.5]]}[v];
- else if(window.__orient==='h'){const yc=.06,port=innerHeight>innerWidth,d=Math.max(1.7,fitDist(1.62,.62)*1.12),up=port?d*.03:0;
+ if(window.__trunk){const L=innerWidth>=innerHeight,ty=L?1.0:.86,cy2=L?1.36:1.22,cz=L?2.7:2.45;P={front:[[0,cy2,cz],[0,ty,-.45]],hero:[[0,cy2,cz],[0,ty,-.45]],three:[[1.8,cy2+.08,cz-.25],[0,ty-.02,-.4]],detail:[[COL.x+CXH+.22,1.04,.22],[COL.x+CXH,.92,-.52]],top:[[0,1.36,.95],[0,.78,-.5]]}[v];}
+ else if(window.__orient==='h'){const yc=.06,port=innerHeight>innerWidth,d=port?Math.max(1.7,fitDist(1.62,.62)*1.12):Math.max(1.9,fitDist(2.35,.62)),up=port?d*.03:.13;
   P={front:[[0,yc+.08+up,d],[0,yc+up,0]],hero:[[0,yc+.08+up,d],[0,yc+up,0]],three:[[d*.55,yc+.32+up,d*.82],[0,yc+up,0]],detail:[[COL.x+CXH+.42,yc+.12,.55],[COL.x+CXH-.02,yc,0]],top:[[0,yc+d*.7,d*.6],[0,yc,0]]}[v];
   return [V3(...P[0]),V3(...P[1])];}
  else P={front:[[.06,cy-.06,2.9],[.06,cy-.06,0]],three:[[1.3,cy+.2,2.1],[.02,cy-.06,0]],detail:[[.45,COL.x+.05,.55],[.02,COL.x-.02,0]],hero:[[.06,cy-.08,innerWidth<720?3.05:2.3],[.06,cy-.14,0]],top:[[.25,yt+.9,.9],[0,cy+.1,0]]}[v];
- let p1=new THREE.Vector3(...P[0]),t1=new THREE.Vector3(...P[1]);if(window.__trunk&&innerHeight>innerWidth&&v!=='detail'){const off=new THREE.Vector3().subVectors(p1,t1).multiplyScalar(2.15);t1.y+=.16;p1.copy(t1).add(off);}else if(!window.__trunk&&innerWidth<720&&innerHeight>innerWidth&&v!=='detail'&&v!=='hero'){const k=1.55,off=new THREE.Vector3().subVectors(p1,t1).multiplyScalar(k);t1.y+=.34;p1.copy(t1).add(off);}
+ let p1=new THREE.Vector3(...P[0]),t1=new THREE.Vector3(...P[1]);if(window.__trunk&&innerHeight>innerWidth&&v!=='detail'){const off=new THREE.Vector3().subVectors(p1,t1).multiplyScalar(1.95);t1.y+=.24;p1.copy(t1).add(off);}else if(!window.__trunk&&innerWidth<720&&innerHeight>innerWidth&&v!=='detail'&&v!=='hero'){const k=1.55,off=new THREE.Vector3().subVectors(p1,t1).multiplyScalar(k);t1.y+=.34;p1.copy(t1).add(off);}
  return [p1,t1];}
 function view(v,dur=1400){if(TR)return;const [p1,t1]=viewPose(v);
  tw={p0:camera.position.clone(),t0:controls.target.clone(),p1,t1,s:performance.now(),d:dur};
