@@ -1,6 +1,8 @@
 /* LOCKG app shell: app bar, back/history, glass sheets, EN/AR, order form, chat */
 (function(){
 const EDIT=/[?&]edit=1/.test(location.search)&&window.parent!==window;window.LOCKG_EDIT=EDIT;
+try{window.LOCKG_SET=(JSON.parse(localStorage.getItem('lockg-cfg')||'null')||{}).settings||{};}catch(e){window.LOCKG_SET={};}
+window.LGS=(p,d)=>{let o=window.LOCKG_SET||{};for(const k of p.split('.')){if(o==null||typeof o!=='object')return d;o=o[k];}return o===undefined||o===''||o===null?d:o;};
 const CFG={api:'https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api',phone:'+961 3 680 853',phoneLabel:''};
 const I={
  back:['Back','رجوع'],menu:['Menu','القائمة'],close:['Close','إغلاق'],lang:['العربية','English'],
@@ -9,13 +11,13 @@ gt_1:['We do not sell firearms.','نحن لا نبيع الأسلحة.'],gt_1p:[
 gt_2:['You must be 18 or older.','يجب أن يكون عمرك 18 عامًا أو أكثر.'],gt_2p:['This website shows firearms in its product images. By entering you confirm you are 18+.','يعرض هذا الموقع أسلحة في صور المنتج. بالدخول تؤكد أن عمرك 18 عامًا أو أكثر.'],
 gt_ok:['I am 18+ · Enter','عمري 18+ · دخول'],gt_no:['Leave','مغادرة'],m_faq:['Questions','الأسئلة'],m_tour:['Watch the 30 second tour','شاهد الجولة في 30 ثانية'],m_privacy:['Privacy','الخصوصية'],m_terms:['Terms','الشروط'],lg_upd:['Last updated November 2026.','آخر تحديث نوفمبر 2026.'],
 fq1:['What is LOCKG ONE?','ما هو LOCKG ONE؟'],fa1:['A steel wall rack that locks one long gun. A barrel lock at the top, a cover over the trigger and a cradle under the stock. Your fingerprint opens it.','حامل فولاذي على الجدار يقفل سلاحًا طويلًا واحدًا. قفل للسبطانة في الأعلى، غطاء فوق الزناد وحامل تحت الأخمص. بصمتك تفتحه.'],
-fq2:['Can my children open it?','هل يستطيع أطفالي فتحه؟'],fa2:['No. Only saved prints open it, and new prints need the owner to approve. The trigger stays covered while it is locked.','لا. البصمات المسجلة فقط تفتحه، والبصمة الجديدة تحتاج موافقة المالك. يبقى الزناد مغطى أثناء القفل.'],
-fq3:['What if the battery dies?','ماذا لو نفدت البطارية؟'],fa3:['It stays locked, and the mechanical backup key opens it. Power is only used to open, so a dead battery never leaves it open. One battery lasts about 12 months.','يبقى مقفلًا، ويفتحه المفتاح الاحتياطي. الكهرباء تستخدم للفتح فقط، لذلك لا يبقى مفتوحًا عند نفاد البطارية. البطارية تدوم حوالي 12 شهرًا.'],
+fq2:['Can my children open it?','هل يستطيع أطفالي فتحه؟'],fa2:['No. Only prints you approve in the app open it, and you can switch any person off at any time. The trigger stays covered while it is locked, and every unknown print sends an alert to your phone.','لا. تفتحه فقط البصمات التي توافق عليها في التطبيق، ويمكنك إيقاف أي شخص في أي وقت. يبقى الزناد مغطى أثناء القفل، وأي بصمة غير معروفة ترسل تنبيهًا لهاتفك.'],
+fq3:['What if the battery dies?','ماذا لو نفدت البطارية؟'],fa3:['It stays locked, and the backup key opens it. Power is only used to open, so a dead battery never leaves it open. It charges with USB-C, and the LOCKG app shows the battery level and warns you before it runs low.','يبقى مقفلًا، ويفتحه المفتاح الاحتياطي. الكهرباء تستخدم للفتح فقط، لذلك لا يبقى مفتوحًا عند نفاد البطارية. يُشحن عبر USB-C، وتطبيق LOCKG يعرض مستوى البطارية وينبهك قبل نفادها.'],
 fq4:['Which guns fit?','أي الأسلحة تناسبه؟'],fa4:['Long guns: AR-style rifles, bolt and lever rifles, and pump shotguns. Not sure? Send us a photo on WhatsApp.','الأسلحة الطويلة: بنادق AR، بنادق الترباس والرافعة، والشوزن. غير متأكد؟ أرسل لنا صورة على واتساب.'],
-fq5:['How is it installed?','كيف يتم تركيبه؟'],fa5:['Four hidden anchor bolts into the wall. Our installer can do it, or you can follow the 10 minute guide in the box.','أربعة مسامير تثبيت مخفية في الجدار. يمكن لفريقنا تركيبه، أو اتبع دليل العشر دقائق في العلبة.'],
+fq5:['How is it installed?','كيف يتم تركيبه؟'],fa5:['Structural screws into a wall stud. Mount it vertical or horizontal, left- or right-handed, even on a ceiling. Our installer can do it, or follow the guide in the box.','براغي إنشائية في دعامة الجدار. ركّبه عموديًا أو أفقيًا، لليد اليمنى أو اليسرى، وحتى على السقف. فريقنا يركّبه، أو اتبع الدليل داخل العلبة.'],
 fq6:['Who can buy it?','من يمكنه الشراء؟'],fa6:['Licensed firearm owners only. We ask you to confirm your licence when you order.','حاملو رخصة السلاح فقط. نطلب تأكيد الرخصة عند الطلب.'],
 fq7:['How do I pay?','كيف أدفع؟'],fa7:['Card or Apple Pay through a secure link we send on WhatsApp, or cash on delivery.','بالبطاقة أو Apple Pay عبر رابط آمن نرسله على واتساب، أو الدفع عند الاستلام.'],
-fq8:['Returns and warranty?','الإرجاع والضمان؟'],fa8:['30 days to return it, unused and in its box. 2-year warranty on parts and electronics.','30 يومًا للإرجاع، غير مستخدم وفي علبته. ضمان سنتين على القطع والإلكترونيات.'],
+fq8:['Returns and warranty?','الإرجاع والضمان؟'],fa8:['30 days to return it, unused and in its box. 1-year warranty on parts and electronics, or 3 years with extra care.','30 يومًا للإرجاع، غير مستخدم وفي علبته. ضمان سنة على القطع والإلكترونيات، أو 3 سنوات مع الرعاية الإضافية.'],
 pv1t:['What we collect','ما نجمعه'],pv1:['Your name, phone, email, city and address when you order or ask us to call you. We use them only for your order and support.','اسمك وهاتفك وبريدك ومدينتك وعنوانك عند الطلب أو طلب الاتصال. نستخدمها لطلبك ودعمك فقط.'],
 pv2t:['Your photos','صورك'],pv2:['Photos you upload in Test your room are read by AI to build your 3D scene. Background removal runs on your own device. We do not keep or share your photos.','الصور التي ترفعها في تجربة الغرفة يقرأها الذكاء الاصطناعي لبناء المشهد. إزالة الخلفية تتم على جهازك. لا نحتفظ بصورك ولا نشاركها.'],
 pv3t:['Chat','المحادثة'],pv3:['Chat messages are sent to our AI assistant to answer you. Do not share passwords or card numbers in chat.','رسائل المحادثة تُرسل إلى مساعدنا الذكي للرد عليك. لا تشارك كلمات المرور أو أرقام البطاقات.'],
@@ -25,19 +27,19 @@ tm1t:['Who can buy','من يمكنه الشراء'],tm1:['LOCKG is sold to licen
 tm2t:['Orders and prices','الطلبات والأسعار'],tm2:['An order is confirmed when our team contacts you. Prices shown on the site may change before confirmation.','يتأكد الطلب عند تواصل فريقنا معك. قد تتغير الأسعار المعروضة قبل التأكيد.'],
 tm3t:['Delivery','التوصيل'],tm3:['We deliver in 2 to 4 days after confirmation and call you before we come.','نوصل خلال 2 إلى 4 أيام بعد التأكيد ونتصل بك قبل الوصول.'],
 tm4t:['Returns','الإرجاع'],tm4:['Return within 30 days, unused and in the original box, for a full refund.','أرجعه خلال 30 يومًا، غير مستخدم وفي علبته الأصلية، لاسترداد كامل المبلغ.'],
-tm5t:['Warranty','الضمان'],tm5:['2 years on parts and electronics. Extra care extends it to 4 years.','سنتان على القطع والإلكترونيات. الرعاية الإضافية تمددها إلى 4 سنوات.'],
+tm5t:['Warranty','الضمان'],tm5:['1 year on parts and electronics. Extra care extends it to 3 years.','سنة على القطع والإلكترونيات. الرعاية الإضافية تمدده إلى 3 سنوات.'],
 tm6t:['Safe use','الاستخدام الآمن'],tm6:['LOCKG reduces access to a firearm. It does not replace safe storage laws or safe handling. Always store ammunition separately.','LOCKG يقلل الوصول إلى السلاح. لا يغني عن قوانين التخزين الآمن أو الاستعمال الآمن. احفظ الذخيرة دائمًا بشكل منفصل.'],p_shopnow:['Shop now','تسوّق الآن'],c_call:['Call us','اتصل بنا'],c_chat:['Chat with LOCKG','تحدث مع LOCKG'],m_home:['Home','الرئيسية'],m_about:['About us','من نحن'],m_contact:['Contact us','تواصل معنا'],m_test:['Test your room','جرّبه في غرفتك'],m_product:['LOCKG ONE','LOCKG ONE'],m_room:['Place it in a room','ضعه في غرفة'],m_how:['How it works','كيف يعمل'],m_quiz:['Find yours','اختر قطعتك'],m_specs:['Specs','المواصفات'],m_story:['Story','القصة'],m_order:['Order','اطلب'],m_chat:['Ask us','اسألنا'],
  how_t:['Touch. Open. Lift.','المس. افتح. ارفع.'],
  how1:['Touch','المس'],how1p:['Your print on the sensor.','بصمتك على الحساس.'],
  how2:['Open','افتح'],how2p:['Unlocks in 0.2 s.','يفتح خلال 0.2 ثانية.'],
  how3:['Lift','ارفع'],how3p:['Take it. Close. It locks itself.','خذه. أغلق. يقفل تلقائياً.'],
  safe:['Why it stays safe','لماذا يبقى آمناً'],
- s1:['Your print only','بصمتك فقط'],s1p:['New prints need owner approval.','البصمة الجديدة تحتاج موافقة المالك.'],
+ s1:['Your print only','بصمتك فقط'],s1p:['New prints need your OK in the app.','البصمة الجديدة تحتاج موافقتك في التطبيق.'],
  s2:['Power only to open','الطاقة للفتح فقط'],s2p:['A dead battery never leaves it open.','البطارية الفارغة لا تتركه مفتوحاً.'],
  s3:['Backup key','مفتاح احتياطي'],s3p:['Opens with no power.','يفتح بدون كهرباء.'],
- s4:['Auto lock','قفل تلقائي'],s4p:['Locks itself after 10 s.','يقفل تلقائياً بعد 10 ثوانٍ.'],
- s5:['Owner alert','تنبيه المالك'],s5p:['Wrong print? Your phone knows.','بصمة خاطئة؟ هاتفك يعرف.'],
- s6:['Bolted from inside','مثبت من الداخل'],s6p:['Hidden anchor bolts.','براغي تثبيت مخفية.'],
+ s4:['Clicks shut','يُغلق بنقرة'],s4p:['Close the clamp. It locks itself.','أغلق القفل، يُقفل تلقائيًا.'],
+ s5:['Owner alerts','تنبيهات المالك'],s5p:['Who opened it, and when. Unknown print? Your phone knows.','من فتحه ومتى. بصمة غريبة؟ هاتفك يعرف.'],
+ s6:['Built to hold','مصنوع ليتحمّل'],s6p:['Reinforced steel. Holds over 550 lb.','فولاذ معزّز. يتحمّل أكثر من 250 كغ.'],
  story_t:['It started at home.','بدأت الفكرة من البيت.'],
  story1:['A licensed rifle. Children in the house. A closet was never the answer.','سلاح مرخّص. أطفال في البيت. والخزانة لم تكن الحل.'],
  story2:['LOCKG keeps it on the wall, in sight, locked. Your print opens it. Nobody else can.','LOCKG يبقيه على الجدار، أمام عينك، ومقفلاً. بصمتك تفتحه. لا أحد غيرك.'],
@@ -46,12 +48,12 @@ tm6t:['Safe use','الاستخدام الآمن'],tm6:['LOCKG reduces access to 
  sp_unlock:['Unlock','الفتح'],sp_unlock_v:['Fingerprint, 0.2 s','بصمة، 0.2 ث'],
  sp_code:['Or','أو'],sp_code_v:['4 to 8 press code','رمز من 4 إلى 8 ضغطات'],
  sp_prints:['Prints','البصمات'],sp_prints_v:['Up to 10','حتى 10'],
- sp_build:['Build','الهيكل'],sp_build_v:['Steel, powder coat','فولاذ مطلي'],
+ sp_build:['Build','الهيكل'],sp_build_v:['Reinforced steel adapter','حامل فولاذي معزّز'],
  sp_key:['Backup','الاحتياط'],sp_key_v:['Mechanical key','مفتاح ميكانيكي'],
- sp_bat:['Battery','البطارية'],sp_bat_v:['About 12 months','حوالي 12 شهراً'],
- sp_mount:['Mount','التثبيت'],sp_mount_v:['4 hidden bolts','4 براغي مخفية'],
+ sp_bat:['Battery','البطارية'],sp_bat_v:['Rechargeable · USB-C','قابلة للشحن · USB-C'],
+ sp_mount:['Mount','التثبيت'],sp_mount_v:['Vertical or horizontal','عمودي أو أفقي'],
  sp_fits:['Fits','يناسب'],sp_fits_v:['AR, rifles, shotguns','AR، بنادق، شوزن'],
- sp_note:['Target specs. Licence holders only.','مواصفات مستهدفة. لحاملي الترخيص فقط.'],
+ sp_note:['Licence holders only.','لحاملي الرخصة فقط.'],
  ord_t:['Order yours','اطلب قطعتك'],ord_name:['Name','الاسم'],ord_phone:['Phone','الهاتف'],ord_email:['Email (optional)','البريد (اختياري)'],ord_area:['Area','المنطقة'],
  ord_type:['I want to','أريد'],ord_buy:['Buy','الشراء'],ord_talk:['Talk first','التحدث أولاً'],
  ord_lic:['I hold a valid firearm licence.','أحمل ترخيص سلاح ساري المفعول.'],ord_send:['Send','إرسال'],
@@ -60,9 +62,21 @@ tm6t:['Safe use','الاستخدام الآمن'],tm6:['LOCKG reduces access to 
  chat_t:['Ask LOCKG','اسأل LOCKG'],chat_hi:['Hi. Ask me anything about LOCKG.','أهلاً. اسألني أي شيء عن LOCKG.'],
  chat_ph:['Type a question','اكتب سؤالك'],chat_q1:['How fast does it open?','ما سرعة الفتح؟'],chat_q2:['Which guns fit?','ما الأسلحة المناسبة؟'],chat_q3:['How do I order?','كيف أطلب؟'],
  chat_off:['Chat opens soon. For help, contact our team','المحادثة تفتح قريباً. للمساعدة تواصل مع فريقنا'],
- d_gun:['Gun','السلاح'],d_photo:['Photos','الصور'],p_photos:['Try with my photos','جرّب بصوري'],d_color:['Color','اللون'],d_view:['View','العرض'],d_parts:['Parts','القطع'],d_child:['Child','طفل'],d_test:['Test','جرّب'],d_place:['Place','المكان'],d_order:['Order','اطلب'],
+ d_gun:['Gun','السلاح'],d_photo:['Photos','الصور'],p_photos:['Try with my photos','جرّب بصوري'],d_color:['Color','اللون'],d_view:['View','العرض'],d_parts:['Parts','القطع'],d_test:['Test','جرّب'],d_place:['Place','المكان'],d_order:['Order','اطلب'],
  coach:['Tap to test the lock','اضغط لتجربة القفل'],pk_gun:['Pick your gun','اختر سلاحك'],pk_color:['Pick a color','اختر اللون'],pk_view:['Look around','تجوّل'],pk_place:['Where does it go?','أين تضعه؟'],
  chat_err:['Connection lost. Try again.','انقطع الاتصال. حاول مرة أخرى.'],
+ sp_app:['App','التطبيق'],sp_app_v:['Prints · alerts · battery','البصمات · التنبيهات · البطارية'],sp_multi:['Racks','الحوامل'],sp_multi_v:['5+ in one app','أكثر من 5 في تطبيق واحد'],sp_str:['Strength','القوة'],sp_str_v:['Holds 550+ lb','يتحمّل +250 كغ'],sp_kit:['In the box','في العلبة'],sp_kit_v:['AR + shotgun kits','طقم AR + شوزن'],
+ fq9:['Is there an app?','هل يوجد تطبيق؟'],fa9:['Yes. The LOCKG app lets the owner switch each fingerprint on or off, see who opened the rack and when, get an alert when an unknown print tries, and check the battery.','نعم. تطبيق LOCKG يتيح للمالك تشغيل أو إيقاف كل بصمة، ومعرفة من فتح الحامل ومتى، واستلام تنبيه عند محاولة بصمة غير معروفة، ومتابعة البطارية.'],
+ fq10:['Can I lock more than one gun?','هل أستطيع قفل أكثر من سلاح؟'],fa10:['Yes. Add 5 or more LOCKG racks for different rifles and shotguns and run them all from one app.','نعم. أضف 5 حوامل LOCKG أو أكثر لبنادق وشوزن مختلفة وتحكم بها كلها من تطبيق واحد.'],
+ m_app:['The app','التطبيق'],app_t:['Your rack, in your pocket.','حاملك في جيبك.'],app_s:['One app for every LOCKG rack in your home.','تطبيق واحد لكل حوامل LOCKG في منزلك.'],
+ ap1:['Switch people on or off','شغّل أو أوقف أي شخص'],ap1p:['Arm or disarm each fingerprint, any time.','فعّل أو عطّل كل بصمة في أي وقت.'],
+ ap2:['Who opened it, and when','من فتحه ومتى'],ap2p:['Every opening lands on your phone.','كل فتح يصل إلى هاتفك.'],
+ ap3:['Unknown print? Alert.','بصمة غريبة؟ تنبيه.'],ap3p:['Anyone else tries, you know right away.','أي محاولة من غيرك تعرف بها فورًا.'],
+ ap4:['Battery at a glance','البطارية بلمحة'],ap4p:['See the level. Get told before it runs low.','شاهد المستوى وتنبّه قبل نفادها.'],
+ ap5:['5+ racks, one app','أكثر من 5 حوامل، تطبيق واحد'],ap5p:['A rack for every rifle and shotgun.','حامل لكل بندقية وشوزن.'],
+ apm_own:['Owner','المالك'],apm_on:['On','مفعّل'],apm_off:['Off','موقوف'],apm_people:['Fingerprints','البصمات'],apm_log:['Activity','النشاط'],apm_open:['opened Hall rack','فتح حامل الصالة'],apm_unk:['Unknown print tried Bedroom rack','بصمة غريبة حاولت فتح حامل الغرفة'],apm_bat:['Shotgun rack at 18%','حامل الشوزن 18%'],apm_guest:['Guest','ضيف'],
+ wa_btn:['Chat on WhatsApp','تواصل عبر واتساب'],wa_sub:['Fastest reply · a real person','أسرع رد · شخص حقيقي'],wa_more:['Continue on WhatsApp','أكمل على واتساب'],
+ wa_msg:['Hi LOCKG, I want to know more about LOCKG ONE.','مرحباً LOCKG، أريد معرفة المزيد عن LOCKG ONE.'],
 };
 let lang='en';try{lang=localStorage.getItem('lockg-lang')||(navigator.language||'').startsWith('ar')&&'ar'||'en';}catch(e){}
 const qs=new URLSearchParams(location.search);if(qs.get('lang'))lang=qs.get('lang')==='ar'?'ar':'en';
@@ -70,6 +84,8 @@ const TXv=(k)=>{const x=window.LOCKG_TX&&window.LOCKG_TX[k];const i=lang==='ar'?
 const t=k=>{const o=TXv(k);if(o)return o;const v=I[k];return v?v[lang==='ar'?1:0]:k;};
 const langFns=[];
 const ICON={
+ phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/><circle cx="15.5" cy="6.5" r="2.2" fill="#41d27a" stroke="none"/></svg>',
+ wa:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.8L2.2 21.8l4.9-1.3A9.8 9.8 0 1 0 12 2.2zm0 1.8a8 8 0 1 1-4.1 14.9l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 0 1 12 4z"/><path d="M8.6 7.2c.2 0 .4 0 .6.4l.8 2c.1.2.1.4 0 .6l-.5.7c-.1.2-.2.3 0 .6.5.9 1.3 1.8 2.3 2.4.3.2.4.1.6 0l.7-.8c.2-.2.4-.2.6-.1l1.9.9c.3.1.4.3.4.5 0 .5-.2 1.3-.9 1.7-.6.4-1.6.6-3.2-.1-1.8-.8-3.4-2.4-4.3-4-.7-1.3-.6-2.5 0-3.3.3-.5.7-.6.9-.6h.3z"/></svg>',
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
  menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg>',
  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -91,7 +107,6 @@ const UIIC={
  color:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.4" fill="currentColor"/><circle cx="12" cy="7.5" r="1.4" fill="currentColor"/><circle cx="16" cy="10" r="1.4" fill="currentColor"/><path d="M12 21c-1.5 0-2-1.5-1-2.5s.5-2.5-1-2.5"/></svg>',
  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
  parts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
- child:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="6" r="3"/><path d="M7 21v-5l-2-3 4-2h6l4 2-2 3v5"/></svg>',
  place:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>',
  car:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 15l2-6h14l2 6v4H3z"/><circle cx="7.5" cy="16.5" r="1.3" fill="currentColor"/><circle cx="16.5" cy="16.5" r="1.3" fill="currentColor"/></svg>',
  move:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg>',
@@ -154,21 +169,35 @@ sheet.addEventListener('touchend',e=>{if(ty===null)return;const t=e.changedTouch
  if(dy>110&&dy>dx*2&&fast&&!sc.some(([n,v])=>n.scrollTop!==v))closeAll();});
 function syncBar(){bBack.hidden=!open&&isHome;}
 
+/* the LOCKG app, shown as a phone */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function appPage(){const B=(pct)=>`<span class="ap-bat"><i style="width:${pct}%"></i></span>${pct}%`;
+ const person=(n,role,on)=>`<div class="ap-p"><span class="ap-av">${n[0]}</span><span class="ap-n"><b>${n}</b><small>${role}</small></span><span class="ap-tg${on?' on':''}"><i></i></span></div>`;
+ const ev=(cls,ic,txt,tm)=>`<div class="ap-e ${cls}"><span class="ap-ei">${ic}</span><span>${txt}</span><small>${tm}</small></div>`;
+ const S=k=>esc(LGS('app.'+k,''));const bat=Math.max(5,Math.min(100,+LGS('app.battery',86)||86));
+ return `<h3>${t('app_t')}</h3><p style="margin:-4px 0 14px;opacity:.7">${t('app_s')}</p>
+ <div class="ap-phone"><div class="ap-scr"><div class="ap-top"><b>LOCKG</b><span>${B(bat)}</span></div>
+  <div class="ap-racks"><span class="on">${S('rack1')||('AR-15 · '+(lang==='ar'?'الصالة':'Hall'))}</span><span>${S('rack2')||(lang==='ar'?'شوزن · الغرفة':'Shotgun · Bedroom')}</span><span>+</span></div>
+  <div class="ap-h">${t('apm_people')}</div>${person(S('p1')||(lang==='ar'?'أحمد':'Ahmad'),t('apm_own'),1)}${person(S('p2')||(lang==='ar'?'سارة':'Sara'),'',1)}${person(S('p3')||t('apm_guest'),'',0)}
+  <div class="ap-h">${t('apm_log')}</div>${ev('ok','✓',(S('p1')||(lang==='ar'?'أحمد':'Ahmad'))+' '+t('apm_open'),'9:42 PM')}${ev('no','!',t('apm_unk'),'2:13 AM')}${ev('bat','🔋',t('apm_bat'),'Mon')}
+ </div></div>
+ <div class="ap-feats">${[['👆',1],['🕒',2],['🚨',3],['🔋',4],['🗂️',5]].map(([ic,n])=>`<div><span>${ic}</span><div><b>${t('ap'+n)}</b><small>${t('ap'+n+'p')}</small></div></div>`).join('')}</div>`;}
 /* menu */
 function openMenu(){show('menu',{title:'menu',html:()=>{let n=0;const it=(ic,k,attr)=>{n++;const tag=attr.startsWith('href')?'a':'button';const here=attr.startsWith('href')&&attr.includes(`"${location.pathname}"`);return `<${tag} ${attr} class="${k==='m_test'?'feat':''}${here?' here':''}"><b>0${n}</b><i>${ICON[ic]}</i><span>${t(k)}</span></${tag}>`;};
- return `<div class="mgrid">${it('cube','m_home','href="/"')}${it('bag','m_shop','href="/shop/"')}${it('story','m_about','data-go="story"')}${it('chat','m_contact','data-go="contact"')}${it('room','m_test','href="/configure/"')}</div><div class="mlinks"><button data-go="faq">${t('m_faq')}</button><button data-go="privacy">${t('m_privacy')}</button><button data-go="terms">${t('m_terms')}</button></div>`;},
+ return `<div class="mgrid">${it('cube','m_home','href="/"')}${it('bag','m_shop','href="/shop/"')}${it('story','m_about','data-go="story"')}${it('chat','m_contact','data-go="contact"')}${it('room','m_test','href="/configure/"')}${LGS('app.on',true)===false?'':it('phone','m_app','data-go="app"')}</div><div class="mlinks"><button data-go="faq">${t('m_faq')}</button><button data-go="privacy">${t('m_privacy')}</button><button data-go="terms">${t('m_terms')}</button></div>`;},
  after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{const g=x.dataset.go;if(g==='lang'){setLang(lang==='ar'?'en':'ar');render(open);return;}Shell.go(g);})});}
 
 /* built-in pages */
 const PAGES={
  how:{title:'m_how',html:()=>`<h3>${t('how_t')}</h3><div class="steps">${[1,2,3].map(n=>`<div><span class="n">0${n}</span><b>${t('how'+n)}</b><p>${t('how'+n+'p')}</p></div>`).join('')}</div><div class="kick" style="margin:6px 0 10px">${t('safe')}</div><div class="safe">${[1,2,3,4,5,6].map(n=>`<div><b>${t('s'+n)}</b><span>${t('s'+n+'p')}</span></div>`).join('')}</div>`},
- specs:{title:'m_specs',html:()=>`<h3>${t('specs_t')}</h3><div class="kvs">${['unlock','code','prints','build','key','bat','mount','fits'].map(k=>`<div><span>${t('sp_'+k)}</span><b>${t('sp_'+k+'_v')}</b></div>`).join('')}</div><p style="margin-top:14px;font-size:11.5px;opacity:.7">${t('sp_note')}</p>`},
+ specs:{title:'m_specs',html:()=>`<h3>${t('specs_t')}</h3><div class="kvs">${['unlock','prints','app','multi','build','str','key','bat','mount','fits','kit'].map(k=>`<div><span>${t('sp_'+k)}</span><b>${t('sp_'+k+'_v')}</b></div>`).join('')}</div><p style="margin-top:14px;font-size:11.5px;opacity:.7">${t('sp_note')}</p>`},
  story:{title:'m_about',html:()=>`<h3>${t('story_t')}</h3><p>${t('story1')}</p><p>${t('story2')}</p>
   <div class="kick" style="margin:18px 0 10px">${t('how_t')}</div><div class="steps">${[1,2,3].map(n=>`<div><span class="n">0${n}</span><b>${t('how'+n)}</b><p>${t('how'+n+'p')}</p></div>`).join('')}</div>
-  <div class="kick" style="margin:18px 0 10px">${t('specs_t')}</div><div class="kvs">${['unlock','prints','key','bat','mount','fits'].map(k=>`<div><span>${t('sp_'+k)}</span><b>${t('sp_'+k+'_v')}</b></div>`).join('')}</div>
+  <div class="kick" style="margin:18px 0 10px">${t('specs_t')}</div><div class="kvs">${['unlock','app','prints','str','mount','fits'].map(k=>`<div><span>${t('sp_'+k)}</span><b>${t('sp_'+k+'_v')}</b></div>`).join('')}</div>
   <div class="mark">${LOGO}<p>${t('mark')}</p></div>
   <a class="tourbtn" href="/?tour=1">${t('m_tour')}</a><div class="mlinks"><button data-go="faq">${t('m_faq')}</button><button data-go="privacy">${t('m_privacy')}</button><button data-go="terms">${t('m_terms')}</button></div>`,after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
- faq:{title:'m_faq',html:()=>`<div class="faq">${[1,2,3,4,5,6,7,8].map(n=>`<details${n===1?' open':''}><summary>${t('fq'+n)}</summary><p>${t('fa'+n)}</p></details>`).join('')}</div><div class="mlinks"><button data-go="contact">${t('m_contact')}</button></div>`,after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
+ faq:{title:'m_faq',html:()=>`<div class="faq">${[1,9,2,10,3,4,5,6,7,8].map(n=>`<details${n===1?' open':''}><summary>${t('fq'+n)}</summary><p>${t('fa'+n)}</p></details>`).join('')}</div><div class="mlinks"><button data-go="contact">${t('m_contact')}</button></div>`,after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
+ app:{title:'m_app',html:()=>appPage()},
  privacy:{title:'m_privacy',html:()=>`<div class="legal">${[1,2,3,4,5].map(n=>`<h4>${t('pv'+n+'t')}</h4><p>${t('pv'+n)}</p>`).join('')}<p class="upd">${t('lg_upd')}</p></div>`},
  terms:{title:'m_terms',html:()=>`<div class="legal">${[1,2,3,4,5,6].map(n=>`<h4>${t('tm'+n+'t')}</h4><p>${t('tm'+n)}</p>`).join('')}<p class="upd">${t('lg_upd')}</p></div>`},
  order:{title:'m_order',html:()=>{const s=window.LOCKG_SUMMARY?window.LOCKG_SUMMARY():'';return `<h3>${t('ord_t')}</h3>${s?`<div class="sumcard">${s}</div>`:''}<form class="f-grid" id="ordF" novalidate>
@@ -186,23 +215,28 @@ const PAGES={
     try{const r=await fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'lead',name:d.name,phone:d.phone,email:d.email||'',area:d.area||'',intent,summary:window.LOCKG_SUMMARY?window.LOCKG_SUMMARY():'',page:location.pathname,lang})});
      if(!r.ok)throw 0;body.innerHTML=`<div class="okmark">${ICON.check}</div><h3>${t('ord_ok')}</h3><p>${t('ord_okp')}</p><button class="pill ghost wide" onclick="Shell.close()">${t('close')}</button>`;}
     catch(_){err.textContent=t('ord_err')+(CFG.phone?' · '+CFG.phone:'');err.style.display='block';btn.disabled=false;btn.style.opacity=1;}};}},
- contact:{title:'m_contact',html:()=>{const ph=CFG.phone,num=ph.replace(/\D/g,'');return `<div class="mlist"><a href="tel:${num.replace(/^/,'+')}"><i>${ICON.chat}</i><span>${t('c_call')}<br><small style="opacity:.6">${ph}</small></span><em>›</em></a><a href="https://wa.me/${num}" target="_blank" rel="noopener"><i>${ICON.chat}</i><span>WhatsApp</span><em>›</em></a><button data-go="chat"><i>${ICON.chat}</i><span>${t('c_chat')}</span><em>›</em></button><button data-go="faq"><i>${ICON.chat}</i><span>${t('m_faq')}</span><em>›</em></button></div>`;},after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
- chat:{title:'chat_t',html:()=>`<div class="chat"><div class="chat-log"></div><div class="chips-q">${['chat_q1','chat_q2','chat_q3'].map(k=>`<button data-q="${k}">${t(k)}</button>`).join('')}</div><form class="chat-in"><input class="f-in" maxlength="500" placeholder="${t('chat_ph')}"><button class="send" aria-label="send">${ICON.send}</button></form></div>`,after:b=>bindChat(b)}};
+ contact:{title:'m_contact',html:()=>{const ph=CFG.phone,num=ph.replace(/\D/g,'');return `${waBtn()}<div class="mlist" style="margin-top:10px"><a href="tel:${num.replace(/^/,'+')}"><i>${ICON.chat}</i><span>${t('c_call')}<br><small style="opacity:.6">${ph}</small></span><em>›</em></a><a href="https://wa.me/${num}" target="_blank" rel="noopener"><i>${ICON.chat}</i><span>WhatsApp</span><em>›</em></a><button data-go="chat"><i>${ICON.chat}</i><span>${t('c_chat')}</span><em>›</em></button><button data-go="faq"><i>${ICON.chat}</i><span>${t('m_faq')}</span><em>›</em></button></div>`;},after:b=>b.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>Shell.go(x.dataset.go))},
+ chat:{title:'chat_t',html:()=>`<div class="chat">${waBtn()}<div class="chat-log"></div><div class="chips-q">${['chat_q1','chat_q2','chat_q3'].map(k=>`<button data-q="${k}">${t(k)}</button>`).join('')}</div><form class="chat-in"><input class="f-in" maxlength="500" placeholder="${t('chat_ph')}"><button class="send" aria-label="send">${ICON.send}</button></form></div>`,after:b=>bindChat(b)}};
 let chatLog=[];
+const WA_URL=()=>{const n=(CFG.phone||'').replace(/\D/g,'');let m=LGS('wa.msg_'+lang,'')||t('wa_msg');try{if(window.LOCKG_SUMMARY)m+='\n'+window.LOCKG_SUMMARY();}catch(e){}return 'https://wa.me/'+n+'?text='+encodeURIComponent(m);};
+window.LOCKG_WA=WA_URL;
+const waBtn=(big=true)=>(LGS('wa.on',true)===false||(!big&&LGS('wa.afterReply',true)===false))?'':big?`<a class="wa-cta" href="${WA_URL()}" target="_blank" rel="noopener"><span class="wa-ic">${ICON.wa}</span><span class="wa-tx"><b>${t('wa_btn')}</b><small>${t('wa_sub')}</small></span><span class="wa-go">›</span></a>`:`<a class="wa-mini" href="${WA_URL()}" target="_blank" rel="noopener">${ICON.wa}<span>${t('wa_more')}</span></a>`;
+
 function bindChat(b){const log=b.querySelector('.chat-log'),f=b.querySelector('form'),inp=f.querySelector('input');
  const add=(role,text)=>{const m=document.createElement('div');m.className='msg '+(role==='user'?'me':'bot');m.textContent=text;log.appendChild(m);log.scrollTop=log.scrollHeight;return m;};
  if(!chatLog.length)add('bot',t('chat_hi'));chatLog.forEach(m=>add(m.role,m.content));
  const ask=async q=>{q=q.trim();if(!q)return;b.querySelector('.chips-q').style.display='none';add('user',q);chatLog.push({role:'user',content:q});inp.value='';
   const w=add('bot','…');w.classList.add('typing');
   try{const r=await fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'chat',lang,page:location.pathname,messages:chatLog.slice(-12)})});
-   const j=await r.json();if(!r.ok||!j.reply)throw j;w.textContent=j.reply;w.classList.remove('typing');chatLog.push({role:'assistant',content:j.reply});}
-  catch(_){w.classList.remove('typing');w.textContent=t('chat_off')+(CFG.phone?': '+CFG.phone:'.');chatLog.pop();}
+   const j=await r.json();if(!r.ok||!j.reply)throw j;w.textContent=j.reply;w.classList.remove('typing');chatLog.push({role:'assistant',content:j.reply});const mm=document.createElement('div');mm.innerHTML=waBtn(false);if(mm.firstChild)log.appendChild(mm.firstChild);}
+  catch(_){w.classList.remove('typing');w.textContent=t('chat_off')+'.';chatLog.pop();const mm=document.createElement('div');mm.innerHTML=waBtn(false);if(mm.firstChild)log.appendChild(mm.firstChild);}
   log.scrollTop=log.scrollHeight;};
  f.onsubmit=e=>{e.preventDefault();ask(inp.value);};
  b.querySelectorAll('[data-q]').forEach(x=>x.onclick=()=>ask(t(x.dataset.q)));}
 
 /* chat button */
-const fab=document.createElement('button');fab.id='chatfab';fab.className='glass';fab.setAttribute('aria-label','chat');fab.innerHTML=ICON.chat;fab.onclick=()=>Shell.go('chat');document.body.appendChild(fab);
+const fab=document.createElement('button');fab.id='chatfab';fab.className='glass';fab.setAttribute('aria-label','chat');fab.innerHTML=ICON.chat+`<span class="fab-wa">${ICON.wa}</span>`;fab.onclick=()=>{if(LGS('chat.on',true)===false){if(LGS('wa.on',true)!==false)window.open(WA_URL(),'_blank','noopener');else Shell.go('contact');}else Shell.go('chat');};
+const fabSync=()=>{const bd=fab.querySelector('.fab-wa');if(bd)bd.style.display=(LGS('wa.badge',true)===false||LGS('wa.on',true)===false)?'none':'';};fabSync();addEventListener('lockg-settings',fabSync);document.body.appendChild(fab);
 
 /* i18n */
 function applyI18n(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';bLang.textContent=t('lang');
@@ -226,18 +260,20 @@ window.Shell={t:k=>{const o=TXv(k);if(o)return o;const p=window.LOCKG_I18N&&wind
  UIIC,GUNIC,go(id){if(id==='order'&&!/^\/shop/.test(location.pathname)){location.href='/shop/'+(window.LOCKG_SHOPQ?window.LOCKG_SHOPQ():'');return;}const p=extra[id]||PAGES[id];if(p)show(id,p);},register(id,p){extra[id]=p;},show,close:closeAll,get body(){return body},setBack(fn){backHook=fn;},render:()=>open&&render(open),CFG};
 applyI18n();syncBar();
 /* ===== opening caution: 18+ and no firearm sales ===== */
-(()=>{let ok=EDIT;try{ok=ok||localStorage.getItem('lockg-gate')==='1';}catch(e){}if(ok)return;
- document.body.classList.add('gated');
+(()=>{const GS=LGS('gate.every','visit')==='device'?localStorage:sessionStorage;let ok=EDIT||LGS('gate.on',true)===false;try{ok=ok||GS.getItem('lockg-gate')==='1';}catch(e){}if(ok){window.LOCKG_SHOWGATE=()=>{};return;}
+ const after=!!window.LOCKG_GATE_AFTER_INTRO;if(!after)document.body.classList.add('gated');
  const g=document.createElement('div');g.id='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-labelledby','gateT');
  const draw=()=>{g.innerHTML=`<div class="gt-card"><div class="gt-logo">${LOGO}</div><div class="gt-k">${t('gt_k')}</div><h2 id="gateT">${t('gt_t')}</h2>
   <div class="gt-row"><i>${ICON.story||''}</i><div><b>${t('gt_1')}</b><span>${t('gt_1p')}</span></div></div>
   <div class="gt-row"><i class="age">18+</i><div><b>${t('gt_2')}</b><span>${t('gt_2p')}</span></div></div>
   <button class="gt-ok" id="gateOk">${t('gt_ok')}</button><a class="gt-no" href="https://www.google.com">${t('gt_no')}</a>
   <button class="gt-lang" id="gateLang">${lang==='ar'?'English':'العربية'}</button></div>`;
-  g.querySelector('#gateOk').onclick=()=>{try{localStorage.setItem('lockg-gate','1');}catch(e){}g.classList.add('off');document.body.classList.remove('gated');setTimeout(()=>g.remove(),600);dispatchEvent(new Event('lockg-gate-ok'));};
+  g.querySelector('#gateOk').onclick=()=>{try{GS.setItem('lockg-gate','1');}catch(e){}g.classList.add('off');document.body.classList.remove('gated');setTimeout(()=>g.remove(),600);dispatchEvent(new Event('lockg-gate-ok'));};
   g.querySelector('#gateLang').onclick=()=>{setLang(lang==='ar'?'en':'ar');draw();};
   setTimeout(()=>{const b=g.querySelector('#gateOk');b&&b.focus();},50);};
- draw();document.body.appendChild(g);
+ draw();if(after)g.classList.add('wait');document.body.appendChild(g);
+ let shown=!after;window.LOCKG_SHOWGATE=()=>{if(shown||!g.isConnected)return;shown=true;document.body.classList.add('gated');g.classList.remove('wait');g.classList.add('in');setTimeout(()=>{const b=g.querySelector('#gateOk');b&&b.focus();},60);};
+ if(after){const chk=()=>{if(!document.body.classList.contains('intro'))window.LOCKG_SHOWGATE();else setTimeout(chk,1500);};const arm=()=>setTimeout(chk,3000);document.readyState==='complete'?arm():addEventListener('load',arm,{once:true});setTimeout(()=>window.LOCKG_SHOWGATE(),45000);}
 })();
 addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAGES[h])){history.replaceState(null,'',location.pathname+location.search);setTimeout(()=>Shell.go(h),400);}});
 
@@ -266,7 +302,7 @@ addEventListener('load',()=>{const h=location.hash.slice(1);if(h&&(extra[h]||PAG
  let edSig='';const useEd=c=>{const sig=JSON.stringify([c.texts||{},c.pages||{}]);if(sig===edSig)return;const first=!edSig;edSig=sig;window.LOCKG_TX=c.texts||{};window.LOCKG_PG=c.pages||{};if(first&&sig==='[{},{}]')return;Shell.setLang(Shell.lang);};
  let cfg=null;try{cfg=JSON.parse(localStorage.getItem('lockg-cfg')||'null');}catch(e){}
  if(cfg){applyTheme(cfg.theme);window.LOCKG_CFG=cfg;if(!EDIT)useEd(cfg);}
- const done=c=>{if(!EDIT)useEd(c);window.LOCKG_CFG=c;window.LOCKG_LIVE=live(c);applyTheme(c.theme);ribbon(c);dispatchEvent(new CustomEvent('lockg-config',{detail:c}));};
+ const done=c=>{window.LOCKG_SET=c.settings||{};dispatchEvent(new Event('lockg-settings'));if(!EDIT)useEd(c);window.LOCKG_CFG=c;window.LOCKG_LIVE=live(c);applyTheme(c.theme);ribbon(c);dispatchEvent(new CustomEvent('lockg-config',{detail:c}));};
  if(cfg)window.LOCKG_LIVE=live(cfg);
  fetch(CFG.api,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'config'})}).then(r=>r.json()).then(j=>{if(!j||!j.config)throw 0;try{localStorage.setItem('lockg-cfg',JSON.stringify(j.config));}catch(e){}done(j.config);}).catch(()=>{if(cfg)done(cfg);});
  Shell.onLang(()=>window.LOCKG_CFG&&ribbon(window.LOCKG_CFG));

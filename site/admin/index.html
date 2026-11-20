@@ -124,6 +124,15 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 .tag{display:inline-block;font:500 9px var(--sans);letter-spacing:.2em;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute);margin-left:6px;vertical-align:middle}
 .tag.live{color:var(--ink);background:var(--gold);border-color:var(--gold)}
 .ib{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);flex:none}.ib svg{width:16px;height:16px}
+.xgrid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:880px){.xgrid{grid-template-columns:1fr 1fr;align-items:start}}
+.xg h3{font:400 22px/1.1 var(--serif,'Cormorant Garamond',serif);margin:0 0 4px;display:flex;align-items:center;gap:10px}.xg h3 i{font-style:normal;font-size:20px}
+.xg>p{font-size:12.5px;color:var(--mute);margin:0 0 14px;line-height:1.5}
+.xg .tg{margin-bottom:10px}.xg .seg{margin-bottom:12px}.xg .xl{font-size:11px;color:var(--mute);letter-spacing:.06em;margin:4px 0 7px}
+.xr{display:flex;align-items:center;gap:12px;margin-bottom:12px}.xr input[type=range]{flex:1;accent-color:var(--gold)}.xr b{min-width:56px;text-align:end;font-weight:500}
+.xnote{font-size:12px;color:var(--mute);padding:10px 12px;border-radius:12px;border:1px dashed var(--line);margin-top:4px;line-height:1.5}.xnote a{color:var(--gold);cursor:pointer}
+.xex{display:grid;grid-template-columns:1fr 92px 50px;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px}
+.xex input{min-height:40px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.18);padding:8px 10px;font-size:14px;width:100%}
+.xwarn{color:#e0a05a}
 .add{width:100%;height:64px;border-radius:20px;border:1px dashed color-mix(in srgb,var(--gold) 45%,transparent);color:var(--gold);font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px}
 /* product editor */
 .studio{position:relative;height:340px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(70% 60% at 50% 35%,color-mix(in srgb,var(--gold) 16%,transparent),transparent 70%),linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.25))}
@@ -255,6 +264,11 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
     <div class="insp" id="insp"></div>
    </div>
   </section>
+  <!-- EXPERIENCE -->
+  <section class="tab" data-t="exp">
+   <div class="hd"><div class="k">07 · Experience</div><h2>Control every extra.</h2><p>Intro, 18+ notice, WhatsApp, AI chat, AR, the app page, the 3D scene, shop extras and payment. Change, then Publish. Visitors get it on their next visit.</p></div>
+   <div class="xgrid" id="xp"></div>
+  </section>
   <!-- ORDERS -->
   <section class="tab" data-t="orders">
    <div class="hd"><div class="k">06 · Orders</div><h2>Who is asking.</h2><p>The latest orders and messages from the website.</p></div>
@@ -323,7 +337,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 ['gesturestart','gesturechange'].forEach(k=>document.addEventListener(k,e=>e.preventDefault(),{passive:false}));document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});})();
 </script>
 <script type="module">
-let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=27'));
+let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=33'));
 const API='https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let AUTH=null,C={theme:{},promo:{},events:[],products:[]},dirty=new Set();
@@ -352,7 +366,7 @@ async function enter(){
 (async()=>{try{const a=JSON.parse(sessionStorage.getItem('lockg-admin')||'null');if(a){AUTH=a;await admin('login');enter();}}catch(e){AUTH=null;}})();
 
 /* ---------- nav ---------- */
-const TABS=[['mood','Mood','<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/>'],['offer','Offer','<path d="M4 12l8-8h8v8l-8 8z"/><circle cx="15.5" cy="8.5" r="1.3"/>'],['events','Occasions','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>'],['shop','Shop','<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'],['pages','Pages','<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/>'],['orders','Orders','<path d="M5 5h14v14H5z"/><path d="M8 10h8M8 14h5"/>']];
+const TABS=[['mood','Mood','<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/>'],['offer','Offer','<path d="M4 12l8-8h8v8l-8 8z"/><circle cx="15.5" cy="8.5" r="1.3"/>'],['events','Occasions','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>'],['shop','Shop','<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'],['pages','Pages','<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/>'],['exp','Experience','<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/>'],['orders','Orders','<path d="M5 5h14v14H5z"/><path d="M8 10h8M8 14h5"/>']];
 TABS.forEach(([id,n,ic])=>{const b=document.createElement('button');b.dataset.t=id;b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>${n}`;b.onclick=()=>tab(id);$('nav').appendChild(b);});
 function tab(id){if(!TABS.some(t=>t[0]===id))id='mood';document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===id));history.replaceState(null,'','#'+id);if(id==='orders')loadLeads();if(id==='pages'&&!pg.w)loadFrame();else if(id==='pages')fitFrame();scrollTo({top:0});}
 
@@ -419,7 +433,7 @@ $('prIdeas').onclick=e=>{const t=IDEAS[e.target.dataset.i];if(!t)return;$('prDes
 /* ---------- shop products ---------- */
 let prIx=-1,draft=null,viewer=null;
 function renderShop(){const l=$('prList');l.innerHTML='';
- ['wall','car','duo'].forEach(id=>{const c=core(id);const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar15.webp" alt="" style="object-fit:contain;padding:4px;${id==='car'?'transform:rotate(-90deg)':''}"></div><div class="tx"><b>${esc(c.name)}${c.active===false?'<span class="tag">HIDDEN</span>':'<span class="tag">CORE</span>'}</b><small>${esc(c.line)}</small></div><div class="pr">$${esc(c.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;d.querySelector('button').onclick=()=>openCo(id);l.appendChild(d);});
+ ['wall'].forEach(id=>{const c=core(id);const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar15.webp" alt="" style="object-fit:contain;padding:4px;${id==='car'?'transform:rotate(-90deg)':''}"></div><div class="tx"><b>${esc(c.name)}${c.active===false?'<span class="tag">HIDDEN</span>':'<span class="tag">CORE</span>'}</b><small>${esc(c.line)}</small></div><div class="pr">$${esc(c.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;d.querySelector('button').onclick=()=>openCo(id);l.appendChild(d);});
  C.products.forEach((p,i)=>{const d=document.createElement('div');d.className='it';const img='';if(p.model)v3().then(m=>{try{const im=d.querySelector('.th');im.innerHTML=`<img src="${m.snapshot(p.model,220,180)}" alt="">`;}catch(e){}});
   d.innerHTML=`<div class="th">${img?`<img src="${img}" alt="">`:''}</div><div class="tx"><b>${esc(p.name)}${p.active?'<span class="tag live">LIVE</span>':'<span class="tag">DRAFT</span>'}</b><small>${esc(p.line||p.desc||'').slice(0,80)}</small></div><div class="pr">$${esc(p.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;
   d.querySelector('button').onclick=()=>openPr(i);l.appendChild(d);});}
@@ -526,12 +540,63 @@ async function loadLeads(){const l=$('ldList');try{const j=await admin('leads');
  catch(e){l.innerHTML='<div class="lead">Could not load.</div>';}}
 
 /* ---------- save ---------- */
-function touch(k){dirty.add(k);$('sbTxt').textContent=[...dirty].map(x=>({theme:'Mood',promo:'Offer',events:'Occasions',products:'Shop',core:'Core products',pages:'Page design',texts:'Words'}[x])).join(' · ')+' changed';$('savebar').classList.add('on');}
+function touch(k){dirty.add(k);$('sbTxt').textContent=[...dirty].map(x=>({theme:'Mood',promo:'Offer',events:'Occasions',products:'Shop',core:'Core products',pages:'Page design',texts:'Words',settings:'Experience'}[x])).join(' · ')+' changed';$('savebar').classList.add('on');}
 $('sbSave').onclick=async()=>{const b=$('sbSave');b.disabled=true;b.textContent='Publishing…';
  try{for(const k of [...dirty]){await admin('set',{key:k,value:C[k]});dirty.delete(k);}$('savebar').classList.remove('on');toast('Live on the website ✓');buzz([10,40,10]);}
  catch(e){toast('Could not publish: '+e.message);}b.disabled=false;b.textContent='Publish to website';};
 addEventListener('beforeunload',e=>{if(dirty.size){e.preventDefault();e.returnValue='';}});
-function renderAll(){if(!C.promo||typeof C.promo!=='object')C.promo={};if(!C.theme||!C.theme.ink)C.theme={...PALS[0]};renderMood();renderOffer();renderEvents();renderShop();}
+
+/* ---------- 07 experience: every extra on the website ---------- */
+const XG=[
+ {i:'🎬',k:'Intro',d:'The 5-second animation that explains LOCKG on the home page.',f:[
+  ['tog','intro.on','Play the intro','Before anything else on the home page.',true],
+  ['seg','intro.every','How often',[['session','Once per visit'],['always','Every page load']],'session'],
+  ['note','Edit the 4 captions in 05 · Pages → Words (search “in1”, “in2”…).','pages']]},
+ {i:'🔞',k:'18+ notice',d:'“A lock, not a weapon. We do not sell firearms. I am 18+ · Enter”.',f:[
+  ['tog','gate.on','Show the 18+ notice','Shown after the intro. Keep it on: the site shows firearms.',true],
+  ['seg','gate.every','Ask again',[['visit','Every visit'],['device','Once per device']],'visit']]},
+ {i:'💬',k:'WhatsApp',d:'Moves visitors from the chat to WhatsApp on the Lebanese number.',f:[
+  ['tog','wa.on','Big WhatsApp button','Top of the chat and the Contact page.',true],
+  ['tog','wa.afterReply','After every chat answer','Small “Continue on WhatsApp” button.',true],
+  ['tog','wa.badge','Green badge on the chat bubble','',true],
+  ['txt2','wa.msg','First message, typed for them','Hi LOCKG, I want to know more about LOCKG ONE.','مرحباً LOCKG، أريد معرفة المزيد عن LOCKG ONE.']]},
+ {i:'🤖',k:'AI chat',d:'The assistant that answers questions on the website.',f:[
+  ['tog','chat.on','AI chat','Off: the chat bubble opens WhatsApp directly.',true],
+  ['area','chat.facts','Extra facts for the AI','New prices, delivery times, stock, opening hours… The AI uses these first.',1500]]},
+ {i:'📱',k:'AR',d:'“Place it on my wall” with the phone camera.',f:[
+  ['tog','ar.on','AR button','In the bottom bar of the home page.',true],
+  ['seg','ar.orient','Opens as',[['v','Vertical'],['h','Horizontal']],'v']]},
+ {i:'🔐',k:'The app page',d:'The phone showing the LOCKG app.',f:[
+  ['tog','app.on','“The app” in the menu','',true],
+  ['rng','app.battery','Battery shown',5,100,86,'%'],
+  ['txt','app.rack1','Rack 1','AR-15 · Hall'],['txt','app.rack2','Rack 2','Shotgun · Bedroom'],
+  ['txt','app.p1','Person 1 · owner','Ahmad'],['txt','app.p2','Person 2','Sara'],['txt','app.p3','Person 3 · switched off','Guest'],
+  ['note','Edit the feature lines in 05 · Pages → Words (search “ap1”…).','pages']]},
+ {i:'✨',k:'3D scene',d:'Home page (wall and In trunk) and Test your room.',f:[
+  ['tog','scene.flicker','Lamp flicker','Every 10 s the lamp flickers for 1 s. Home page, after the intro.',true],
+  ['seg','scene.quality','Quality',[['auto','Auto'],['high','Max'],['eco','Light']],'auto'],
+  ['rng','scene.light','Studio light',0,200,100,'%'],['rng','scene.bloom','Glow',0,100,25,'%'],['rng','scene.dust','Floating dust',0,200,36,'']]},
+ {i:'🛒',k:'Shop extras & payment',d:'Extras in step 3 and payment in step 5. Prices in USD.',f:[
+  ['ext','install','Pro installation',45],['ext','key','Spare backup key',25],['ext','care','2 extra years of care',39],
+  ['tog','pay.card','Card or Apple Pay','Secure link on WhatsApp.',true],['tog','pay.cod','Cash on delivery','',true]]}];
+const XS=()=>{if(!C.settings||typeof C.settings!=='object')C.settings={};return C.settings;};
+const xget=(p,d)=>{let o=XS();for(const k of p.split('.')){if(o==null||typeof o!=='object')return d;o=o[k];}return o===undefined?d:o;};
+const xset=(p,v)=>{const ks=p.split('.');let o=XS();ks.slice(0,-1).forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={};o=o[k];});o[ks[ks.length-1]]=v;touch('settings');};
+function renderExp(){const X=$('xp');if(!X)return;X.innerHTML='';
+ XG.forEach(g=>{const b=document.createElement('div');b.className='box xg';b.innerHTML=`<h3><i>${g.i}</i>${esc(g.k)}</h3><p>${esc(g.d)}</p>`;
+  g.f.forEach(f=>{const [ty,p]=f;const w=document.createElement('div');
+   if(ty==='tog'){w.className='tg';w.innerHTML=`<div><b>${esc(f[2])}</b>${f[3]?`<small>${esc(f[3])}</small>`:''}</div><button class="sw-t"></button>`;const s=w.querySelector('button');s.classList.toggle('on',xget(p,f[4])!==false);s.onclick=()=>{s.classList.toggle('on');xset(p,s.classList.contains('on'));buzz(8);if(p==='gate.on'&&!s.classList.contains('on'))toast('Careful: the 18+ notice is off');};}
+   else if(ty==='seg'){w.innerHTML=`<div class="xl">${esc(f[2])}</div><div class="seg">${f[3].map(([v,n])=>`<button data-v="${v}">${esc(n)}</button>`).join('')}</div>`;const cur=xget(p,f[4]);w.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.v===cur);x.onclick=()=>{w.querySelectorAll('button').forEach(y=>y.classList.toggle('on',y===x));xset(p,x.dataset.v);};});}
+   else if(ty==='rng'){w.innerHTML=`<div class="xl">${esc(f[2])}</div><div class="xr"><input type="range" min="${f[3]}" max="${f[4]}" step="1"><b></b></div>`;const r=w.querySelector('input'),o=w.querySelector('b');r.value=xget(p,f[5]);const sh=()=>o.textContent=r.value+(f[6]||'');sh();r.oninput=()=>{sh();xset(p,+r.value);};}
+   else if(ty==='txt'){w.innerHTML=`<label class="f"><span>${esc(f[2])}</span><input placeholder="${esc(f[3])}"></label>`;const i=w.querySelector('input');i.value=xget(p,'');i.oninput=()=>xset(p,i.value.trim());}
+   else if(ty==='txt2'){w.innerHTML=`<div class="row2"><label class="f"><span>${esc(f[2])} · EN</span><input placeholder="${esc(f[3])}"></label><label class="f"><span>AR</span><input dir="rtl" placeholder="${esc(f[4])}"></label></div>`;const [a,c]=w.querySelectorAll('input');a.value=xget(p+'_en','');c.value=xget(p+'_ar','');a.oninput=()=>xset(p+'_en',a.value.trim());c.oninput=()=>xset(p+'_ar',c.value.trim());}
+   else if(ty==='area'){w.innerHTML=`<label class="f"><span>${esc(f[2])}</span><textarea maxlength="${f[4]}" placeholder="${esc(f[3])}"></textarea></label>`;const a=w.querySelector('textarea');a.value=xget(p,'');a.oninput=()=>xset(p,a.value);}
+   else if(ty==='ext'){w.className='xex';w.innerHTML=`<span>${esc(f[2])}</span><input type="number" min="0" step="1" inputmode="numeric"><button class="sw-t"></button>`;const i=w.querySelector('input'),s=w.querySelector('button');i.value=xget('extras.'+p+'.price',f[3]);s.classList.toggle('on',xget('extras.'+p+'.on',true)!==false);i.oninput=()=>xset('extras.'+p+'.price',Math.max(0,+i.value||0));s.onclick=()=>{s.classList.toggle('on');xset('extras.'+p+'.on',s.classList.contains('on'));};}
+   else if(ty==='note'){w.className='xnote';w.innerHTML=esc(p).replace('05 · Pages → Words','<a>05 · Pages → Words</a>');const a=w.querySelector('a');if(a)a.onclick=()=>{tab('pages');setTimeout(()=>{const wb=document.querySelector('#pgMode [data-v=words]');wb&&wb.click();},300);};}
+   b.appendChild(w);});
+  X.appendChild(b);});}
+
+function renderAll(){if(!C.promo||typeof C.promo!=='object')C.promo={};if(!C.theme||!C.theme.ink)C.theme={...PALS[0]};renderMood();renderOffer();renderEvents();renderShop();renderExp();}
 </script>
 </body>
 </html>

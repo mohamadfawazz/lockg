@@ -54,7 +54,7 @@ ready(()=>{
  if(!RM&&!sessionStorage.getItem('lockg-veil')){VEIL=true;
   try{sessionStorage.setItem('lockg-veil','1');}catch(e){}
   const v=$('div');v.id='fx-veil';v.innerHTML=`<div class="wm">${'LOCKG'.split('').map((c,i)=>`<span style="animation-delay:${.08+i*.09}s">${c}</span>`).join('')}</div><div class="bar"><i></i></div><div class="tag">LOCKED TO THE WALL</div>`;
-  const t0=performance.now(),go=()=>{const w=Math.max(0,1650-(performance.now()-t0));setTimeout(()=>{v.classList.add('off');setTimeout(()=>v.remove(),1100);},w);};
+  const t0=performance.now(),go=()=>{const w=Math.max(0,(window.LOCKG_FASTVEIL?300:1650)-(performance.now()-t0));setTimeout(()=>{v.classList.add('off');setTimeout(()=>v.remove(),1100);},w);};
   if(document.readyState==='complete')go();else{addEventListener('load',go,{once:true});setTimeout(()=>{if(!v.classList.contains('off'))go();},2600);}
  }
  /* 2. gold light that follows the pointer (desktop) */

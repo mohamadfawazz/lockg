@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>LOCKG · Shop</title>
-<meta name="description" content="Order LOCKG ONE in 5 easy steps. Wall, car or both, in your finish or your own color.">
+<meta name="description" content="Order LOCKG ONE in 5 easy steps. In your finish or your own color, with the LOCKG app.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website"><meta property="og:site_name" content="LOCKG">
-<meta property="og:title" content="LOCKG · Shop"><meta property="og:description" content="Order LOCKG ONE in 5 easy steps. Wall, car or both, in your finish or your own color.">
+<meta property="og:title" content="LOCKG · Shop"><meta property="og:description" content="Order LOCKG ONE in 5 easy steps. In your finish or your own color, with the LOCKG app.">
 <meta property="og:image" content="https://lockg.xmf.app/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -186,7 +186,7 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
 .guns .gph{width:100%;height:30px;object-fit:contain;display:block;margin:2px auto 6px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
 </style>
-<link rel="stylesheet" href="/shell.css?v=27">
+<link rel="stylesheet" href="/shell.css?v=33">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -241,7 +241,7 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
    <div class="kick" data-i18n="s_k5">Step 5</div><h2 class="h" data-i18n="s_h5">Pay your way</h2><p class="sub" data-i18n="s_p5">Choose how you want to pay.</p>
    <div class="cards" id="pays"></div>
    <div class="rev" id="rev"></div>
-   <div class="safe"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A574" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-i18n="s_safe">Secure. 30-day return. 2-year warranty.</span></div>
+   <div class="safe"><svg viewBox="0 0 24 24" fill="none" style="stroke:var(--gold)" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-i18n="s_safe">Secure. 30-day return. 2-year warranty.</span></div>
   </div>
   <div id="done">
    <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#17130e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
@@ -260,13 +260,11 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
 /* ===== edit prices here ===== */
 const CUR={code:'USD',sym:'$'};
 const PRODUCTS=[
- {id:'wall',price:390,en:['LOCKG ONE · Wall','For your home. Rail, print lock, trigger cover, cradle.'],ar:['LOCKG ONE · جدار','للمنزل. سكة، قفل بالبصمة، غطاء الزناد، حامل.']},
- {id:'car', price:420,en:['LOCKG ONE · Car','Same lock, made for your trunk. Bolts to the floor.'],ar:['LOCKG ONE · سيارة','نفس القفل، لصندوق السيارة. يثبت بالأرضية.']},
- {id:'duo', price:740,best:1,en:['Home + Car set','One for the wall, one for the car. Same fingerprints.'],ar:['مجموعة المنزل + السيارة','واحد للجدار وواحد للسيارة. نفس البصمات.']}];
+ {id:'wall',price:390,en:['LOCKG ONE · Wall','Fingerprint barrel lock, trigger cover, stock support and the LOCKG app.'],ar:['LOCKG ONE · جدار','قفل سبطانة بالبصمة، غطاء الزناد، حامل الأخمص وتطبيق LOCKG.']}];
 const EXTRAS=[
  {id:'install',price:45,en:['Pro installation','We drill, level and set your prints.'],ar:['تركيب احترافي','نثقب ونضبط ونسجل بصماتك.']},
  {id:'key',price:25,en:['Spare backup key','A second key, for the safe deposit box.'],ar:['مفتاح احتياطي إضافي','مفتاح ثانٍ للحفظ.']},
- {id:'care',price:39,en:['2 extra years of care','4 years total. Any fault, we replace it.'],ar:['سنتان إضافيتان من الرعاية','4 سنوات. أي عطل نستبدله.']}];
+ {id:'care',price:39,en:['2 extra years of care','3 years total. Any fault, we replace it.'],ar:['سنتان إضافيتان من الرعاية','3 سنوات. أي عطل نستبدله.']}];
 const CUSTOM={id:'custom',c:'#7a1f2b',hi:'#b54a5a',en:'Your color',ar:'لونك'};
 const FINS=[{id:'black',c:'#1d1d1f',hi:'#3a3a3d',en:'Matte black',ar:'أسود مطفي'},{id:'bronze',c:'#8a6a43',hi:'#c8a574',en:'Bronze',ar:'برونزي'},{id:'nickel',c:'#8d8e90',hi:'#d7d8da',en:'Nickel',ar:'نيكل'},{id:'sand',c:'#b9a586',hi:'#e3d6bf',en:'Sand',ar:'رملي'}];
 const GUNS=[{id:'d12',en:'Bronze AR shotgun',ar:'شوزن AR برونزي'},{id:'ar15',en:'AR-15 rifle',ar:'بندقية AR-15'},{id:'m4',en:'Tactical shotgun',ar:'شوزن تكتيكي'},{id:'pump12',en:'Classic pump',ar:'شوزن كلاسيكي'},{id:'bolt',en:'Walnut bolt rifle',ar:'بندقية ترباس جوز'}];
@@ -281,7 +279,7 @@ window.LOCKG_I18N={
  s_h3:['Add the extras','أضف الإضافات'],s_p3:['All optional. Tap to add.','كلها اختيارية. اضغط للإضافة.'],s_qty:['How many?','الكمية؟'],
  s_h4:['Where do we deliver?','أين نوصل؟'],s_p4:['We call you before we come.','نتصل بك قبل أن نأتي.'],s_name:['Full name','الاسم الكامل'],s_phone:['Phone / WhatsApp','الهاتف / واتساب'],s_city:['City','المدينة'],s_email:['Email (for your receipt)','البريد (لإيصالك)'],s_addr:['Address','العنوان'],
  s_lic:['I own my firearm legally and hold a valid licence.','أملك سلاحي بشكل قانوني ولدي رخصة سارية.'],
- s_h5:['Pay your way','ادفع بطريقتك'],s_p5:['Choose how you want to pay.','اختر طريقة الدفع.'],s_safe:['Secure. 30-day return. 2-year warranty.','آمن. إرجاع خلال 30 يومًا. ضمان سنتين.'],
+ s_h5:['Pay your way','ادفع بطريقتك'],s_p5:['Choose how you want to pay.','اختر طريقة الدفع.'],s_safe:['Secure. 30-day return. 1-year warranty.','آمن. إرجاع خلال 30 يومًا. ضمان سنة.'],
  s_total:['Total','المجموع'],s_next:['Next','التالي'],s_place:['Place order','أكد الطلب'],s_sending:['Sending…','جارٍ الإرسال…'],
  s_t1:['Pick','اختر'],s_t2:['Style','الشكل'],s_t3:['Extras','إضافات'],s_t4:['Delivery','التوصيل'],s_t5:['Pay','الدفع'],
  s_r_item:['Item','المنتج'],s_r_style:['Style','الشكل'],s_r_extras:['Extras','الإضافات'],s_r_ship:['Delivery','التوصيل'],s_free:['Free','مجاني'],s_none:['None','لا شيء'],
@@ -290,8 +288,8 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=27"></script>
-<script src="/fx.js?v=27"></script>
+<script src="/shell.js?v=33"></script>
+<script src="/fx.js?v=33"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
 const O={prod:'wall',fin:'black',gun:'ar15',extras:new Set(),qty:1,pay:'card'};
@@ -380,11 +378,16 @@ $('next').onclick=async()=>{
 function toastMsg(m){let t=$('stoast');if(!t){t=document.createElement('div');t.id='stoast';t.style.cssText='position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;padding:13px 20px;border-radius:999px;background:rgba(21,19,15,.92);border:1px solid #9c7a4e88;font-size:13px;transition:.3s;max-width:90vw;text-align:center';document.body.appendChild(t);}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,3200);}
 // deep link from the room page: /shop/?fin=bronze&gun=pump&p=car
 {const q=new URLSearchParams(location.search);if(FINS.some(f=>f.id===q.get('fin')))O.fin=q.get('fin');if(q.get('fin')==='custom'&&/^#[0-9a-f]{6}$/i.test(q.get('hex')||'')){O.fin='custom';CUSTOM.c=q.get('hex');}{const qg=GOLD_MAP[q.get('gun')]||q.get('gun');if(GUNS.some(g=>g.id===qg))O.gun=qg;}if(PRODUCTS.some(p=>p.id===q.get('p')))O.prod=q.get('p');}
+/* admin: extras prices, extras and payment on/off */
+const EX0=EXTRAS.map(e=>({...e})),PAY0=PAYS.slice();
+function applySet(){const G=window.LGS||((p,d)=>d);EXTRAS.length=0;EX0.forEach(e=>{if(G('extras.'+e.id+'.on',true)===false){O.extras.delete(e.id);return;}const pr=+G('extras.'+e.id+'.price',e.price);EXTRAS.push({...e,price:pr>=0?pr:e.price});});
+ PAYS.length=0;PAY0.forEach(p=>{if(G('pay.'+p.id,true)!==false)PAYS.push(p);});if(!PAYS.length)PAYS.push(PAY0[0]);if(!PAYS.some(p=>p.id===O.pay))O.pay=PAYS[0].id;}
+applySet();addEventListener('lockg-settings',()=>{applySet();render();paint();});
 Shell.onLang(()=>{render();paint();});render();paint();
 setTimeout(()=>FINS.forEach(f=>GUNS.forEach(g=>{new Image().src=IMG(f.id,g.id);})),1500);
 </script>
 <script type="module">
-import { mount, snapshot } from '/v3d.js?v=27';
+import { mount, snapshot } from '/v3d.js?v=33';
 let V=null;
 window.LOCKG_V3D=m=>{const el=document.getElementById('v3d');if(!m)return;if(V)V.set(m);else V=mount(el,m);};
 const CORE_ORIG=PRODUCTS.filter(p=>!p.admin).map(p=>({...p,en:[...p.en],ar:[...p.ar]}));
