@@ -125,7 +125,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 .tag.live{color:var(--ink);background:var(--gold);border-color:var(--gold)}
 .ib{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);flex:none}.ib svg{width:16px;height:16px}
 .xgrid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:880px){.xgrid{grid-template-columns:1fr 1fr;align-items:start}}
-.xg h3{font:400 22px/1.1 var(--serif,'Cormorant Garamond',serif);margin:0 0 4px;display:flex;align-items:center;gap:10px}.xg h3 i{font-style:normal;font-size:20px}
+.xg h3{font:400 22px/1.1 var(--serif,'Cormorant Garamond',serif);margin:0 0 4px;display:flex;align-items:center;gap:10px}.xg h3 i{font-style:normal;font-size:11px;letter-spacing:.14em;color:var(--gold,#b8925a);margin-right:8px;font-weight:500}
 .xg>p{font-size:12.5px;color:var(--mute);margin:0 0 14px;line-height:1.5}
 .xg .tg{margin-bottom:10px}.xg .seg{margin-bottom:12px}.xg .xl{font-size:11px;color:var(--mute);letter-spacing:.06em;margin:4px 0 7px}
 .xr{display:flex;align-items:center;gap:12px;margin-bottom:12px}.xr input[type=range]{flex:1;accent-color:var(--gold)}.xr b{min-width:56px;text-align:end;font-weight:500}
@@ -337,7 +337,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 ['gesturestart','gesturechange'].forEach(k=>document.addEventListener(k,e=>e.preventDefault(),{passive:false}));document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});})();
 </script>
 <script type="module">
-let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=33'));
+let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=34'));
 const API='https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let AUTH=null,C={theme:{},promo:{},events:[],products:[]},dirty=new Set();
@@ -548,35 +548,35 @@ addEventListener('beforeunload',e=>{if(dirty.size){e.preventDefault();e.returnVa
 
 /* ---------- 07 experience: every extra on the website ---------- */
 const XG=[
- {i:'🎬',k:'Intro',d:'The 5-second animation that explains LOCKG on the home page.',f:[
+ {i:'01',k:'Intro',d:'The 5-second animation that explains LOCKG on the home page.',f:[
   ['tog','intro.on','Play the intro','Before anything else on the home page.',true],
   ['seg','intro.every','How often',[['session','Once per visit'],['always','Every page load']],'session'],
   ['note','Edit the 4 captions in 05 · Pages → Words (search “in1”, “in2”…).','pages']]},
- {i:'🔞',k:'18+ notice',d:'“A lock, not a weapon. We do not sell firearms. I am 18+ · Enter”.',f:[
+ {i:'02',k:'18+ notice',d:'“A lock, not a weapon. We do not sell firearms. I am 18+ · Enter”.',f:[
   ['tog','gate.on','Show the 18+ notice','Shown after the intro. Keep it on: the site shows firearms.',true],
   ['seg','gate.every','Ask again',[['visit','Every visit'],['device','Once per device']],'visit']]},
- {i:'💬',k:'WhatsApp',d:'Moves visitors from the chat to WhatsApp on the Lebanese number.',f:[
+ {i:'03',k:'WhatsApp',d:'Moves visitors from the chat to WhatsApp on the Lebanese number.',f:[
   ['tog','wa.on','Big WhatsApp button','Top of the chat and the Contact page.',true],
   ['tog','wa.afterReply','After every chat answer','Small “Continue on WhatsApp” button.',true],
   ['tog','wa.badge','Green badge on the chat bubble','',true],
   ['txt2','wa.msg','First message, typed for them','Hi LOCKG, I want to know more about LOCKG ONE.','مرحباً LOCKG، أريد معرفة المزيد عن LOCKG ONE.']]},
- {i:'🤖',k:'AI chat',d:'The assistant that answers questions on the website.',f:[
+ {i:'04',k:'AI chat',d:'The assistant that answers questions on the website.',f:[
   ['tog','chat.on','AI chat','Off: the chat bubble opens WhatsApp directly.',true],
   ['area','chat.facts','Extra facts for the AI','New prices, delivery times, stock, opening hours… The AI uses these first.',1500]]},
- {i:'📱',k:'AR',d:'“Place it on my wall” with the phone camera.',f:[
+ {i:'05',k:'AR',d:'“Place it on my wall” with the phone camera.',f:[
   ['tog','ar.on','AR button','In the bottom bar of the home page.',true],
   ['seg','ar.orient','Opens as',[['v','Vertical'],['h','Horizontal']],'v']]},
- {i:'🔐',k:'The app page',d:'The phone showing the LOCKG app.',f:[
+ {i:'06',k:'The app page',d:'The phone showing the LOCKG app.',f:[
   ['tog','app.on','“The app” in the menu','',true],
   ['rng','app.battery','Battery shown',5,100,86,'%'],
   ['txt','app.rack1','Rack 1','AR-15 · Hall'],['txt','app.rack2','Rack 2','Shotgun · Bedroom'],
   ['txt','app.p1','Person 1 · owner','Ahmad'],['txt','app.p2','Person 2','Sara'],['txt','app.p3','Person 3 · switched off','Guest'],
   ['note','Edit the feature lines in 05 · Pages → Words (search “ap1”…).','pages']]},
- {i:'✨',k:'3D scene',d:'Home page (wall and In trunk) and Test your room.',f:[
+ {i:'07',k:'3D scene',d:'Home page (wall and In trunk) and Test your room.',f:[
   ['tog','scene.flicker','Lamp flicker','Every 10 s the lamp flickers for 1 s. Home page, after the intro.',true],
   ['seg','scene.quality','Quality',[['auto','Auto'],['high','Max'],['eco','Light']],'auto'],
   ['rng','scene.light','Studio light',0,200,100,'%'],['rng','scene.bloom','Glow',0,100,25,'%'],['rng','scene.dust','Floating dust',0,200,36,'']]},
- {i:'🛒',k:'Shop extras & payment',d:'Extras in step 3 and payment in step 5. Prices in USD.',f:[
+ {i:'08',k:'Shop extras & payment',d:'Extras in step 3 and payment in step 5. Prices in USD.',f:[
   ['ext','install','Pro installation',45],['ext','key','Spare backup key',25],['ext','care','2 extra years of care',39],
   ['tog','pay.card','Card or Apple Pay','Secure link on WhatsApp.',true],['tog','pay.cod','Cash on delivery','',true]]}];
 const XS=()=>{if(!C.settings||typeof C.settings!=='object')C.settings={};return C.settings;};

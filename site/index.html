@@ -22,6 +22,12 @@
 html,body{height:100%;background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;overflow:hidden;-webkit-font-smoothing:antialiased}
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
 body.trunk #title h1,body.trunk #title .kick{text-shadow:0 2px 22px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
+#intro .in-bars i{position:fixed;left:0;right:0;height:0;background:#000;transition:height .45s cubic-bezier(.7,0,.2,1);pointer-events:none;z-index:0}
+#intro .in-bars i:first-child{top:0}#intro .in-bars i:last-child{bottom:0}
+#intro.go .in-bars i{height:7vh}#intro.go .in-cap{margin-bottom:calc(7vh - 18px)}#intro.go .in-steps{margin-bottom:calc(7vh - 18px)}#intro.out .in-bars i{height:0}
+#intro .in-flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:0;mix-blend-mode:screen}
+#intro .in-flash.hit{animation:inFlash .24s ease-out}
+@keyframes inFlash{0%{opacity:.2}100%{opacity:0}}
 #dip{position:fixed;inset:0;background:#0b0a09;opacity:0;pointer-events:none;will-change:opacity}
 button{font-family:var(--sans);cursor:pointer;border:0;background:none;color:inherit}
 .kick{font:500 9.5px/1 var(--sans);letter-spacing:.38em;text-transform:uppercase;color:var(--bronze)}
@@ -50,8 +56,15 @@ button{font-family:var(--sans);cursor:pointer;border:0;background:none;color:inh
 .sep{width:1px;align-self:stretch;background:var(--line);flex:none}
 #labels{position:fixed;inset:0;pointer-events:none;z-index:4}
 .lab{position:absolute;transform:translate(-50%,-50%);transition:opacity .4s}
-.lab .dot{width:22px;height:22px;border-radius:50%;background:color-mix(in srgb,var(--ink) 82%,transparent);border:1px solid var(--bronze);color:var(--ivory);font:500 10px/20px var(--sans);text-align:center;pointer-events:auto;cursor:pointer;transition:.2s}
-.lab .dot:hover,.lab.open .dot{background:var(--bronze)}
+.lab .dot{position:relative;width:7px;height:7px;border-radius:50%;background:var(--ivory);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 45%,transparent),0 0 0 4px color-mix(in srgb,var(--ivory) 35%,transparent);pointer-events:auto;cursor:pointer;transition:.2s}
+.lab .dot::after{content:'';position:absolute;top:3px;height:1px;width:18px;background:color-mix(in srgb,var(--ivory) 55%,transparent)}
+.lab.sr .dot::after{left:7px}.lab.sl .dot::after{right:7px}
+.lab .card{left:auto!important;top:-8px!important;width:auto!important;padding:0!important;background:none!important;color:var(--ivory)!important;opacity:1!important;transform:none!important;white-space:nowrap;pointer-events:none}
+.lab.sr .card{left:30px!important}.lab.sl .card{right:30px!important;left:auto!important;text-align:right}
+.lab .card b{font:500 9.5px/1.3 var(--sans)!important;letter-spacing:.16em;text-transform:uppercase;margin:0!important;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.lab .card p{display:none!important}
+@media (max-width:720px){.lab .card b{font-size:8.5px!important;letter-spacing:.12em}.lab .dot::after{width:12px}.lab.sr .card{left:23px!important}.lab.sl .card{right:23px!important}}
+.lab .dot:hover{background:var(--gold,#c9a36a)}
 .lab .card{position:absolute;left:30px;top:var(--ty,-6px);width:210px;padding:13px 15px;background:var(--ivory);color:var(--ink);opacity:0;transform:translateX(-6px);transition:.3s;pointer-events:none}
 .lab.open .card,body.explode .lab .card{opacity:1;transform:none}
 body.explode .lab .card p{display:none}
@@ -85,7 +98,7 @@ html[lang=ar] #spec .more{letter-spacing:0;font-size:12px}
 .chips button.main{background:var(--gold-d);border-color:var(--gold-d)}
 .sws button{width:28px;height:28px}
 .lab .card{border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
-.lab .dot{width:26px;height:26px;line-height:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:color-mix(in srgb,var(--ink) 55%,transparent)}
+
 html[dir=rtl] #title{left:auto;right:calc(28px + env(safe-area-inset-right,0px));text-align:right}
 html[dir=rtl] #spec{right:auto;left:calc(20px + env(safe-area-inset-left,0px))}
 html[dir=rtl] .lab .card{left:auto;right:34px}
@@ -111,8 +124,8 @@ body:has(#picker.on) #chatfab{opacity:0;pointer-events:none}
 body:has(#picker.on) #quest{opacity:0!important;visibility:hidden!important}
 body:has(#picker.on) .coach{display:none}
 @media (max-width:560px){.cta{flex-wrap:nowrap}.cta .gpill{height:40px;padding:0 14px;font-size:9px;letter-spacing:.14em;white-space:nowrap;display:inline-flex;align-items:center}.cta a[href="/configure/"]{display:none}
- body.explode .lab .card{padding:5px 9px;border-radius:10px}body.explode .lab .card b{font-size:13px;margin:0}.lab .dot{width:20px;height:20px;line-height:18px}}
-.lab .dot{animation:labPulse 2.6s ease-in-out infinite}@keyframes labPulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 16%,transparent)}}
+ }
+
 @media (orientation:landscape) and (max-height:520px){#title{top:calc(62px + env(safe-area-inset-top,0px));left:calc(16px + env(safe-area-inset-left,0px))}#title h1{font-size:26px!important;line-height:1.05}#title p,#title .kick{display:none}.cta{margin-top:8px!important}.cta .gpill{height:36px;padding:0 14px;font-size:9px;letter-spacing:.14em}.cta a[href="/configure/"]{display:none}#spec{display:none!important}.lab .card{display:none}}
 #tour{position:fixed;z-index:60;left:50%;bottom:calc(112px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);width:min(440px,calc(100vw - 24px));border-radius:26px;padding:16px 16px 14px;opacity:0;visibility:hidden;transition:.5s cubic-bezier(.2,.8,.2,1);color:var(--ivory)}
 #tour.on{opacity:1;visibility:visible;transform:translate(-50%,0)}
@@ -207,7 +220,7 @@ html[dir=rtl] .in-skip{right:auto;left:calc(14px + env(safe-area-inset-left,0px)
 .dk .newdot{position:absolute;top:6px;right:10px;width:7px;height:7px;border-radius:50%;background:#2fd47a;box-shadow:0 0 0 3px color-mix(in srgb,#2fd47a 25%,transparent)}
 .dk{position:relative}
 </style>
-<link rel="stylesheet" href="/shell.css?v=33">
+<link rel="stylesheet" href="/shell.css?v=34">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -260,7 +273,7 @@ html[dir=rtl] .in-skip{right:auto;left:calc(14px + env(safe-area-inset-left,0px)
 <div id="orient" role="group" aria-label="Vertical or horizontal"><button data-o="v" class="on" aria-label="Vertical" title="Vertical"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9.5" y="3" width="5" height="18" rx="1.6"/></svg></button><button data-o="h" aria-label="Horizontal" title="Horizontal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9.5" width="18" height="5" rx="1.6"/></svg></button></div>
 <div id="intro" aria-live="polite"><div class="in-steps" id="inSteps"><i></i><i></i><i></i><i></i></div>
  <div class="in-cap" id="inCap"><div class="in-ic" id="inIc"></div><div class="in-tx"><b id="inT"></b><span id="inP"></span></div></div>
- <div class="in-hand kid" id="inKid"><span class="kidtag">🧒</span><svg viewBox="0 0 24 24"><path fill="#f6efe6" stroke="#2a241f" stroke-width="1.1" stroke-linejoin="round" d="M8 2.2a1.8 1.8 0 0 1 1.8 1.8v6.2l.3-.1a1.8 1.8 0 0 1 2.3 1.1l.2.5.4-.2a1.8 1.8 0 0 1 2.4 1l.2.4.4-.1a1.8 1.8 0 0 1 2.3 1.4l.5 3.1a6 6 0 0 1-5.9 6.9h-1.6a6 6 0 0 1-4.6-2.2L3 17.1a1.8 1.8 0 0 1 2.6-2.4l.6.6V4A1.8 1.8 0 0 1 8 2.2z"/></svg></div>
+ <div class="in-hand kid" id="inKid"><svg viewBox="0 0 24 24"><path fill="#f6efe6" stroke="#2a241f" stroke-width="1.1" stroke-linejoin="round" d="M8 2.2a1.8 1.8 0 0 1 1.8 1.8v6.2l.3-.1a1.8 1.8 0 0 1 2.3 1.1l.2.5.4-.2a1.8 1.8 0 0 1 2.4 1l.2.4.4-.1a1.8 1.8 0 0 1 2.3 1.4l.5 3.1a6 6 0 0 1-5.9 6.9h-1.6a6 6 0 0 1-4.6-2.2L3 17.1a1.8 1.8 0 0 1 2.6-2.4l.6.6V4A1.8 1.8 0 0 1 8 2.2z"/></svg></div>
  <div class="in-hand" id="inMe"><svg viewBox="0 0 24 24"><path fill="#f6efe6" stroke="#2a241f" stroke-width="1" stroke-linejoin="round" d="M8 2.2a1.8 1.8 0 0 1 1.8 1.8v6.2l.3-.1a1.8 1.8 0 0 1 2.3 1.1l.2.5.4-.2a1.8 1.8 0 0 1 2.4 1l.2.4.4-.1a1.8 1.8 0 0 1 2.3 1.4l.5 3.1a6 6 0 0 1-5.9 6.9h-1.6a6 6 0 0 1-4.6-2.2L3 17.1a1.8 1.8 0 0 1 2.6-2.4l.6.6V4A1.8 1.8 0 0 1 8 2.2z"/></svg></div>
  <div class="in-note" id="inNote"><span class="nt-ic">L</span><span class="nt-tx"><b>LOCKG</b><span id="inNoteT"></span></span><small id="inNoteW"></small></div>
  <button class="in-skip" id="inSkip" data-i18n="in_skip">Skip</button></div>
@@ -288,7 +301,7 @@ b_explode:['Explode','تفكيك'],b_labels:['Labels','الأسماء'],b_gun:['
 t_open:['Unlocked · 0.2 s','فُتح · 0.2 ث'],t_lock:['Locked','مقفل'],t_auto:['Closed · Locked','أُغلق · مقفل'],t_deny:['Print not recognised · Owner alerted','بصمة غير معروفة · تم تنبيه المالك'],
 g_d12:['Bronze AR shotgun','شوزن AR برونزي'],g_ar15:['AR-15 rifle','بندقية AR-15'],g_m4:['Tactical shotgun','شوزن تكتيكي'],g_pump12:['Classic pump','شوزن كلاسيكي'],g_boltw:['Walnut bolt rifle','بندقية ترباس جوز'],g_ar:['AR rifle','بندقية AR'],g_pump:['Pump shotgun','شوزن مضخة'],g_bolt:['Bolt rifle','بندقية ترباس'],g_lever:['Lever rifle','بندقية رافعة'],
 f0:['Matte black','أسود مطفي'],f1:['Bronze','برونزي'],f2:['Nickel','نيكل'],f3:['Sand','رملي'],w0:['Studio','استوديو'],w1:['Warm white','أبيض دافئ'],w2:['Charcoal','فحمي'],
-l_sensor:['Print sensor','حساس البصمة'],l_sensor_p:['Opens in 0.2 s. Every opening logged in the app.','يفتح خلال 0.2 ثانية. كل فتح مسجّل في التطبيق.'],
+lb_bio:['Fingerprint biometric','بصمة بيومترية'],lb_adapt:['LOCKG adapter','محوّل LOCKG'],lb_bottom:['LOCKG bottom adapter','محوّل LOCKG السفلي'],l_sensor:['Print sensor','حساس البصمة'],l_sensor_p:['Opens in 0.2 s. Every opening logged in the app.','يفتح خلال 0.2 ثانية. كل فتح مسجّل في التطبيق.'],
 l_gate:['Barrel lock','قفل الماسورة'],l_gate_p:['Swings open. The gun comes off in your hand.','ينفتح، والسلاح في يدك.'],
 l_cover:['Trigger cover','غطاء الزناد'],l_cover_p:['Nobody reaches the trigger.','لا أحد يصل إلى الزناد.'],
 l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Adjustable. Holds the weight.','قابل للتعديل. يحمل الوزن.'],
@@ -305,8 +318,8 @@ ar_go:['Place it on my wall','ضعه على جداري'],ar_hint:['Point your ph
 ar_desk:['Open this page on your phone to place it on your wall.','افتح هذه الصفحة على هاتفك لتضعه على جدارك.'],ar_fail:['AR is not available on this phone. You can still turn it in 3D.','الواقع المعزز غير متاح على هذا الهاتف. يمكنك تدويره ثلاثي الأبعاد.']
 };</script>
 <script>window.LOCKG_FASTVEIL=1;window.LOCKG_GATE_AFTER_INTRO=1;</script>
-<script src="/shell.js?v=33"></script>
-<script src="/fx.js?v=33"></script>
+<script src="/shell.js?v=34"></script>
+<script src="/fx.js?v=34"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -465,14 +478,11 @@ const SB0=[softbox.intensity,strip.intensity];[spot,rim,softbox,strip].forEach(l
 
 /* labels */
 const LABS=[
- {k:'sensor',n:1,t:'l_sensor',p:'l_sensor_p'},
- {k:'gate',n:2,t:'l_gate',p:'l_gate_p'},
- {k:'cover',n:3,t:'l_cover',p:'l_cover_p'},
- {k:'cradle',n:4,t:'l_cradle',p:'l_cradle_p'},
- {k:'rail',n:5,t:'l_rail',p:'l_rail_p'},
- {k:'key',n:6,t:'l_key',p:'l_key_p'}];
+ {k:'sensor',n:1,t:'lb_bio',p:'l_sensor_p',side:'r'},
+ {k:'gate',n:2,t:'lb_adapt',p:'l_gate_p',side:'l'},
+ {k:'cradle',n:3,t:'lb_bottom',p:'l_cradle_p',side:'r'}];
 const labEl=document.getElementById('labels');
-LABS.forEach(l=>{const d=document.createElement('div');d.className='lab';if(l.k==='key')d.style.setProperty('--ty','16px');if(l.k==='sensor')d.style.setProperty('--ty','-36px');d.innerHTML=`<div class="dot">${l.n}</div><div class="card"><b></b><p></p></div>`;d.querySelector('.dot').onclick=()=>{const o=d.classList.contains('open');labEl.querySelectorAll('.lab').forEach(x=>x.classList.remove('open'));if(!o)d.classList.add('open');};labEl.appendChild(d);l.el=d;});
+LABS.forEach(l=>{const d=document.createElement('div');d.className='lab '+(l.side==='l'?'sl':'sr');d.innerHTML=`<div class="dot"></div><div class="card"><b></b><p></p></div>`;d.querySelector('.dot').onclick=()=>{const o=d.classList.contains('open');labEl.querySelectorAll('.lab').forEach(x=>x.classList.remove('open'));if(!o)d.classList.add('open');};labEl.appendChild(d);l.el=d;});
 const anchors={};
 function placeLabels(){
  anchors.sensor={obj:lockBody,v:sensorPos.clone().setZ(.056)};
@@ -762,6 +772,16 @@ const _ri=()=>{const th=window.LOCKG_THEME;if(th&&th.gold)RC.idle.set(th.gold).m
 const EX={bolts:[0,0,-.09],rail:[0,0,0],cradle:[0,-.05,.17],cover:[0,0,.2],lock:[0,.05,.17],gate:[0,.05,.3],gun:[-.2,0,.44]};
 let last=performance.now();
 const dust=window.LOCKG_FX&&(+(window.LGS||((p,d)=>d))('scene.dust',36)>0)&&LOCKG_FX.dust(THREE,scene,{center:[0,.15,.3],box:[2.6,2.2,1.6],n:+(window.LGS||((p,d)=>d))('scene.dust',36)});
+/* action camera: impacts shake the lens for a moment, then it settles */
+const QK={hits:[],fov0:0,rm:matchMedia('(prefers-reduced-motion: reduce)').matches},_qo=new THREE.Vector3();
+window.__quake=(a=1,d=.6,punch=0)=>{if(QK.rm)return;QK.hits.push({t:performance.now(),a,d:d*1000,p:punch,ph:Math.random()*99});};
+function quakeOn(now){_qo.set(0,0,0);let roll=0,pf=0;QK.hits=QK.hits.filter(h=>now-h.t<h.d);
+ for(const h of QK.hits){const u=(now-h.t)/h.d,env=Math.pow(1-u,2.2)*h.a,t=(now-h.t)/1000+h.ph;
+  _qo.x+=env*.022*(Math.sin(t*61)+.5*Math.sin(t*137));_qo.y+=env*.018*(Math.sin(t*53+1.3)+.5*Math.sin(t*121));roll+=env*.012*Math.sin(t*47+2.1);
+  pf=Math.max(pf,h.p*Math.pow(1-Math.min(1,u*2.2),2));}
+ if(!QK.hits.length)return false;if(!QK.fov0)QK.fov0=camera.fov;
+ _qo.applyQuaternion(camera.quaternion);camera.position.add(_qo);camera.rotateZ(roll);camera.fov=QK.fov0*(1-pf);camera.updateProjectionMatrix();QK.roll=roll;return true;}
+function quakeOff(){camera.position.sub(_qo);camera.rotateZ(-(QK.roll||0));QK.roll=0;if(QK.fov0&&camera.fov!==QK.fov0){camera.fov=QK.fov0;camera.updateProjectionMatrix();}}
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(window.__flicker)window.__flicker(now);if(window.__trans)window.__trans(now);if(window.__adapt)window.__adapt(now);if(window.__orientTick)window.__orientTick(now);if(dust)dust.tick(now/1000);
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
@@ -770,7 +790,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(window.__f
  for(const k in EX){const o=EX[k],q=exK(k,e),cs=k==='cover'?coverShift:{x:0,y:0};parts[k].position.set(o[0]*q+cs.x,o[1]*q+cs.y,o[2]*q);parts[k].rotation.set(0,0,0);}
  const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.8+.4*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?2.8:(Math.sin(rt*22)>0?3:.3);
  const st=(now-shakeT)/1000;product.position.x=(window.__pbx||0)+(st<.45?Math.sin(st*70)*.003*(1-st/.45):0);
- controls.update();cine.comp.render();updateLabels();window.__frames=(window.__frames||0)+1;requestAnimationFrame(loop);}
+ controls.update();const qk=quakeOn(now);cine.comp.render();if(qk)quakeOff();updateLabels();window.__frames=(window.__frames||0)+1;requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 
 
@@ -800,7 +820,7 @@ window.__one={unlock,view,build};
  if(!planned){root.remove();window.LOCKG_SHOWGATE&&LOCKG_SHOWGATE();return;}
  window.__introPlanned=true;document.body.classList.add('intro');
  const $=id=>document.getElementById(id),cap=$('inCap'),kid=$('inKid'),me=$('inMe'),steps=[...$('inSteps').children];
- const STEPS=[{ic:'🔒',k:1},{ic:'🧒',k:2,bd:'no'},{ic:'☝️',k:3,bd:'ok'},{ic:'🛡️',k:4}];
+ const STEPS=[{ic:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2a241f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',k:1},{ic:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2a241f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M6.5 20c0-3.6 2.5-6 5.5-6s5.5 2.4 5.5 6"/></svg>',k:2,bd:'no'},{ic:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2a241f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a7 7 0 0 0-7 7v2"/><path d="M19 13v-2a7 7 0 0 0-3-5.7"/><path d="M9 20c1-1.8 1.5-4 1.5-6.5a1.5 1.5 0 0 1 3 0c0 2.8-.5 5-1.5 7"/><path d="M15.8 18.5c.5-1.5.7-3.2.7-5a4.5 4.5 0 0 0-9 0c0 1.2-.2 2.4-.5 3.5"/></svg>',k:3,bd:'ok'},{ic:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2a241f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',k:4}];
  let cur=-1,timers=[],done=false,raf=0;const later=(ms,f)=>timers.push(setTimeout(f,ms));
  function show(i){cur=i;const s=STEPS[i];$('inIc').innerHTML=s.ic+(s.bd?`<span class="bd ${s.bd}">${s.bd==='no'?'✕':'✓'}</span>`:'');
   $('inT').textContent=Shell.t('in'+s.k+'t');$('inP').textContent=Shell.t('in'+s.k+'p');
@@ -822,19 +842,23 @@ window.__one={unlock,view,build};
  function finish(){if(done)return;done=true;timers.forEach(clearTimeout);away(kid);away(me);window.__introOn=false;
   try{sessionStorage.setItem('lockg-intro','1');}catch(e){}
   if(isOpen){openT=0;gateT=0;ringMode='idle';isOpen=false;setMain(false);}
-  ringMode='idle';view('front',900);document.body.classList.remove('intro');setTimeout(()=>root.remove(),600);window.LOCKG_SHOWGATE&&LOCKG_SHOWGATE();dispatchEvent(new Event('lockg-intro-done'));}
+  ringMode='idle';view('front',900);document.body.classList.remove('intro');root.classList.add('out');setTimeout(()=>root.remove(),600);window.LOCKG_SHOWGATE&&LOCKG_SHOWGATE();dispatchEvent(new Event('lockg-intro-done'));}
  $('inSkip').onclick=e=>{e.stopPropagation();finish();};root.addEventListener('click',finish);
+ const fl=document.createElement('div');fl.className='in-flash';const bars=document.createElement('div');bars.className='in-bars';bars.innerHTML='<i></i><i></i>';root.prepend(bars,fl);
+ const boom=(a,d,p,flash)=>{window.__quake&&__quake(a,d,p);if(flash){fl.classList.remove('hit');void fl.offsetWidth;fl.classList.add('hit');}window.LOCKG_FX&&LOCKG_FX.buzz&&LOCKG_FX.buzz(a>.8?[40,30,60]:[25]);};
  function play(){window.__introOn=true;coachOff();document.body.classList.add('intro');root.classList.add('go');
-  // 0.0s  what it is: wide, gentle push in
-  view('hero',10);setTimeout(()=>{if(done)return;const p=camera.position.clone();camera.position.set(p.x,p.y+.1,p.z*1.25);view('hero',1100);},30);show(0);
-  // 1.3s  a child tries: red, shake, nothing opens
-  later(1300,()=>{view('detail',900);show(1);});
-  hand(kid,1450,650,()=>{ringMode='scan';ringT0=performance.now();setTimeout(()=>{ringMode='deny';ringT0=performance.now();shakeT=performance.now();burst('no');note('nt_unk','no');},160);});
-  later(2750,()=>{away(kid);show(2);});
-  // 2.8s  your finger: gold scan, it opens
-  setTimeout(()=>{if(!done)hand(me,0,520,()=>{if(done)return;ringMode='idle';unlock();burst('ok');note('nt_you','ok');});},2850);
-  // 4.2s  safe on your wall
-  later(4200,()=>{away(me);show(3);view('hero',1100);});
+  // 0.0s  teaser cold open: low and tight on the lock, then a hard slam back to the whole rack
+  view('detail',10);setTimeout(()=>{if(done)return;const p=camera.position.clone();camera.position.set(p.x+.12,p.y-.08,p.z*.8);view('detail',380);},30);
+  later(120,()=>boom(.55,.35,.05));
+  later(520,()=>{view('hero',520);});later(980,()=>{boom(1.15,.75,.09,true);show(0);});
+  // 1.4s  a child tries: whip in, red, the frame jolts, nothing opens
+  later(1400,()=>{view('detail',480);show(1);});
+  hand(kid,1500,600,()=>{ringMode='scan';ringT0=performance.now();setTimeout(()=>{ringMode='deny';ringT0=performance.now();shakeT=performance.now();boom(.9,.55,.04);burst('no');note('nt_unk','no');},160);});
+  later(2750,()=>{away(kid);show(2);boom(.25,.25,0);});
+  // 2.8s  your finger: gold scan, it opens with a hit
+  setTimeout(()=>{if(!done)hand(me,0,480,()=>{if(done)return;ringMode='idle';unlock();boom(1,.6,.07,true);burst('ok');note('nt_you','ok');});},2850);
+  // 4.2s  pull out to the hero frame, last impact
+  later(4100,()=>{away(me);show(3);view('hero',650);});later(4700,()=>boom(1.25,.8,.1,true));
   later(4900,()=>{if(isOpen)lock();});
   later(5600,finish);}
  const ready=()=>new Promise(res=>{const t0=performance.now();const chk=()=>{const veil=document.getElementById('fx-veil');const gunOk=(!!presetTex&&(window.__frames||0)>6)||performance.now()-t0>3500;
