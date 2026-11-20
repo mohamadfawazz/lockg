@@ -1,0 +1,10 @@
+name: List Cloudflare deployments
+on: workflow_dispatch
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -s -H "Authorization: Bearer $T" "https://api.cloudflare.com/client/v4/accounts/1f6220fcd7cd803c660f3f3d18ae318a/pages/projects/lockg/deployments?per_page=15" | jq -r '.result[] | [.created_on, .environment, .url, (.deployment_trigger.type//""), (.deployment_trigger.metadata.commit_message//"" | .[0:60])] | @tsv'
+        env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
