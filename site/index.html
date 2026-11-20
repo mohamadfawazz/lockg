@@ -140,7 +140,7 @@ body.touring #title,body.touring #spec,body.touring .coach{opacity:0;pointer-eve
 .gpill.shopnow{background:linear-gradient(180deg,var(--a1),var(--a2))!important;color:var(--ink)!important;border:0!important;box-shadow:0 10px 30px color-mix(in srgb,var(--gold) 35%,transparent);font-weight:600}
 .tile .gunph{width:100%;height:34px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));margin-bottom:6px}
 </style>
-<link rel="stylesheet" href="/shell.css?v=26">
+<link rel="stylesheet" href="/shell.css?v=27">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -217,8 +217,8 @@ l_cradle:['Stock cradle','حامل الأخمص'],l_cradle_p:['Holds the weight.
 l_rail:['Wall rail','سكة الجدار'],l_rail_p:['Fits any long gun. Hidden bolts.','يناسب أي سلاح طويل. براغي مخفية.'],
 l_key:['Backup key','مفتاح احتياطي'],l_key_p:['Works with no power.','يعمل بدون كهرباء.']
 };</script>
-<script src="/shell.js?v=26"></script>
-<script src="/fx.js?v=26"></script>
+<script src="/shell.js?v=27"></script>
+<script src="/fx.js?v=27"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -231,7 +231,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight,false);
+renderer.setPixelRatio(Math.max(1,Math.min(devicePixelRatio,innerWidth<820?1.5:1.75,Math.sqrt(2.4e6/(innerWidth*innerHeight)))));renderer.setSize(innerWidth,innerHeight,false);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d0c0a);scene.fog=new THREE.Fog(0x0d0c0a,5,11);
@@ -409,7 +409,7 @@ const CINE={uniforms:{tDiffuse:{value:null},uT:{value:0},uK:{value:0},uV:{value:
   c+=(h(vUv*vec2(913.,557.))-.5)*.028;                // film grain
   gl_FragColor=vec4(c,1.);}`};
 function makeCine(renderer,scene,camera,THREE,EffectComposer,RenderPass,AfterimagePass,ShaderPass,OutputPass,extra){
- const comp=new EffectComposer(renderer);comp.setPixelRatio(Math.min(devicePixelRatio,innerWidth<820?1.5:2));comp.setSize(innerWidth,innerHeight);
+ const comp=new EffectComposer(renderer);window.__comp=comp;comp.setPixelRatio(Math.max(1,Math.min(devicePixelRatio,innerWidth<820?1.5:1.75,Math.sqrt(2.4e6/(innerWidth*innerHeight)))));comp.setSize(innerWidth,innerHeight);
  comp.addPass(new RenderPass(scene,camera));if(extra)extra(comp);
  const trail=new AfterimagePass(0);comp.addPass(trail);const grade=new ShaderPass(CINE);comp.addPass(grade);comp.addPass(new OutputPass());
  return {comp,trail,grade};}
@@ -537,7 +537,18 @@ const RC={idle:new THREE.Color(0x9c7a4e),scan:new THREE.Color(0xf2ede4),ok:new T
 const EX={bolts:[0,0,-.09],rail:[0,0,0],cradle:[0,-.05,.17],cover:[0,0,.2],lock:[0,.05,.17],gate:[0,.05,.3],gun:[-.2,0,.44]};
 let last=performance.now();
 const dust=window.LOCKG_FX&&LOCKG_FX.dust(THREE,scene,{center:[0,.15,.3],box:[2.6,2.2,1.6],n:360});
-function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(dust)dust.tick(now/1000);
+
+/* speed governor: keeps it smooth on any laptop. Starts sharp, steps quality down only if frames are slow */
+const PRB=()=>Math.max(1,Math.min(devicePixelRatio,innerWidth<820?1.5:1.75,Math.sqrt(2.4e6/(innerWidth*innerHeight))));
+const GOV={n:0,t:0,last:0,lvl:0,pr:PRB(),wait:performance.now()+2500};
+function govApply(){renderer.setPixelRatio(GOV.pr);renderer.setSize(innerWidth,innerHeight,false);if(window.__comp){__comp.setPixelRatio(GOV.pr);__comp.setSize(innerWidth,innerHeight);}}
+function gov(now){const dt=now-GOV.last;GOV.last=now;if(now<GOV.wait||document.hidden||dt>250)return;GOV.n++;GOV.t+=dt;
+ if(GOV.n>=75){const avg=GOV.t/GOV.n;GOV.n=0;GOV.t=0;if(avg>24&&GOV.lvl<3){GOV.lvl++;
+  if(GOV.lvl===1&&window.__comp)__comp.passes.forEach(p=>{const n=p.constructor&&p.constructor.name;if(/GTAO|Bloom/.test(n))p.enabled=false;});
+  if(GOV.lvl===2){GOV.pr=Math.max(1,GOV.pr*.75);govApply();}
+  if(GOV.lvl===3){GOV.pr=1;window.__lite=true;govApply();}
+  GOV.wait=now+1200;}}}
+function loop(now){gov(now);const dt=Math.min(.05,(now-last)/1000);last=now;if(dust)dust.tick(now/1000);
  if(tw){const k=Math.min(1,(now-tw.s)/tw.d),e=ease(k);camera.position.lerpVectors(tw.p0,tw.p1,e);controls.target.lerpVectors(tw.t0,tw.t1,e);if(k>=1)tw=null;}
  open+=(openT-open)*Math.min(1,dt*9);coverHinge.rotation.x=open*1.3;
  gate+=(gateT-gate)*Math.min(1,dt*11);gatePivot.rotation.x=-gate*1.9;
@@ -545,7 +556,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(dust)dust.
  for(const k in EX){const o=EX[k],q=exK(k,e),cs=k==='cover'?coverShift:{x:0,y:0};parts[k].position.set(o[0]*q+cs.x,o[1]*q+cs.y,o[2]*q);parts[k].rotation.set(0,0,0);}
  const rt=(now-ringT0)/1000;ringM.emissive.copy(RC[ringMode]);ringM.emissiveIntensity=ringMode==='idle'?.8+.4*Math.sin(now/700):ringMode==='scan'?1.3+1.2*Math.abs(Math.sin(rt*18)):ringMode==='ok'?2.8:(Math.sin(rt*22)>0?3:.3);
  const st=(now-shakeT)/1000;product.position.x=st<.45?Math.sin(st*70)*.003*(1-st/.45):0;
- controls.update();cine.comp.render();updateLabels();requestAnimationFrame(loop);}
+ controls.update();if(window.__lite&&!(typeof expl!=='undefined'&&expl>0&&expl<1))renderer.render(scene,camera);else cine.comp.render();updateLabels();requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 
 

@@ -101,8 +101,8 @@ html[lang=ar] .card b{font:500 16px/1.4 var(--arab)}
 .sw .on i{outline-color:var(--gold)}
 .sw em{display:block;font-style:normal;font-size:11px;margin-top:9px;color:color-mix(in srgb,var(--ivory) 60%,transparent)}
 .sw .on em{color:var(--ivory)}
-.guns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.guns button{padding:14px 6px 12px;border-radius:18px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:.2s}
+.guns{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
+.guns button{font-size:11.5px;line-height:1.25;padding:12px 6px 10px;border-radius:18px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:.2s}
 .guns button.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 9%,transparent)}
 .guns svg{width:44px;height:22px;display:block;margin:0 auto 8px}
 .guns span{font-size:11px;color:color-mix(in srgb,var(--ivory) 73%,transparent)}
@@ -184,8 +184,9 @@ html[dir=rtl] #next svg{transform:scaleX(-1)}
  #art{height:92%}#flow{padding:10px 18px 100px}
 }
 @media (max-width:380px){.card .pic{width:56px;height:56px}.card b{font-size:18px}#next{padding:0 22px}}
+.guns .gph{width:100%;height:30px;object-fit:contain;display:block;margin:2px auto 6px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
 </style>
-<link rel="stylesheet" href="/shell.css?v=26">
+<link rel="stylesheet" href="/shell.css?v=27">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -268,7 +269,8 @@ const EXTRAS=[
  {id:'care',price:39,en:['2 extra years of care','4 years total. Any fault, we replace it.'],ar:['سنتان إضافيتان من الرعاية','4 سنوات. أي عطل نستبدله.']}];
 const CUSTOM={id:'custom',c:'#7a1f2b',hi:'#b54a5a',en:'Your color',ar:'لونك'};
 const FINS=[{id:'black',c:'#1d1d1f',hi:'#3a3a3d',en:'Matte black',ar:'أسود مطفي'},{id:'bronze',c:'#8a6a43',hi:'#c8a574',en:'Bronze',ar:'برونزي'},{id:'nickel',c:'#8d8e90',hi:'#d7d8da',en:'Nickel',ar:'نيكل'},{id:'sand',c:'#b9a586',hi:'#e3d6bf',en:'Sand',ar:'رملي'}];
-const GUNS=[{id:'ar',en:'AR rifle',ar:'بندقية AR'},{id:'pump',en:'Shotgun',ar:'شوزن'},{id:'bolt',en:'Bolt rifle',ar:'بندقية ترباس'},{id:'lever',en:'Lever',ar:'رافعة'}];
+const GUNS=[{id:'d12',en:'Bronze AR shotgun',ar:'شوزن AR برونزي'},{id:'ar15',en:'AR-15 rifle',ar:'بندقية AR-15'},{id:'m4',en:'Tactical shotgun',ar:'شوزن تكتيكي'},{id:'pump12',en:'Classic pump',ar:'شوزن كلاسيكي'},{id:'bolt',en:'Walnut bolt rifle',ar:'بندقية ترباس جوز'}];
+const GOLD_MAP={ar:'ar15',pump:'pump12',lever:'bolt',shotgun:'m4'};
 const PAYS=[
  {id:'card',en:['Card or Apple Pay','We send a secure pay link to your WhatsApp. Pay in 1 tap.'],ar:['بطاقة أو Apple Pay','نرسل رابط دفع آمن إلى واتساب. ادفع بلمسة.']},
  {id:'cod',en:['Cash on delivery','Pay when it arrives at your door.'],ar:['الدفع عند الاستلام','ادفع عند وصوله إلى بابك.']}];
@@ -288,11 +290,11 @@ window.LOCKG_I18N={
  s_n2:['We deliver in 2 to 4 days.','نوصل خلال 2 إلى 4 أيام.'],s_n3:['You add your prints in 30 seconds.','تضيف بصماتك في 30 ثانية.'],s_mail:['Confirmation sent to ','أرسلنا التأكيد إلى '],
  s_err:['Could not send. Call us: ','تعذر الإرسال. اتصل بنا: '],s_fix:['Please fill the marked fields','يرجى تعبئة الحقول المحددة'],s_order:['Order','الطلب'],s_home:['Back to LOCKG','العودة إلى LOCKG']};
 </script>
-<script src="/shell.js?v=26"></script>
-<script src="/fx.js?v=26"></script>
+<script src="/shell.js?v=27"></script>
+<script src="/fx.js?v=27"></script>
 <script>
 const T=k=>Shell.t(k),AR=()=>Shell.lang==='ar',L=o=>AR()?o.ar:o.en,$=id=>document.getElementById(id);
-const O={prod:'wall',fin:'black',gun:'ar',extras:new Set(),qty:1,pay:'card'};
+const O={prod:'wall',fin:'black',gun:'ar15',extras:new Set(),qty:1,pay:'card'};
 let step=0,sent=false;const NS=5;
 const money=n=>CUR.sym+n.toLocaleString('en-US');
 const DISC=()=>{const p=window.LOCKG_LIVE&&window.LOCKG_LIVE.promo;return p?Math.min(90,Math.max(0,+p.percent||0)):0;};
@@ -300,11 +302,12 @@ const ADM=()=>!!(PRODUCTS.find(x=>x.id===O.prod)||{}).admin;
 function sub(){const p=PRODUCTS.find(x=>x.id===O.prod);let t=p.price;O.extras.forEach(id=>{const e=EXTRAS.find(x=>x.id===id);t+=e.price*(id==='install'&&O.prod==='duo'?2:1);});return t*O.qty;}
 function total(){return Math.round(sub()*(1-DISC()/100));}
 /* ---------- the picture ---------- */
-const GUNPATH={
+const GUNPATH0={
  ar:'M0 34 L4 22 L46 26 L50 20 L96 20 L96 14 L104 14 L104 20 L150 21 L150 25 L104 26 L100 31 L80 31 L78 44 L70 44 L72 31 L60 31 L56 46 L48 46 L50 31 L10 36 Z',
  pump:'M0 30 L6 18 L50 22 L58 18 L150 19 L150 24 L104 24 L104 29 L70 29 L66 26 L58 27 L52 38 L44 38 L46 28 L8 34 Z',
  bolt:'M0 30 L6 16 L40 22 L52 18 L70 18 L72 13 L96 13 L98 18 L150 19 L150 23 L96 23 L90 26 L60 27 L52 36 L44 35 L46 27 L8 34 Z',
  lever:'M0 30 L6 18 L46 22 L56 19 L150 19 L150 24 L80 24 L76 27 L60 27 L64 34 L52 38 L44 33 L48 27 L8 34 Z'};
+const GUNPATH={...GUNPATH0,d12:GUNPATH0.ar,ar15:GUNPATH0.ar,m4:GUNPATH0.pump,pump12:GUNPATH0.pump};
 function art(target,prod,fin,gun,big){
  const F=FINS.find(f=>f.id===fin),id='g'+Math.random().toString(36).slice(2,7);
  const defs=`<defs><linearGradient id="${id}m" x1="0" x2="1"><stop offset="0" stop-color="${F.c}"/><stop offset=".45" stop-color="${F.hi}"/><stop offset="1" stop-color="${F.c}"/></linearGradient><linearGradient id="${id}d" x1="0" x2="1"><stop offset="0" stop-color="#0d0d0e"/><stop offset=".5" stop-color="#2a2a2c"/><stop offset="1" stop-color="#0d0d0e"/></linearGradient><radialGradient id="${id}r"><stop offset=".55" stop-color="#C8A574" stop-opacity="0"/><stop offset=".7" stop-color="#C8A574"/><stop offset="1" stop-color="#C8A574" stop-opacity="0"/></radialGradient></defs>`;
@@ -338,7 +341,7 @@ function render(){
  const fs=$('fins');fs.innerHTML='';FINS.forEach(f=>{const b=document.createElement('button');if(O.fin===f.id)b.className='on';b.innerHTML=`<i style="background:radial-gradient(circle at 35% 30%,${f.hi},${f.c} 70%)"></i><em>${L(f)}</em>`;b.onclick=()=>{O.fin=f.id;render();paint();};fs.appendChild(b);});
  {const lb=document.createElement('label');if(O.fin==='custom')lb.className='on';lb.innerHTML=`<i style="background:${O.fin==='custom'?CUSTOM.c:'conic-gradient(#e94b4b,#f2c94c,#6fcf97,#56ccf2,#9b51e0,#e94b4b)'}"></i><em>${L(CUSTOM)}</em><input type="color" value="${CUSTOM.c}">`;lb.querySelector('input').oninput=e=>{CUSTOM.c=e.target.value;O.fin='custom';lb.querySelector('i').style.background=CUSTOM.c;fs.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));lb.classList.add('on');$('finName').textContent=L(CUSTOM)+' · '+CUSTOM.c.toUpperCase();paint();};lb.querySelector('input').onchange=()=>{render();paint();};fs.appendChild(lb);}
  $('finName').textContent=L(FIN())+(O.fin==='custom'?' · '+CUSTOM.c.toUpperCase():'');
- const gs=$('guns');gs.innerHTML='';GUNS.forEach(g=>{const b=document.createElement('button');if(O.gun===g.id)b.className='on';b.innerHTML=`<svg viewBox="0 0 152 48"><path d="${GUNPATH[g.id]}" fill="currentColor"/></svg><span>${L(g)}</span>`;b.onclick=()=>{O.gun=g.id;render();paint();};gs.appendChild(b);});
+ const gs=$('guns');gs.innerHTML='';GUNS.forEach(g=>{const b=document.createElement('button');if(O.gun===g.id)b.className='on';b.innerHTML=`<img class="gph" src="/configure/guns/${g.id}.webp?v=2" alt="" loading="lazy"><span>${L(g)}</span>`;b.onclick=()=>{O.gun=g.id;render();paint();};gs.appendChild(b);});
  $('gunName').textContent=L(GUNS.find(g=>g.id===O.gun));
  // extras
  const ex=$('extras');ex.innerHTML='';EXTRAS.forEach(e=>{const b=card(e,O.extras.has(e.id),'+'+money(e.price));b.onclick=()=>{O.extras.has(e.id)?O.extras.delete(e.id):O.extras.add(e.id);render();paint();};ex.appendChild(b);});
@@ -376,12 +379,12 @@ $('next').onclick=async()=>{
  nb.disabled=false;if(!sent)render();};
 function toastMsg(m){let t=$('stoast');if(!t){t=document.createElement('div');t.id='stoast';t.style.cssText='position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;padding:13px 20px;border-radius:999px;background:rgba(21,19,15,.92);border:1px solid #9c7a4e88;font-size:13px;transition:.3s;max-width:90vw;text-align:center';document.body.appendChild(t);}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,3200);}
 // deep link from the room page: /shop/?fin=bronze&gun=pump&p=car
-{const q=new URLSearchParams(location.search);if(FINS.some(f=>f.id===q.get('fin')))O.fin=q.get('fin');if(q.get('fin')==='custom'&&/^#[0-9a-f]{6}$/i.test(q.get('hex')||'')){O.fin='custom';CUSTOM.c=q.get('hex');}if(GUNS.some(g=>g.id===q.get('gun')))O.gun=q.get('gun');if(PRODUCTS.some(p=>p.id===q.get('p')))O.prod=q.get('p');}
+{const q=new URLSearchParams(location.search);if(FINS.some(f=>f.id===q.get('fin')))O.fin=q.get('fin');if(q.get('fin')==='custom'&&/^#[0-9a-f]{6}$/i.test(q.get('hex')||'')){O.fin='custom';CUSTOM.c=q.get('hex');}{const qg=GOLD_MAP[q.get('gun')]||q.get('gun');if(GUNS.some(g=>g.id===qg))O.gun=qg;}if(PRODUCTS.some(p=>p.id===q.get('p')))O.prod=q.get('p');}
 Shell.onLang(()=>{render();paint();});render();paint();
 setTimeout(()=>FINS.forEach(f=>GUNS.forEach(g=>{new Image().src=IMG(f.id,g.id);})),1500);
 </script>
 <script type="module">
-import { mount, snapshot } from '/v3d.js?v=26';
+import { mount, snapshot } from '/v3d.js?v=27';
 let V=null;
 window.LOCKG_V3D=m=>{const el=document.getElementById('v3d');if(!m)return;if(V)V.set(m);else V=mount(el,m);};
 const CORE_ORIG=PRODUCTS.filter(p=>!p.admin).map(p=>({...p,en:[...p.en],ar:[...p.ar]}));

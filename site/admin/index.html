@@ -323,7 +323,7 @@ main{max-width:1060px;margin:0 auto;padding:10px 20px calc(120px + var(--sab))}
 ['gesturestart','gesturechange'].forEach(k=>document.addEventListener(k,e=>e.preventDefault(),{passive:false}));document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});})();
 </script>
 <script type="module">
-let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=26'));
+let V3=null;const v3=async()=>V3||(V3=await import('/v3d.js?v=27'));
 const API='https://wfxyzsuuwpezjrqkpida.supabase.co/functions/v1/lockg-api';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let AUTH=null,C={theme:{},promo:{},events:[],products:[]},dirty=new Set();
@@ -419,7 +419,7 @@ $('prIdeas').onclick=e=>{const t=IDEAS[e.target.dataset.i];if(!t)return;$('prDes
 /* ---------- shop products ---------- */
 let prIx=-1,draft=null,viewer=null;
 function renderShop(){const l=$('prList');l.innerHTML='';
- ['wall','car','duo'].forEach(id=>{const c=core(id);const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar.webp" alt="" style="object-fit:contain;padding:4px;${id==='car'?'transform:rotate(-90deg)':''}"></div><div class="tx"><b>${esc(c.name)}${c.active===false?'<span class="tag">HIDDEN</span>':'<span class="tag">CORE</span>'}</b><small>${esc(c.line)}</small></div><div class="pr">$${esc(c.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;d.querySelector('button').onclick=()=>openCo(id);l.appendChild(d);});
+ ['wall','car','duo'].forEach(id=>{const c=core(id);const d=document.createElement('div');d.className='it';d.innerHTML=`<div class="th"><img src="/shop/img/black-ar15.webp" alt="" style="object-fit:contain;padding:4px;${id==='car'?'transform:rotate(-90deg)':''}"></div><div class="tx"><b>${esc(c.name)}${c.active===false?'<span class="tag">HIDDEN</span>':'<span class="tag">CORE</span>'}</b><small>${esc(c.line)}</small></div><div class="pr">$${esc(c.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;d.querySelector('button').onclick=()=>openCo(id);l.appendChild(d);});
  C.products.forEach((p,i)=>{const d=document.createElement('div');d.className='it';const img='';if(p.model)v3().then(m=>{try{const im=d.querySelector('.th');im.innerHTML=`<img src="${m.snapshot(p.model,220,180)}" alt="">`;}catch(e){}});
   d.innerHTML=`<div class="th">${img?`<img src="${img}" alt="">`:''}</div><div class="tx"><b>${esc(p.name)}${p.active?'<span class="tag live">LIVE</span>':'<span class="tag">DRAFT</span>'}</b><small>${esc(p.line||p.desc||'').slice(0,80)}</small></div><div class="pr">$${esc(p.price)}</div><button class="ib" aria-label="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`;
   d.querySelector('button').onclick=()=>openPr(i);l.appendChild(d);});}
